@@ -5,9 +5,7 @@ import android.view.SurfaceView;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.core.Mat;
 
-/**
- * Created by ethanm on 9/10/2016.
- */
+//check on github
 public class FrameGrabberRedo implements CameraBridgeViewBase.CvCameraViewListener2 {
 
     public FrameGrabberRedo(CameraBridgeViewBase c) {
