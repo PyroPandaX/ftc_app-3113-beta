@@ -37,6 +37,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
 import com.qualcomm.robotcore.eventloop.opmode.AnnotatedOpModeRegistrar;
 import org.firstinspires.ftc.robotcontroller.external.samples.ConceptNullOp;
 
+import ftc.vision.FrameGrabberRedo;
+
 /**
  * {@link FtcOpModeRegister} is responsible for registering opmodes for use in an FTC game.
  * @see #register(OpModeManager)
@@ -73,7 +75,7 @@ public class FtcOpModeRegister implements OpModeRegister {
          * Register OpModes that use the annotation-based registration mechanism.
          */
         AnnotatedOpModeRegistrar.register(manager);
-
+        DemoTest.register(manager);
         /**
          * Any manual OpMode class registrations should go here.
          */
