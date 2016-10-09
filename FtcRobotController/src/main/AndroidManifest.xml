@@ -2,20 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.qualcomm.ftcrobotcontroller"
-          android:versionCode="11"
-          android:versionName="2.1">
-
-  <supports-screens   android:resizeable="true"
-      android:smallScreens="true"
-      android:normalScreens="true"
-      android:largeScreens="true"
-      android:anyDensity="true" />
-
-  <uses-permission android:name="android.permission.CAMERA"/>
-  <uses-feature android:name="android.hardware.camera" android:required="false"/>
-  <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
-  <uses-feature android:name="android.hardware.camera.front" android:required="false"/>
-  <uses-feature android:name="android.hardware.camera.front.autofocus" android:required="false"/>
+          android:versionCode="12"
+          android:versionName="2.2">
 
   <application
     android:allowBackup="true"

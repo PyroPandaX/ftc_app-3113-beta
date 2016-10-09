@@ -1,13 +1,15 @@
 import java.util.regex.Pattern
+
 //
 // build.gradle in FtcRobotController
 //
 apply plugin: 'com.android.library'
+
 android {
 
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 23
+        targetSdkVersion 19
     }
 
     compileSdkVersion 23
@@ -17,13 +19,11 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
 }
+
 repositories {
     flatDir {
         dirs '../libs'
     }
 }
-apply from: 'build.release.gradle'
 
-dependencies {
-    compile project(':openCVLibrary310')
-}
+apply from: 'build.release.gradle'
