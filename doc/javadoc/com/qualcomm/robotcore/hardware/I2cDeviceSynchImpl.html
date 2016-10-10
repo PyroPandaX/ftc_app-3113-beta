@@ -93,7 +93,7 @@
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../com/qualcomm/robotcore/hardware/Engagable.html" title="interface in com.qualcomm.robotcore.hardware">Engagable</a>, <a href="../../../../com/qualcomm/robotcore/hardware/HardwareDevice.html" title="interface in com.qualcomm.robotcore.hardware">HardwareDevice</a>, <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.html" title="interface in com.qualcomm.robotcore.hardware">I2cDeviceSynch</a>, <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchSimple.html" title="interface in com.qualcomm.robotcore.hardware">I2cDeviceSynchSimple</a></dd>
+<dd><a href="../../../../com/qualcomm/robotcore/hardware/Engagable.html" title="interface in com.qualcomm.robotcore.hardware">Engagable</a>, <a href="../../../../com/qualcomm/robotcore/hardware/HardwareDevice.html" title="interface in com.qualcomm.robotcore.hardware">HardwareDevice</a>, <a href="../../../../com/qualcomm/robotcore/hardware/I2cAddrConfig.html" title="interface in com.qualcomm.robotcore.hardware">I2cAddrConfig</a>, <a href="../../../../com/qualcomm/robotcore/hardware/I2cAddressableDevice.html" title="interface in com.qualcomm.robotcore.hardware">I2cAddressableDevice</a>, <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.html" title="interface in com.qualcomm.robotcore.hardware">I2cDeviceSynch</a>, <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchSimple.html" title="interface in com.qualcomm.robotcore.hardware">I2cDeviceSynchSimple</a></dd>
 </dl>
 <hr>
 <br>
@@ -206,36 +206,44 @@ implements <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.h
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#dibCacheOverhead">dibCacheOverhead</a></strong></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>protected boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#disableReadWindows">disableReadWindows</a></strong></code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>protected java.lang.Object</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#engagementLock">engagementLock</a></strong></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#hasReadWindowChanged">hasReadWindowChanged</a></strong></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.HeartbeatAction.html" title="class in com.qualcomm.robotcore.hardware">I2cDeviceSynch.HeartbeatAction</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#heartbeatAction">heartbeatAction</a></strong></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected java.util.concurrent.ExecutorService</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#heartbeatExecutor">heartbeatExecutor</a></strong></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected <a href="../../../../com/qualcomm/robotcore/hardware/I2cAddr.html" title="class in com.qualcomm.robotcore.hardware">I2cAddr</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#i2cAddr">i2cAddr</a></strong></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected <a href="../../../../com/qualcomm/robotcore/hardware/I2cDevice.html" title="interface in com.qualcomm.robotcore.hardware">I2cDevice</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#i2cDevice">i2cDevice</a></strong></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected int</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#iregWriteFirst">iregWriteFirst</a></strong></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#isClosing">isClosing</a></strong></code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#isControllerLegacy">isControllerLegacy</a></strong></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>protected boolean</code></td>
@@ -389,31 +397,35 @@ implements <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.h
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#adjustHooking()">adjustHooking</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>protected void</code></td>
+<td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#assignReadWindow(com.qualcomm.robotcore.hardware.I2cDeviceSynch.ReadWindow)">assignReadWindow</a></strong>(<a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.ReadWindow.html" title="class in com.qualcomm.robotcore.hardware">I2cDeviceSynch.ReadWindow</a>&nbsp;newWindow)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#close()">close</a></strong>()</code>
 <div class="block">Closes this device</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected static byte[]</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#concatenateByteArrays(byte[],%20byte[])">concatenateByteArrays</a></strong>(byte[]&nbsp;left,
                      byte[]&nbsp;right)</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#disableReadsAndWrites()">disableReadsAndWrites</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#disengage()">disengage</a></strong>()</code>
 <div class="block">Disengage the object from underlying services it uses to render its function.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#enableReadsAndWrites()">enableReadsAndWrites</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#enableWriteCoalescing(boolean)">enableWriteCoalescing</a></strong>(boolean&nbsp;enable)</code>
 <div class="block">Enables or disables an optimization wherein writes to two sets of adjacent register
@@ -421,52 +433,58 @@ implements <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.h
  while the first is still queued for writing.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#engage()">engage</a></strong>()</code>
 <div class="block">(Re)enage the object with its underlying services.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#ensureReadWindow(com.qualcomm.robotcore.hardware.I2cDeviceSynch.ReadWindow,%20com.qualcomm.robotcore.hardware.I2cDeviceSynch.ReadWindow)">ensureReadWindow</a></strong>(<a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.ReadWindow.html" title="class in com.qualcomm.robotcore.hardware">I2cDeviceSynch.ReadWindow</a>&nbsp;windowNeeded,
                 <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.ReadWindow.html" title="class in com.qualcomm.robotcore.hardware">I2cDeviceSynch.ReadWindow</a>&nbsp;windowToSet)</code>
 <div class="block">Ensure that the current register window covers the indicated set of registers.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#forceDrainReadersAndWriters()">forceDrainReadersAndWriters</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#getConnectionInfo()">getConnectionInfo</a></strong>()</code>
 <div class="block">Get connection information about this device in a human readable format</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#getDeviceName()">getDeviceName</a></strong>()</code>
 <div class="block">Returns a string suitable for display to the user as to the type of device</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.HeartbeatAction.html" title="class in com.qualcomm.robotcore.hardware">I2cDeviceSynch.HeartbeatAction</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#getHeartbeatAction()">getHeartbeatAction</a></strong>()</code>
 <div class="block">Returns the current action, if any, to take upon expiration of the heartbeat interval.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#getHeartbeatInterval()">getHeartbeatInterval</a></strong>()</code>
 <div class="block">Returns the interval within which communication must be received by the I2C device lest
  a timeout occur.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../com/qualcomm/robotcore/hardware/I2cAddr.html" title="class in com.qualcomm.robotcore.hardware">I2cAddr</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#getI2cAddr()">getI2cAddr</a></strong>()</code>
 <div class="block">Returns the I2C address currently being used by this device client</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../com/qualcomm/robotcore/hardware/I2cAddr.html" title="class in com.qualcomm.robotcore.hardware">I2cAddr</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#getI2cAddress()">getI2cAddress</a></strong>()</code>
+<div class="block">Returns the I2C address currently in use to communicate with an I2C hardware device</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -618,56 +636,62 @@ implements <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.h
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#setI2cAddress(com.qualcomm.robotcore.hardware.I2cAddr)">setI2cAddress</a></strong>(<a href="../../../../com/qualcomm/robotcore/hardware/I2cAddr.html" title="class in com.qualcomm.robotcore.hardware">I2cAddr</a>&nbsp;newAddress)</code>
+<div class="block">Configures a new I2C address to use</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#setLogging(boolean)">setLogging</a></strong>(boolean&nbsp;enabled)</code>
 <div class="block">Turn logging on or off.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#setLoggingTag(java.lang.String)">setLoggingTag</a></strong>(java.lang.String&nbsp;loggingTag)</code>
 <div class="block">Set the tag to use when logging is on.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#setReadWindow(com.qualcomm.robotcore.hardware.I2cDeviceSynch.ReadWindow)">setReadWindow</a></strong>(<a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.ReadWindow.html" title="class in com.qualcomm.robotcore.hardware">I2cDeviceSynch.ReadWindow</a>&nbsp;newWindow)</code>
 <div class="block">Set the set of registers that we will read and read and read again on every hardware cycle</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#setReadWindowInternal(com.qualcomm.robotcore.hardware.I2cDeviceSynch.ReadWindow)">setReadWindowInternal</a></strong>(<a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.ReadWindow.html" title="class in com.qualcomm.robotcore.hardware">I2cDeviceSynch.ReadWindow</a>&nbsp;newWindow)</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#unhook()">unhook</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#waitForIdleWriteCache()">waitForIdleWriteCache</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#waitForValidReadCache()">waitForValidReadCache</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#waitForWriteCompletionInternal()">waitForWriteCompletionInternal</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#waitForWriteCompletions()">waitForWriteCompletions</a></strong>()</code>
 <div class="block">Waits for any previously issued writes to be written to the USB controller module.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#write(int,%20byte[])">write</a></strong>(int&nbsp;ireg,
      byte[]&nbsp;data)</code>
 <div class="block">Writes data to a set of registers, beginning with the one indicated.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#write(int,%20byte[],%20boolean)">write</a></strong>(int&nbsp;ireg,
      byte[]&nbsp;data,
@@ -675,14 +699,14 @@ implements <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.h
 <div class="block">Writes data to a set of registers, beginning with the one indicated.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#write8(int,%20int)">write8</a></strong>(int&nbsp;ireg,
       int&nbsp;data)</code>
 <div class="block">Writes a byte to the indicated register.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchImpl.html#write8(int,%20int,%20boolean)">write8</a></strong>(int&nbsp;ireg,
       int&nbsp;data,
@@ -746,6 +770,15 @@ implements <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.h
 <li class="blockList">
 <h4>controller</h4>
 <pre>protected&nbsp;<a href="../../../../com/qualcomm/robotcore/hardware/I2cController.html" title="interface in com.qualcomm.robotcore.hardware">I2cController</a> controller</pre>
+</li>
+</ul>
+<a name="isControllerLegacy">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isControllerLegacy</h4>
+<pre>protected&nbsp;boolean isControllerLegacy</pre>
 </li>
 </ul>
 <a name="robotUsbModule">
@@ -949,6 +982,15 @@ implements <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.h
 <pre>protected final&nbsp;java.lang.Object callbackLock</pre>
 </li>
 </ul>
+<a name="disableReadWindows">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>disableReadWindows</h4>
+<pre>protected&nbsp;boolean disableReadWindows</pre>
+</li>
+</ul>
 <a name="readWindow">
 <!--   -->
 </a>
@@ -1126,6 +1168,21 @@ implements <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.h
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="setI2cAddress(com.qualcomm.robotcore.hardware.I2cAddr)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setI2cAddress</h4>
+<pre>public&nbsp;void&nbsp;setI2cAddress(<a href="../../../../com/qualcomm/robotcore/hardware/I2cAddr.html" title="class in com.qualcomm.robotcore.hardware">I2cAddr</a>&nbsp;newAddress)</pre>
+<div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../com/qualcomm/robotcore/hardware/I2cAddrConfig.html#setI2cAddress(com.qualcomm.robotcore.hardware.I2cAddr)">I2cAddrConfig</a></code></strong></div>
+<div class="block">Configures a new I2C address to use</div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../com/qualcomm/robotcore/hardware/I2cAddrConfig.html#setI2cAddress(com.qualcomm.robotcore.hardware.I2cAddr)">setI2cAddress</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/qualcomm/robotcore/hardware/I2cAddrConfig.html" title="interface in com.qualcomm.robotcore.hardware">I2cAddrConfig</a></code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>newAddress</code> - the new I2C address to use</dd></dl>
+</li>
+</ul>
 <a name="setI2cAddr(com.qualcomm.robotcore.hardware.I2cAddr)">
 <!--   -->
 </a>
@@ -1140,6 +1197,21 @@ implements <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.h
 <dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchSimple.html#setI2cAddr(com.qualcomm.robotcore.hardware.I2cAddr)">setI2cAddr</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynchSimple.html" title="interface in com.qualcomm.robotcore.hardware">I2cDeviceSynchSimple</a></code></dd>
 <dt><span class="strong">Parameters:</span></dt><dd><code>i2cAddr</code> - the new I2C address</dd></dl>
+</li>
+</ul>
+<a name="getI2cAddress()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getI2cAddress</h4>
+<pre>public&nbsp;<a href="../../../../com/qualcomm/robotcore/hardware/I2cAddr.html" title="class in com.qualcomm.robotcore.hardware">I2cAddr</a>&nbsp;getI2cAddress()</pre>
+<div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../com/qualcomm/robotcore/hardware/I2cAddressableDevice.html#getI2cAddress()">I2cAddressableDevice</a></code></strong></div>
+<div class="block">Returns the I2C address currently in use to communicate with an I2C hardware device</div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../com/qualcomm/robotcore/hardware/I2cAddressableDevice.html#getI2cAddress()">getI2cAddress</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/qualcomm/robotcore/hardware/I2cAddressableDevice.html" title="interface in com.qualcomm.robotcore.hardware">I2cAddressableDevice</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>the I2C address currently in use</dd></dl>
 </li>
 </ul>
 <a name="getI2cAddr()">
@@ -1407,6 +1479,15 @@ implements <a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.h
 <li class="blockList">
 <h4>setReadWindowInternal</h4>
 <pre>protected&nbsp;void&nbsp;setReadWindowInternal(<a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.ReadWindow.html" title="class in com.qualcomm.robotcore.hardware">I2cDeviceSynch.ReadWindow</a>&nbsp;newWindow)</pre>
+</li>
+</ul>
+<a name="assignReadWindow(com.qualcomm.robotcore.hardware.I2cDeviceSynch.ReadWindow)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>assignReadWindow</h4>
+<pre>protected&nbsp;void&nbsp;assignReadWindow(<a href="../../../../com/qualcomm/robotcore/hardware/I2cDeviceSynch.ReadWindow.html" title="class in com.qualcomm.robotcore.hardware">I2cDeviceSynch.ReadWindow</a>&nbsp;newWindow)</pre>
 </li>
 </ul>
 <a name="getReadWindow()">
