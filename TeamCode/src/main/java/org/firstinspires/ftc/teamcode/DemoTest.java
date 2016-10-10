@@ -15,59 +15,59 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class DemoTest extends OpMode {
     final static double MOTOR_POWER = 0.2;
     DcMotor motorRB, motorRF, motorLB, motorLF;
-    ColorSensor colorSensor;
-    float hsvValues[] = {0F,0F,0F};
-    final float values[] = hsvValues;
-    final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(com.qualcomm.ftcrobotcontroller.R.id.RelativeLayout);
-    boolean bPrevState = true;
-    boolean bCurrState = false;
-    boolean bLedOn = true;
+    //ColorSensor colorSensor;
+    //float hsvValues[] = {0F,0F,0F};
+    //final float values[] = hsvValues;
+    //final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(com.qualcomm.ftcrobotcontroller.R.id.RelativeLayout);
+    //boolean bPrevState;
+    //boolean bCurrState;
+    //boolean bLedOn;
 
     public DemoTest() {}
 
     public void init() {
+        //bPrevState = false;
+        //bCurrState = true;
+        //bLedOn = true;
         motorRB = hardwareMap.dcMotor.get("motor_1");
         motorRF = hardwareMap.dcMotor.get("motor_2");
         motorLB = hardwareMap.dcMotor.get("motor_3");
         motorLF = hardwareMap.dcMotor.get("motor_4");
         motorLB.setDirection(DcMotor.Direction.REVERSE);
         motorLF.setDirection(DcMotor.Direction.REVERSE);
-        colorSensor = hardwareMap.colorSensor.get("color sensor");
-
+        //colorSensor = hardwareMap.colorSensor.get("line");
     }
 
     @Override
-    public void start() {
-
-    }
+    public void start() {}
 
     @Override
     public void loop() {
+        /*
         Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
         if ((bCurrState == true) && (bCurrState != bPrevState))  {
-
-            // button is transitioning to a pressed state. So Toggle LED
             bLedOn = !bLedOn;
             colorSensor.enableLed(bLedOn);
         }
+        */
         if (this.time <= 3) {
             motorRB.setPower(MOTOR_POWER);
             motorRF.setPower(MOTOR_POWER);
             motorLB.setPower(MOTOR_POWER);
             motorLF.setPower(MOTOR_POWER);
         }
+        /*
         relativeLayout.post(new Runnable() {
             public void run() {
                 relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));
             }
         });
+        */
         telemetry.addData("Text", "*** Robot Data***");
         telemetry.addData("time", "elapsed time: " + Double.toString(this.time));
     }
 
     @Override
-    public void stop() {
-
-    }
+    public void stop() {}
 }
 
