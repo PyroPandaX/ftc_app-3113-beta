@@ -43,7 +43,11 @@ import com.qualcomm.robotcore.hardware.LightSensor;
  * The code is structured as a LinearOpMode
  *
  * The code shows using two different light sensors:
+<<<<<<< HEAD
  *   The Primary sensor shown in this code is a legacy NXT Light sensor (called "sensor_light")
+=======
+ *   The Primary sensor shown in this code is a legacy NXT Light sensor (called "light sensor")
+>>>>>>> msmithdr/master
  *   Alternative "commented out" code uses a MR Optical Distance Sensor (called "sensor_ods")
  *   instead of the LEGO sensor.  Chose to use one sensor or the other.
  *
@@ -83,7 +87,11 @@ public class PushbotAutoDriveToLine_Linear extends LinearOpMode {
         // robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // get a reference to our Light Sensor object.
+<<<<<<< HEAD
         lightSensor = hardwareMap.lightSensor.get("sensor_light");                // Primary LEGO Light Sensor
+=======
+        lightSensor = hardwareMap.lightSensor.get("light sensor");                // Primary LEGO Light Sensor
+>>>>>>> msmithdr/master
         //  lightSensor = hardwareMap.opticalDistanceSensor.get("sensor_ods");  // Alternative MR ODS sensor.
 
         // turn on LED of light sensor.

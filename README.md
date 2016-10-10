@@ -20,6 +20,7 @@ For technical questions regarding the SDK, please visit the FTC Technology forum
 
 **************************************************************************************
 
+<<<<<<< HEAD
 Version 2.35 (released on 16.10.06)
   * Blockly programming mode - Removed unnecesary idle() call from blocks for new project.
 
@@ -50,6 +51,8 @@ Version 2.30 (released on 16.10.05)
 
 **************************************************************************************
 
+=======
+>>>>>>> msmithdr/master
 Version 2.20 (released on 16.09.08)
   * Support for Modern Robotics Compass Sensor.
   * Support for Modern Robotics Range Sensor.
