@@ -88,7 +88,11 @@ public class DemoLinear extends LinearOpMode {
             });
 
             telemetry.update();
+<<<<<<< HEAD
+
+=======
             idle(); // Always call idle() at the bottom of your while(opModeIsActive()) loop
+>>>>>>> msmithdr/master
         }
     }
 }

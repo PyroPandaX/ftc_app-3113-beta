@@ -56,6 +56,21 @@ public class DemoTest extends OpMode {
             motorLB.setPower(MOTOR_POWER);
             motorLF.setPower(MOTOR_POWER);
         }
+<<<<<<< HEAD
+        else if (this.time <= 6) {
+            motorRB.setPower(MOTOR_POWER);
+            motorRF.setPower(MOTOR_POWER);
+            motorLB.setPower(-MOTOR_POWER);
+            motorLF.setPower(-MOTOR_POWER);
+        }
+        else if (this.time <= 9) {
+            motorRB.setPower(-MOTOR_POWER);
+            motorRF.setPower(-MOTOR_POWER);
+            motorLB.setPower(MOTOR_POWER);
+            motorLF.setPower(MOTOR_POWER);
+        }
+=======
+>>>>>>> msmithdr/master
         /*
         relativeLayout.post(new Runnable() {
             public void run() {
