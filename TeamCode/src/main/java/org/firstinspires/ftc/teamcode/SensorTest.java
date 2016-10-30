@@ -76,8 +76,8 @@ public class SensorTest extends LinearOpMode {
     final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(R.id.RelativeLayout);
 
     // bPrevState and bCurrState represent the previous and current state of the button.
-    boolean bPrevState = false;
-    boolean bCurrState = false;
+    //boolean bPrevState = false;
+    //boolean bCurrState = false;
 
     // bLedOn represents the state of the LED.
     boolean bLedOn = true;
@@ -95,12 +95,12 @@ public class SensorTest extends LinearOpMode {
     // Note we use opModeIsActive() as our loop condition because it is an interruptible method.
     while (opModeIsActive()) {
 
+      /*
       // check the status of the x button on either gamepad.
       bCurrState = gamepad1.x;
 
       // check for button state transitions.
       if ((bCurrState == true) && (bCurrState != bPrevState))  {
-
         // button is transitioning to a pressed state. So Toggle LED
         bLedOn = !bLedOn;
         colorSensor.enableLed(bLedOn);
@@ -108,7 +108,10 @@ public class SensorTest extends LinearOpMode {
 
       // update previous state variable.
       bPrevState = bCurrState;
-
+      */
+      if((colorSensor.red()>=250) && (colorSensor.green()>=250) && (colorSensor.blue()>=250)){
+        telemetry.addData("There is white here: ", "true");
+      }
       // convert the RGB values to HSV values.
       Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
 

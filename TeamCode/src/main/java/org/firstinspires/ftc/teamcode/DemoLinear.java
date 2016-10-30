@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
 @Autonomous(name="DemoLinear", group="Demo Bot")
 public class DemoLinear extends LinearOpMode {
     ColorSensor colorSensor;    // Hardware Device Object
