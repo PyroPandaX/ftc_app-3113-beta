@@ -2,13 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.qualcomm.ftcrobotcontroller"
-<<<<<<< HEAD
+
           android:versionCode="14"
           android:versionName="2.35">
-=======
+
           android:versionCode="12"
           android:versionName="2.2">
->>>>>>> msmithdr/master
+
 
   <application
     android:allowBackup="true"

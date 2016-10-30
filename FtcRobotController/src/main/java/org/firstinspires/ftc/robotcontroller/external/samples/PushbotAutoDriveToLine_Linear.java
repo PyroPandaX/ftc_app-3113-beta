@@ -87,11 +87,9 @@ public class PushbotAutoDriveToLine_Linear extends LinearOpMode {
         // robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // get a reference to our Light Sensor object.
-<<<<<<< HEAD
+
         lightSensor = hardwareMap.lightSensor.get("sensor_light");                // Primary LEGO Light Sensor
-=======
         lightSensor = hardwareMap.lightSensor.get("light sensor");                // Primary LEGO Light Sensor
->>>>>>> msmithdr/master
         //  lightSensor = hardwareMap.opticalDistanceSensor.get("sensor_ods");  // Alternative MR ODS sensor.
 
         // turn on LED of light sensor.
