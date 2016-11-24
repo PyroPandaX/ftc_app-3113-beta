@@ -5,10 +5,12 @@ import android.graphics.Color;
 import android.view.View;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 @Autonomous(name="DemoLinear", group="Demo Bot")
+@Disabled
 public class DemoLinear extends LinearOpMode {
     ColorSensor colorSensor;    // Hardware Device Object
 
