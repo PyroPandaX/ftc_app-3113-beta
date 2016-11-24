@@ -23,6 +23,7 @@ public class DemoTest extends OpMode {
     //boolean bCurrState;
     //boolean bLedOn;
 
+
     public DemoTest() {}
 
     public void init() {
@@ -36,6 +37,7 @@ public class DemoTest extends OpMode {
         motorLB.setDirection(DcMotor.Direction.REVERSE);
         motorLF.setDirection(DcMotor.Direction.REVERSE);
         //colorSensor = hardwareMap.colorSensor.get("line");
+
     }
 
     @Override

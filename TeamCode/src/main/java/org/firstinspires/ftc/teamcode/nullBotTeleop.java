@@ -32,7 +32,7 @@ public class nullBotTeleop extends OpMode {
     public double leftX;
     public double leftNet;
     public double rightNet;
-    public double LF_Power, RF_Power,RB_Power, LB_Power;
+    public double LF_Power, RF_Power,RB_Power, LB_Power, LF_Per, LB_Per, RB_Per, RF_Per;
     public double rawTotal;
 
 
@@ -76,22 +76,37 @@ public class nullBotTeleop extends OpMode {
         rightX  = Range.clip(rightX, -1, 1);
         leftX  = Range.clip(leftX, -1, 1);
 
+        RB_Per  = Range.clip(RB_Per, -1, 1);
+        RF_Per  = Range.clip(RF_Per, -1, 1);
+        LF_Per = Range.clip(LF_Per, -1, 1);
+        LB_Per  = Range.clip(LB_Per, -1, 1);
 
-        motorRB.setPower(RB_Power);
-        motorLB.setPower(LB_Power);
-        motorLF.setPower(LF_Power);
-        motorRF.setPower(RF_Power);
 
+        motorRB.setPower(RB_Per);
+        motorLB.setPower(LB_Per);
+        motorLF.setPower(LF_Per);
+        motorRF.setPower(RF_Per);
 
+        //references for joystick values
           RF_Power = (right - rightX + leftX);
           LF_Power = (-right + rightX + leftX);
           LB_Power =(-right - rightX + leftX);
+
+        //Sum of all Joystick values
           RB_Power = (right + rightX + leftX);
+
+        //takes each joystick value and divides it by the total to yield a percent that has range of -1<=[motor]_Per <=1
+        RB_Per = ((right/RB_Power) + (rightX/RB_Power) + (leftX/RB_Power));
+        RF_Per = ((right/RB_Power) - (rightX/RB_Power) + (leftX/RB_Power));
+        LB_Per = (-(right/RB_Power) - (rightX/RB_Power) + (leftX/RB_Power));
+        LF_Per = (-(right/RB_Power) + (rightX/RB_Power) + (leftX/RB_Power));
 
 
         telemetry.addData("1", "rightPower", "%5.2f", (right));
         telemetry.addData("2", "leftPower", "%5.2f", (left));
         telemetry.addData("C: mechVar",":",  String.format("%.24f",(mechVar)));
+        telemetry.addData(("4"), ":", String.format("%.24f", (rawTotal)));
+        telemetry.update();
 
     }
 
