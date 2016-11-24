@@ -28,7 +28,7 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
-
+//If this works Eric will be less meme-ey
 package org.firstinspires.ftc.teamcode;
 
 import android.app.Activity;
@@ -55,8 +55,8 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name = "Sensor: test", group = "Sensor")
-//@Disabled
+@Autonomous(name = "ColorTest", group = "Sensor")
+@Disabled
 public class SensorTest extends LinearOpMode {
 
   ColorSensor colorSensor;    // Hardware Device Object
@@ -109,7 +109,7 @@ public class SensorTest extends LinearOpMode {
       // update previous state variable.
       bPrevState = bCurrState;
       */
-      if((colorSensor.red()>=250) && (colorSensor.green()>=250) && (colorSensor.blue()>=250)){
+      if((colorSensor.red()>=180) && (colorSensor.green()>=180) && (colorSensor.blue()>=180)){
         telemetry.addData("There is white here: ", "true");
       }
       // convert the RGB values to HSV values.

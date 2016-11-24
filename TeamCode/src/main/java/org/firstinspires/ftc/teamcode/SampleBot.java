@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp(name="SampleBot", group="Demo Bot")
-//@Disabled
+@Disabled
 public class SampleBot extends OpMode {
     final static double MOTOR_POWER = 0.2;
     DcMotor motorRB, motorRF, motorLB, motorLF;

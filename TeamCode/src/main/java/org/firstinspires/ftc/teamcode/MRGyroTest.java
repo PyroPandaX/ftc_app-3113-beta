@@ -49,20 +49,18 @@ import com.qualcomm.robotcore.hardware.GyroSensor;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
 */
-@Autonomous(name = "Sensor: MR Gyro", group = "Sensor")
-
+@Autonomous(name = "MR Gyro", group = "Demo")
 public class MRGyroTest extends LinearOpMode {
-
     ModernRoboticsI2cGyro gyro;   // Hardware Device Object
     @Override
     public void runOpMode() {
-
         int xVal, yVal, zVal = 0;     // Gyro rate Values
         int heading = 0;              // Gyro integrated heading
         int angleZ = 0;
         boolean lastResetState = false;
         boolean curResetState  = false;
         int resetState = 0;  //variable to determine if zHeadings will be reset at beginning of autonomous period
+        float hsvValues[] = {0F,0F,0F};
 
         // get a reference to a Modern Robotics GyroSensor object.
         gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
