@@ -77,6 +77,11 @@ public class nullTeleop extends OpMode {
         leftX  = Range.clip(leftX, -1, 1);
 
 
+        RB_Per  = Range.clip(RB_Per, -1, 1);
+        RF_Per  = Range.clip(RF_Per, -1, 1);
+        LF_Per = Range.clip(LF_Per, -1, 1);
+        LB_Per  = Range.clip(LB_Per, -1, 1);
+
         motorRB.setPower(RB_Per);
         motorLB.setPower(LB_Per);
         motorLF.setPower(LF_Per);
@@ -87,8 +92,8 @@ public class nullTeleop extends OpMode {
         LF_Power = (-right + rightX + leftX);
         LB_Power =(-right - rightX + leftX);
 
-        //Sum of all Joystick values
-        RB_Power = (right + rightX + leftX);
+        //Sum of all Joystick values. The small ".000000001" is used to simulate a limit function such that the code never divides by zero.
+        RB_Power = Math.abs((right + rightX + leftX) + .000000001);
 
         //takes each joystick value and divides it by the total to yield a percent that has range of -1<=[motor]_Per <=1
         RB_Per = ((right/RB_Power) + (rightX/RB_Power) + (leftX/RB_Power));

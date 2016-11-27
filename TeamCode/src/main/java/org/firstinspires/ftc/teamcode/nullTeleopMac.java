@@ -18,7 +18,7 @@ public class nullTeleopMac extends OpMode {
     DcMotor motorRB, motorRF, motorLB, motorLF;
     //spinner, shooter;
     int threshold = 10;
-    double rightY, leftY, rightX, leftX;
+    float rightY, leftY, rightX, leftX;
    // boolean spin, shoot;
 
     public nullTeleopMac() {

@@ -47,7 +47,7 @@ public class GyroNonlinear extends OpMode {
                     gyro.calibrate();
                     if (!gyro.isCalibrating()) {
                         resetState++;
-                    }
+            }
                 case 1:
                     telemetry.addData(">", "Gyro Calibrated.  Press Start.");
             }
