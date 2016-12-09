@@ -25,19 +25,20 @@ public class GyroNonlinear extends OpMode {
     public GyroNonlinear() {}
     ModernRoboticsI2cGyro gyro;
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
+    public static double TIME_STATE1;
 
 
     public void init() {
         //bPrevState = false;
         //bCurrState = true;
         //bLedOn = true;
-     /*   motorRB = hardwareMap.dcMotor.get("motor_1");
+        motorRB = hardwareMap.dcMotor.get("motor_1");
         motorRF = hardwareMap.dcMotor.get("motor_2");
         motorLB = hardwareMap.dcMotor.get("motor_3");
         motorLF = hardwareMap.dcMotor.get("motor_4");
         motorLB.setDirection(DcMotor.Direction.REVERSE);
         motorLF.setDirection(DcMotor.Direction.REVERSE);
-       */ gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
+        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
         //colorSensor = hardwareMap.colorSensor.get("line");
 
 
@@ -69,11 +70,34 @@ public class GyroNonlinear extends OpMode {
         xVal = gyro.rawX();
         yVal = gyro.rawY();
         zVal = gyro.rawZ();
-        if (this.time <= 6) {
-            xVal =0;
-            yVal =0;
-            zVal = 0;
+        if (this.time < 1) {
+            motorLB.setPower(.5);
+            motorRB.setPower(.5);
+            motorLF.setPower(.5);
+            motorRF.setPower(.5);
         }
+        if (this.time > 1 && angleZ > 90) {
+            motorRB.setPower(.5);
+            motorLF.setPower(-.5);
+            motorLB.setPower(-.5);
+            motorRF.setPower(.5);
+        }
+        if (angleZ < 90) {
+
+            motorRB.setPower(-.5);
+            motorLF.setPower(.5);
+            motorLB.setPower(.5);
+            motorRF.setPower(-.5);
+
+        }
+        if (angleZ == 90)
+        {
+            motorRB.setPower(0);
+        motorLF.setPower(0);
+        motorRF.setPower(0);
+        motorLB.setPower(0);
+    }
+
         telemetry.addData("Text", "*** Robot Data***");
         telemetry.addData("time", "elapsed time: " + Double.toString(this.time));
         telemetry.addData("0", "Heading %03d", heading);
