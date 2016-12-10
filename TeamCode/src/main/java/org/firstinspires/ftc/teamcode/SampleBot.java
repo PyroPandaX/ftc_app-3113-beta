@@ -25,6 +25,7 @@ public class SampleBot extends OpMode {
     //boolean bLedOn;
     public double right;
     public double left;
+    public int mechDrive;
 
     public SampleBot() {
     }
@@ -37,9 +38,12 @@ public class SampleBot extends OpMode {
         motorRF = hardwareMap.dcMotor.get("motor_2");
         motorLB = hardwareMap.dcMotor.get("motor_3");
         motorLF = hardwareMap.dcMotor.get("motor_4");
+      /*  if (gamepad1.a && mechDrive <= 10) {
+            mechDrive++;
+        }
+*/
 
     }
-
     @Override
     public void start() {
     }

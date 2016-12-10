@@ -89,25 +89,25 @@ public class MRGyroTest extends LinearOpMode {
                 resetState++;
             }
 
+            while(true) {
+                // get the x, y, and z values (rate of change of angle).
+                xVal = gyro.rawX();
+                yVal = gyro.rawY();
+                zVal = gyro.rawZ();
 
-            // get the x, y, and z values (rate of change of angle).
-            xVal = gyro.rawX();
-            yVal = gyro.rawY();
-            zVal = gyro.rawZ();
+                // get the heading info.
+                // the Modern Robotics' gyro sensor keeps
+                // track of the current heading for the Z axis only.
+                heading = gyro.getHeading();
+                angleZ = gyro.getIntegratedZValue();
 
-            // get the heading info.
-            // the Modern Robotics' gyro sensor keeps
-            // track of the current heading for the Z axis only.
-            heading = gyro.getHeading();
-            angleZ  = gyro.getIntegratedZValue();
-
-            telemetry.addData(">", "Press A & B to reset Heading.");
-            telemetry.addData("0", "Heading %03d", heading);
-            telemetry.addData("1", "Int. Ang. %03d", angleZ);
-            telemetry.addData("2", "X av. %03d", xVal);
-            telemetry.addData("3", "Y av. %03d", yVal);
-            telemetry.addData("4", "Z av. %03d", zVal);
-            telemetry.update();
+                telemetry.addData("0", "Heading %03d", heading);
+                telemetry.addData("1", "Int. Ang. %03d", angleZ);
+                telemetry.addData("2", "X av. %03d", xVal);
+                telemetry.addData("3", "Y av. %03d", yVal);
+                telemetry.addData("4", "Z av. %03d", zVal);
+                telemetry.update();
+            }
         }
     }
 }
