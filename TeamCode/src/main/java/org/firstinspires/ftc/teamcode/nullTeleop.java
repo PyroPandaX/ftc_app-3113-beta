@@ -97,11 +97,19 @@ public class nullTeleop extends OpMode {
 
         if (gamepad1.right_bumper)
         {
-            shoot.setPower(1);
+            shoot.setPower(.6);
         }
         else if (gamepad1.left_bumper) {
             shoot.setPower(0);
         }
+        if(gamepad1.dpad_up){
+            spin.setPower(.7);
+        }
+        else if (gamepad1.dpad_down)
+            spin.setPower(-.7);
+        else if (gamepad1.dpad_left || gamepad1.dpad_right)
+            spin.setPower(0);
+
 
         //references for joystick values
         RF_Power = (right - rightX + leftX);
@@ -130,7 +138,7 @@ public class nullTeleop extends OpMode {
         }
         telemetry.addData("1", "rightPower", "%5.2f", (right));
         telemetry.addData("2", "leftPower", "%5.2f", (left));
-        telemetry.addData("C: mechVar",":",  String.format("%.24f",(mechVar)));
+        telemetry.addData("C: mechVar",":",  String.format("%.24f",(joyRadius)));
         telemetry.addData(("4"), ":", String.format("%.24f", (rawTotal)));
         telemetry.update();
 
