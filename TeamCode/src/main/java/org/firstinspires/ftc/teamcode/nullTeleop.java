@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.Servo;
 import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
@@ -24,6 +25,8 @@ public class nullTeleop extends OpMode {
     //boolean bPrevState;
     //boolean bCurrState;
     //boolean bLedOn;
+    public double joyRadius;
+    Servo butt;
     public double right;
     public double left;
     public int mechDrive;
@@ -47,9 +50,9 @@ public class nullTeleop extends OpMode {
         motorRF = hardwareMap.dcMotor.get("motor_2");
         motorLB = hardwareMap.dcMotor.get("motor_3");
         motorLF = hardwareMap.dcMotor.get("motor_4");
-
-       // spin = hardwareMap.dcMotor.get("spin");
-        //shoot = hardwareMap.dcMotor.get("shoot");
+        butt = hardwareMap.servo.get("butt");
+        spin = hardwareMap.dcMotor.get("spin");
+        shoot = hardwareMap.dcMotor.get("shoot");
       /*  if (gamepad1.a && mechDrive <= 10) {
             mechDrive++;
         }
@@ -87,6 +90,24 @@ public class nullTeleop extends OpMode {
         motorLF.setPower(LF_Per);
         motorRF.setPower(RF_Per);
 
+        if (gamepad1.b)
+        {
+            butt.setPosition(-.5);
+        }
+        if (gamepad1.x)
+        {
+            butt.setPosition(.5);
+        }
+
+        if (gamepad1.right_bumper)
+        {
+            shoot.setPower(1);
+        }
+        else if (gamepad1.left_bumper)
+            shoot.setPower(0);
+
+
+        
         //references for joystick values
         RF_Power = (right - rightX + leftX);
         LF_Power = (-right + rightX + leftX);
@@ -102,6 +123,16 @@ public class nullTeleop extends OpMode {
         LF_Per = (-(right/RB_Power) + (rightX/RB_Power) + (leftX/RB_Power));
 
 
+        joyRadius =  Math.sqrt((right*right) + (rightX*rightX));
+
+        if(joyRadius < .5)
+        {
+            RB_Per = RB_Per/2;
+            RF_Per = RF_Per/2;
+            LF_Per = LF_Per/2;
+            LB_Per = LB_Per/2;
+
+        }
         telemetry.addData("1", "rightPower", "%5.2f", (right));
         telemetry.addData("2", "leftPower", "%5.2f", (left));
         telemetry.addData("C: mechVar",":",  String.format("%.24f",(mechVar)));
