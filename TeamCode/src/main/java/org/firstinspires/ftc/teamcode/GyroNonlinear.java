@@ -26,6 +26,7 @@ public class GyroNonlinear extends OpMode {
     ModernRoboticsI2cGyro gyro;
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
     public static double TIME_STATE1;
+    public double timeAuto = 0;
 
 
     public void init() {
@@ -41,7 +42,6 @@ public class GyroNonlinear extends OpMode {
         gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
         //colorSensor = hardwareMap.colorSensor.get("line");
 
-
             switch (resetState) {
                 case 0:
                     telemetry.addData(">", "Gyro Calibrating. Do Not move!");
@@ -50,13 +50,8 @@ public class GyroNonlinear extends OpMode {
                         resetState++;
             }
                 case 1:
-                    telemetry.addData(">", "Gyro Calibrated.  Press Start.");
+                    telemetry.addData(">", "Gyro Calibrated.  Press Start." + Double.toString(resetState));
             }
-
-
-
-
-
     }
 
     @Override
@@ -64,42 +59,36 @@ public class GyroNonlinear extends OpMode {
 
     @Override
     public void loop() {
+        timeAuto = this.time + timeAuto;
         heading = gyro.getHeading();
         angleZ = gyro.getIntegratedZValue();
         // get the x, y, and z values (rate of change of angle).
         xVal = gyro.rawX();
         yVal = gyro.rawY();
         zVal = gyro.rawZ();
-        if (this.time < 1) {
+        if (timeAuto < 1) {
             motorLB.setPower(.5);
             motorRB.setPower(.5);
             motorLF.setPower(.5);
             motorRF.setPower(.5);
         }
-        if (this.time > 1 && angleZ > 90) {
-            motorRB.setPower(.5);
-            motorLF.setPower(-.5);
-            motorLB.setPower(-.5);
-            motorRF.setPower(.5);
+        if (timeAuto > 1) {
+            motorRB.setPower(.4);
+            motorLF.setPower(-.4);
+            motorLB.setPower(-.4);
+            motorRF.setPower(.4);
         }
-        if (angleZ < 90) {
-
-            motorRB.setPower(-.5);
-            motorLF.setPower(.5);
-            motorLB.setPower(.5);
-            motorRF.setPower(-.5);
-
-        }
-        if (angleZ == 90)
+       
+        if (80 < angleZ && angleZ < 100)
         {
             motorRB.setPower(0);
-        motorLF.setPower(0);
-        motorRF.setPower(0);
-        motorLB.setPower(0);
-    }
+            motorLF.setPower(0);
+            motorRF.setPower(0);
+            motorLB.setPower(0);
+        }
 
         telemetry.addData("Text", "*** Robot Data***");
-        telemetry.addData("time", "elapsed time: " + Double.toString(this.time));
+        telemetry.addData("time", "elapsed time: " + Double.toString(timeAuto));
         telemetry.addData("0", "Heading %03d", heading);
         telemetry.addData("1", "Int. Ang. %03d", angleZ);
         telemetry.addData("2", "X av. %03d", xVal);

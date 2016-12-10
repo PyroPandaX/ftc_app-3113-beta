@@ -65,20 +65,16 @@ public class nullTeleop extends OpMode {
 
     @Override
     public void loop() {
-
-
         right = gamepad1.right_stick_y;
         left = -gamepad1.left_stick_y;
         leftX = -gamepad1.left_stick_x;
         rightX = gamepad1.right_stick_x;
-
 
 //sets the maximum range of the joystick
         right = Range.clip(right, -1, 1);
         left = Range.clip(left, -1, 1);
         rightX  = Range.clip(rightX, -1, 1);
         leftX  = Range.clip(leftX, -1, 1);
-
 
         RB_Per  = Range.clip(RB_Per, -1, 1);
         RF_Per  = Range.clip(RF_Per, -1, 1);
@@ -103,11 +99,10 @@ public class nullTeleop extends OpMode {
         {
             shoot.setPower(1);
         }
-        else if (gamepad1.left_bumper)
+        else if (gamepad1.left_bumper) {
             shoot.setPower(0);
+        }
 
-
-        
         //references for joystick values
         RF_Power = (right - rightX + leftX);
         LF_Power = (-right + rightX + leftX);
