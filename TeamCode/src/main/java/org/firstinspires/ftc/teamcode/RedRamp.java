@@ -12,17 +12,17 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@Autonomous(name="GyroNonlinear", group="Demo Bot")
+@Autonomous(name="RedRamp", group="Demo Bot")
 //@Disabled
-public class GyroNonlinear extends OpMode {
+public class RedRamp extends OpMode {
     final static double MOTOR_POWER = 0.2;
-   private int xVal, yVal, zVal;     // Gyro rate Values
-   private int heading;              // Gyro integrated heading
-   private int angleZ;
+    private int xVal, yVal, zVal;     // Gyro rate Values
+    private int heading;              // Gyro integrated heading
+    private int angleZ;
     boolean lastResetState = false;
     boolean curResetState  = false;
-  public  int resetState = 0, v_state = 0;
-    public GyroNonlinear() {}
+    public  int resetState = 0, v_state = 0;
+    public RedRamp() {}
     ModernRoboticsI2cGyro gyro;
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
     public double timeAuto = 0;
@@ -44,18 +44,18 @@ public class GyroNonlinear extends OpMode {
         motorLF.setDirection(DcMotor.Direction.REVERSE);
         gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         //colorSensor = hardwareMap.colorSensor.get("line");
-      //  while (true) {
-            switch (resetState) {
-                case 0:
-                    telemetry.addData(">", "Gyro Calibrating. Do Not move!" + resetState);
-                    gyro.calibrate();
-                    if (!gyro.isCalibrating()) {
-                        resetState++;
-                    }
-                case 1:
-                    telemetry.addData(">", "Gyro Calibrated.  Press Start.");
-            }
-       // }
+        //  while (true) {
+        switch (resetState) {
+            case 0:
+                telemetry.addData(">", "Gyro Calibrating. Do Not move!" + resetState);
+                gyro.calibrate();
+                if (!gyro.isCalibrating()) {
+                    resetState++;
+                }
+            case 1:
+                telemetry.addData(">", "Gyro Calibrated.  Press Start.");
+        }
+        // }
     }
     @Override
     public void start() {
@@ -134,37 +134,12 @@ public class GyroNonlinear extends OpMode {
                         motorLF.setPower(0);
                         motorRF.setPower(0);
                         motorLB.setPower(0);
-                }
-                if ((timeAuto - time2) > 5) {
-                    motorRB.setPower(5);
-                    motorLF.setPower(.5);
-                    motorRF.setPower(.5);
-                    motorLB.setPower(.5);
-                }
-                    if (pos2+80 > angleZ) {
-                        motorRB.setPower(.4);
-                        motorLF.setPower(-.4);
-                        motorLB.setPower(-.4);
-                        motorRF.setPower(.4);
                     }
-                    if (pos2+100 < angleZ) {
-                        motorRB.setPower(-.4);
-                        motorLF.setPower(.4);
-                        motorLB.setPower(.4);
-                        motorRF.setPower(-.4);
-                    }
-
-                    if (pos2+80 < heading && heading < pos2+100) {
-                        motorRB.setPower(0);
-                        motorLF.setPower(0);
-                        motorRF.setPower(0);
-                        motorLB.setPower(0);
-                        v_state++;
-                        if (count == 2) {
-                            time2 = timeAuto;
-                            pos2 = heading;
-                            count++;
-                        }
+                    if ((timeAuto - time2) > 3) {
+                        motorRB.setPower(5);
+                        motorLF.setPower(.5);
+                        motorRF.setPower(.5);
+                        motorLB.setPower(.5);
                     }
                 }
 
