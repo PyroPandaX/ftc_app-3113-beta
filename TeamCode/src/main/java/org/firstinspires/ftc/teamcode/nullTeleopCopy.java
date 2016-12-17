@@ -13,9 +13,9 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="NULL", group="Teleop")
+@TeleOp(name="Copy of NULL", group="Teleop")
 //@Disabled
-public class nullTeleop extends OpMode {
+public class nullTeleopCopy extends OpMode {
     final static double MOTOR_POWER = 0.2;
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
     //ColorSensor colorSensor;
@@ -43,16 +43,12 @@ public class nullTeleop extends OpMode {
     public double timeStart = 0;
     public int autoState, count;
     public double time1;
+    public boolean seq = true;
 
-
-
-    public nullTeleop() {
+    public nullTeleopCopy() {
     }
 
     public void init() {
-
-
-
         //bPrevState = false;
         //bCurrState = true;
         //bLedOn = true;
@@ -75,7 +71,9 @@ public class nullTeleop extends OpMode {
     @Override
     public void start() {
         //following intializes the timer variable and initializes the servo position
+
         timeAuto = 0;
+        timeStart = this.time;
         hold.setPosition(1);
 
     }
@@ -107,9 +105,9 @@ public class nullTeleop extends OpMode {
 
 // upon pressing button b, will perform autoshoot command
         if (gamepad2.b) {
-            autoShoot();
-}
- // kill switch button that stops the shooting and collecting mechanism
+            shootingSeq();
+        }
+        // kill switch button that stops the shooting and collecting mechanism
         if (gamepad2.x) {
             shoot.setPower(0);
             spin.setPower(0);
@@ -117,8 +115,9 @@ public class nullTeleop extends OpMode {
         }
 //auto collecting method implemented below
         if(gamepad2.a){
-            spin.setPower(.8);
             hold.setPosition(1);
+            shoot.setPower(0);
+            spin.setPower(.7);
         }
 
         if (gamepad2.right_bumper)
@@ -192,12 +191,19 @@ public class nullTeleop extends OpMode {
     } //sleep
 
 
-    public void autoShoot() {
+    public void shootingSeq() {
+        spin.setPower(0);
+        hold.setPosition(1);
         shoot.setPower(.4);
+        sleepCool(1500);
+        hold.setPosition(.5);
+        sleepCool(500);
         spin.setPower(.6);
+        }
 
-   }
-        public void autoCollect()
+
+
+    public void autoCollect()
     {
 
     }

@@ -32,7 +32,7 @@ public class BlueBall extends OpMode {
     public double time0, time1,time2,time3,time4, pos0, pos1,pos2,pos3,pos4 = 0;
     public int count = 0;
     Servo hold;
-    public static double powerShoot = 0;
+
 
 
 
@@ -51,6 +51,7 @@ public class BlueBall extends OpMode {
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
         shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
        gyro= (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         //colorSensor = hardwareMap.colorSensor.get("line");
         //  while (true) {
@@ -86,49 +87,49 @@ public class BlueBall extends OpMode {
         yVal = gyro.rawY();
         zVal = gyro.rawZ();
 
-                if (timeAuto < 1) {
+                if (timeAuto < .8) {
                     motorLB.setPower(.5);
                     motorRB.setPower(.5);
                     motorLF.setPower(.5);
                     motorRF.setPower(.5);
                     hold.setPosition(1);
-                    powerShoot = 0;
+
 
                 }
-                else if (timeAuto <3.5 && timeAuto >1)
+                else if (timeAuto <3.5 && timeAuto >.8)
                 {
                     motorLB.setPower(0);
                     motorRB.setPower(0);
                     motorLF.setPower(0);
                     motorRF.setPower(0);
                     hold.setPosition(.5);
-                    shoot.setPower(.4-powerShoot);
+                    shoot.setPower(.35);
 
 
 
                 }
 
-                else  if (timeAuto> 3.5 && timeAuto<7) {
+                else  if (timeAuto> 3.5 && timeAuto<9) {
 
-                    spin.setPower(.500);
+                    spin.setPower(.600);
 
 
                 }
-                else if(timeAuto<9 && timeAuto >7){
+                else if(timeAuto<11 && timeAuto >9){
                     motorLB.setPower(.5);
                     motorRB.setPower(.5);
                     motorLF.setPower(.5);
                     motorRF.setPower(.5);
-                    powerShoot = .400;
+                    shoot.setPower(0);
                     spin.setPower(0);
 
                 }
-                else if(timeAuto >9){
+                else if(timeAuto >11){
                     motorLB.setPower(0);
                     motorRB.setPower(0);
                     motorLF.setPower(0);
                     motorRF.setPower(0);
-                    shoot.setPower(0);
+
 
 
 
