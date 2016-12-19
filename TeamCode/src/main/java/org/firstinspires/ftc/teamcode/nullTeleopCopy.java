@@ -126,7 +126,7 @@ public class nullTeleopCopy extends OpMode {
             hold.setPosition(1);
 
         if (gamepad2.right_trigger > .15)
-            shoot.setPower(.4);
+            shoot.setPower(.35);
         else if (gamepad2.left_trigger > .15)
             shoot.setPower(0);
 
@@ -194,7 +194,7 @@ public class nullTeleopCopy extends OpMode {
     public void shootingSeq() {
         spin.setPower(0);
         hold.setPosition(1);
-        shoot.setPower(.4);
+        shoot.setPower(.35);
         sleepCool(1500);
         hold.setPosition(.5);
         sleepCool(500);
