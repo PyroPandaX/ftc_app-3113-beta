@@ -5,15 +5,26 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
 
+<<<<<<< HEAD
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+=======
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
+
+>>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name="RedRamp", group="Demo Bot")
+<<<<<<< HEAD
 @Disabled
+=======
+//@Disabled
+>>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
 public class RedRamp extends OpMode {
     final static double MOTOR_POWER = 0.2;
     private int xVal, yVal, zVal;     // Gyro rate Values

@@ -30,5 +30,10 @@ public class BeaconDetectionOp extends LinearOpMode {
     telemetry.update();
     //wait before quitting (quitting clears telemetry)
     Thread.sleep(1000);
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
   }
 }

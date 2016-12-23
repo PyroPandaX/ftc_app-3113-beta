@@ -14,7 +14,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="Shottest", group="Teleop")
+<<<<<<< HEAD
 @Disabled
+=======
+//@Disabled
+>>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
 public class ShooterTesting extends OpMode {
     final static double MOTOR_POWER = 0.2;
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
