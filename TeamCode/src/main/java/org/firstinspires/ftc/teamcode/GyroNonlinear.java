@@ -25,10 +25,9 @@ public class GyroNonlinear extends OpMode {
     public GyroNonlinear() {}
     ModernRoboticsI2cGyro gyro;
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
-    public static double TIME_STATE1;
     public double timeAuto = 0;
     public double timeStart = 0;
-    public double time1,time2,time3,time4, pos1,pos2,pos3,pos4 = 0;
+    public double time0, time1,time2,time3,time4, pos0, pos1,pos2,pos3,pos4 = 0;
     public int count = 0;
 
 
@@ -45,18 +44,18 @@ public class GyroNonlinear extends OpMode {
         motorLF.setDirection(DcMotor.Direction.REVERSE);
         gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         //colorSensor = hardwareMap.colorSensor.get("line");
-        while (true) {
+      //  while (true) {
             switch (resetState) {
                 case 0:
-                    telemetry.addData(">", "Gyro Calibrating. Do Not move!");
+                    telemetry.addData(">", "Gyro Calibrating. Do Not move!" + resetState);
                     gyro.calibrate();
                     if (!gyro.isCalibrating()) {
                         resetState++;
                     }
                 case 1:
-                    telemetry.addData(">", "Gyro Calibrated.  Press Start." + Double.toString(resetState));
+                    telemetry.addData(">", "Gyro Calibrated.  Press Start.");
             }
-        }
+       // }
     }
     @Override
     public void start() {
@@ -75,69 +74,100 @@ public class GyroNonlinear extends OpMode {
         zVal = gyro.rawZ();
         switch(v_state) {
             case 0:
-                if (timeAuto < 1) {
+                if (timeAuto < 2) {
+                    spin.setPower(1);
+                    shoot.setPower(.4);
+                }
+                else if (timeAuto < 3 ) {
                     motorLB.setPower(.5);
                     motorRB.setPower(.5);
                     motorLF.setPower(.5);
                     motorRF.setPower(.5);
-                } else if (80 > heading) {
+                }
+                else if (80 > angleZ) {
                     motorRB.setPower(.4);
                     motorLF.setPower(-.4);
                     motorLB.setPower(-.4);
                     motorRF.setPower(.4);
                 }
-                if (100 < heading) {
+                if (100 < angleZ) {
                     motorRB.setPower(-.4);
                     motorLF.setPower(.4);
                     motorLB.setPower(.4);
                     motorRF.setPower(-.4);
                 }
 
-                if (80 < heading && heading < 100) {
+                if (80 < angleZ && angleZ < 100) {
                     motorRB.setPower(0);
                     motorLF.setPower(0);
                     motorRF.setPower(0);
                     motorLB.setPower(0);
+
                     v_state++;
                     if (count == 0) {
                         time1 = timeAuto;
-                        pos1 = heading;
+                        pos1 = angleZ;
                         count++;
                     }
+                }case 1:
+                if ((timeAuto - time1) > 1) {
+                    if(angleZ > 92) {
+                        motorRB.setPower(0);
+                        motorLF.setPower(.5);
+                        motorRF.setPower(0);
+                        motorLB.setPower(.5);
+                    }
+                    else if (angleZ < 88){
+                        motorRB.setPower(0);
+                        motorLF.setPower(.5);
+                        motorRF.setPower(0);
+                        motorLB.setPower(.5);
+
+                    }
+                } else{
+                    v_state++;
+                    if (count == 1) {
+                        time2 = timeAuto;
+                        pos2 = angleZ;
+                        count++;
+                        motorRB.setPower(0);
+                        motorLF.setPower(0);
+                        motorRF.setPower(0);
+                        motorLB.setPower(0);
                 }
-            case 1:
-                if ((timeAuto - time1) > 1 && (timeAuto - time1) < 3) {
-                    motorRB.setPower(.5);
+                if ((timeAuto - time2) > 5) {
+                    motorRB.setPower(5);
                     motorLF.setPower(.5);
                     motorRF.setPower(.5);
                     motorLB.setPower(.5);
-                } else if ((timeAuto - time1) > 3) {
-                    if (pos1+80 > heading) {
+                }
+                    if (pos2+80 > angleZ) {
                         motorRB.setPower(.4);
                         motorLF.setPower(-.4);
                         motorLB.setPower(-.4);
                         motorRF.setPower(.4);
                     }
-                    if (pos1+100 < heading) {
+                    if (pos2+100 < angleZ) {
                         motorRB.setPower(-.4);
                         motorLF.setPower(.4);
                         motorLB.setPower(.4);
                         motorRF.setPower(-.4);
                     }
 
-                    if (160 < heading && heading < 200) {
+                    if (pos2+80 < heading && heading < pos2+100) {
                         motorRB.setPower(0);
                         motorLF.setPower(0);
                         motorRF.setPower(0);
                         motorLB.setPower(0);
                         v_state++;
-                        if (count == 1) {
+                        if (count == 2) {
                             time2 = timeAuto;
                             pos2 = heading;
                             count++;
                         }
                     }
                 }
+
         }
 
         telemetry.addData("Text", "*** Robot Data***");

@@ -45,10 +45,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -69,7 +71,6 @@ import com.qualcomm.ftccommon.FtcRobotControllerSettingsActivity;
 import com.qualcomm.ftccommon.LaunchActivityConstantsList;
 import com.qualcomm.ftccommon.ProgrammingModeController;
 import com.qualcomm.ftccommon.Restarter;
-import org.firstinspires.ftc.ftccommon.external.SoundPlayingRobotMonitor;
 import com.qualcomm.ftccommon.UpdateUI;
 import com.qualcomm.ftccommon.configuration.EditParameters;
 import com.qualcomm.ftccommon.configuration.FtcLoadFileActivity;
@@ -88,15 +89,119 @@ import com.qualcomm.robotcore.wifi.NetworkConnectionFactory;
 import com.qualcomm.robotcore.wifi.NetworkType;
 import com.qualcomm.robotcore.wifi.WifiDirectAssistant;
 
+import org.firstinspires.ftc.ftccommon.external.SoundPlayingRobotMonitor;
 import org.firstinspires.ftc.robotcore.internal.AppUtil;
 import org.firstinspires.inspection.RcInspectionActivity;
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.CameraBridgeViewBase;
+import org.opencv.android.JavaCameraView;
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
 
 import java.io.File;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class FtcRobotControllerActivity extends Activity {
+import ftc.vision.BeaconProcessor;
+import ftc.vision.FrameGrabber;
 
+public class FtcRobotControllerActivity extends Activity {
+  ////////////// START VISION PROCESSING CODE //////////////
+
+  static final int FRAME_WIDTH_REQUEST = 176;
+  static final int FRAME_HEIGHT_REQUEST = 144;
+
+  // Loads camera view of OpenCV for us to use. This lets us see using OpenCV
+  private CameraBridgeViewBase cameraBridgeViewBase;
+
+  //manages getting one frame at a time
+  public static FrameGrabber frameGrabber = null;
+
+  //set up the frameGrabber
+  void myOnCreate(){
+    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+    cameraBridgeViewBase = (JavaCameraView) findViewById(R.id.show_camera_activity_java_surface_view);
+    frameGrabber = new FrameGrabber(cameraBridgeViewBase, FRAME_WIDTH_REQUEST, FRAME_HEIGHT_REQUEST);
+    frameGrabber.setImageProcessor(new BeaconProcessor());
+    frameGrabber.setSaveImages(true);
+  }
+
+  //when the "Grab" button is pressed
+  public void frameButtonOnClick(View v){
+    frameGrabber.grabSingleFrame();
+    while (!frameGrabber.isResultReady()) {
+      try {
+        Thread.sleep(5); //sleep for 5 milliseconds
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+    Object result = frameGrabber.getResult();
+    ((TextView)findViewById(R.id.resultText)).setText(result.toString());
+  }
+
+  void myOnWindowFocusChanged(boolean hasFocus){
+    if (hasFocus) {
+      frameGrabber.stopFrameGrabber();
+    } else {
+      frameGrabber.throwAwayFrames();
+    }
+  }
+
+  void myOnPause(){
+    if (cameraBridgeViewBase != null) {
+      cameraBridgeViewBase.disableView();
+    }
+  }
+
+  void myOnResume(){
+    if (!OpenCVLoader.initDebug()) {
+      Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
+      OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
+    } else {
+      Log.d(TAG, "OpenCV library found inside package. Using it!");
+      mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+    }
+  }
+
+  public void myOnDestroy() {
+    if (cameraBridgeViewBase != null) {
+      cameraBridgeViewBase.disableView();
+    }
+  }
+
+  private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+    @Override
+    public void onManagerConnected(int status) {
+      switch (status) {
+        case LoaderCallbackInterface.SUCCESS:
+          Log.i(TAG, "OpenCV Manager Connected");
+          //from now onwards, you can use OpenCV API
+//          Mat m = new Mat(5, 10, CvType.CV_8UC1, new Scalar(0));
+          cameraBridgeViewBase.enableView();
+          break;
+        case LoaderCallbackInterface.INIT_FAILED:
+          Log.i(TAG, "Init Failed");
+          break;
+        case LoaderCallbackInterface.INSTALL_CANCELED:
+          Log.i(TAG, "Install Cancelled");
+          break;
+        case LoaderCallbackInterface.INCOMPATIBLE_MANAGER_VERSION:
+          Log.i(TAG, "Incompatible Version");
+          break;
+        case LoaderCallbackInterface.MARKET_ERROR:
+          Log.i(TAG, "Market Error");
+          break;
+        default:
+          Log.i(TAG, "OpenCV Manager Install");
+          super.onManagerConnected(status);
+          break;
+      }
+    }
+  };
+
+  ////////////// END VISION PROCESSING CODE //////////////
   public static final String TAG = "RCActivity";
 
   private static final int REQUEST_CONFIG_WIFI_CHANNEL = 1;
@@ -194,13 +299,16 @@ public class FtcRobotControllerActivity extends Activity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    RobotLog.writeLogcatToDisk();
     RobotLog.vv(TAG, "onCreate()");
 
     receivedUsbAttachmentNotifications = new ConcurrentLinkedQueue<UsbDevice>();
     eventLoop = null;
 
     setContentView(R.layout.activity_ftc_controller);
+
+    ////////////// START VISION PROCESSING CODE //////////////
+    myOnCreate();
+    ////////////// END VISION PROCESSING CODE //////////////
 
     context = this;
     utility = new Utility(this);
@@ -239,7 +347,7 @@ public class FtcRobotControllerActivity extends Activity {
     dimmer.longBright();
 
     programmingModeController = new ProgrammingModeControllerImpl(
-        this, (TextView) findViewById(R.id.textRemoteProgrammingMode));
+            this, (TextView) findViewById(R.id.textRemoteProgrammingMode));
 
     updateUI = createUpdateUI();
     callback = createUICallback(updateUI);
@@ -253,6 +361,8 @@ public class FtcRobotControllerActivity extends Activity {
 
     if (USE_DEVICE_EMULATION) { HardwareFactory.enableDeviceEmulation(); }
 
+    // save 4MB of logcat to the SD card
+    RobotLog.writeLogcatToDisk(this, 4 * 1024);
     wifiLock.acquire();
     callback.networkConnectionUpdate(WifiDirectAssistant.Event.DISCONNECTED);
     bindToService();
@@ -294,6 +404,11 @@ public class FtcRobotControllerActivity extends Activity {
   @Override
   protected void onResume() {
     super.onResume();
+
+    ////////////// START VISION PROCESSING CODE //////////////
+    myOnResume();
+    ////////////// END VISION PROCESSING CODE //////////////
+
     RobotLog.vv(TAG, "onResume()");
     readNetworkType(NETWORK_TYPE_FILENAME);
   }
@@ -301,6 +416,11 @@ public class FtcRobotControllerActivity extends Activity {
   @Override
   public void onPause() {
     super.onPause();
+
+    ////////////// START VISION PROCESSING CODE //////////////
+    myOnPause();
+    ////////////// END VISION PROCESSING CODE //////////////
+
     RobotLog.vv(TAG, "onPause()");
     if (programmingModeController.isActive()) {
       programmingModeController.stopProgrammingMode();
@@ -323,9 +443,13 @@ public class FtcRobotControllerActivity extends Activity {
     super.onDestroy();
     RobotLog.vv(TAG, "onDestroy()");
 
+    ////////////// START VISION PROCESSING CODE //////////////
+    myOnDestroy();
+    ////////////// END VISION PROCESSING CODE //////////////
+
     unbindFromService();
     wifiLock.release();
-    RobotLog.cancelWriteLogcatToDisk();
+    RobotLog.cancelWriteLogcatToDisk(this);
   }
 
   protected void bindToService() {
@@ -370,6 +494,9 @@ public class FtcRobotControllerActivity extends Activity {
   @Override
   public void onWindowFocusChanged(boolean hasFocus){
     super.onWindowFocusChanged(hasFocus);
+    ////////////// START VISION PROCESSING CODE //////////////
+    myOnWindowFocusChanged(hasFocus);
+    ////////////// END VISION PROCESSING CODE //////////////
     // When the window loses focus (e.g., the action overflow is shown),
     // cancel any pending hide action. When the window gains focus,
     // hide the system UI.
@@ -398,11 +525,11 @@ public class FtcRobotControllerActivity extends Activity {
       if (cfgFileMgr.getActiveConfig().isNoConfig()) {
         // Tell the user they must configure the robot before starting programming mode.
         AppUtil.getInstance().showToast(
-            context, context.getString(R.string.toastConfigureRobotBeforeProgrammingMode));
+                context, context.getString(R.string.toastConfigureRobotBeforeProgrammingMode));
       } else {
         Intent programmingModeIntent = new Intent(ProgrammingModeActivity.launchIntent);
         programmingModeIntent.putExtra(
-            LaunchActivityConstantsList.PROGRAMMING_MODE_ACTIVITY_NETWORK_TYPE, networkType);
+                LaunchActivityConstantsList.PROGRAMMING_MODE_ACTIVITY_NETWORK_TYPE, networkType);
         startActivity(programmingModeIntent);
       }
       return true;
@@ -444,7 +571,7 @@ public class FtcRobotControllerActivity extends Activity {
       return true;
     }
 
-   return super.onOptionsItemSelected(item);
+    return super.onOptionsItemSelected(item);
   }
 
   @Override

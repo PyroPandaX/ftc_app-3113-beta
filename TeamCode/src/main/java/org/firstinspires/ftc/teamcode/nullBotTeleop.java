@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="nullBotTeleop", group="Demo Bot")
-//@Disabled
+@Disabled
 public class nullBotTeleop extends OpMode {
     final static double MOTOR_POWER = 0.2;
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
