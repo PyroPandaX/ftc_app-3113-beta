@@ -119,9 +119,11 @@ public class BlueBeacon extends OpMode{
         telemetry.addData("Result", result);
         telemetry.addData("White", white());
         telemetry.addData("Hue", hsvValues[0]);
-        relativeLayout.post(new Runnable() {
-            public void run() {relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));}
-        });
+        telemetry.addData("Saturation", hsvValues[1]);
+        telemetry.addData("Value", hsvValues[2]);
+        //relativeLayout.post(new Runnable() {
+        // public void run() {relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));}
+        //});
         telemetry.update();
         //wait before quitting (quitting clears telemetry)
         sleepCool(1000);
@@ -140,7 +142,7 @@ public class BlueBeacon extends OpMode{
     } //sleep
 
     public boolean white()   {
-        if(colorSensor.red() > 250 && colorSensor.green() > 250 && colorSensor.blue() > 250) {
+        if(hsvValues[0] < 5 && hsvValues[1] < .05 && hsvValues[2] > .9) {
             return true;
         }
         return false;

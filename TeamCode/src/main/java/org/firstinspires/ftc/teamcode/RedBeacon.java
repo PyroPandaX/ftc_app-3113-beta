@@ -122,6 +122,8 @@ public class RedBeacon extends OpMode{
         telemetry.addData("Result", result);
         telemetry.addData("White", white());
         telemetry.addData("Hue", hsvValues[0]);
+        telemetry.addData("Saturation", hsvValues[1]);
+        telemetry.addData("Value", hsvValues[2]);
         //relativeLayout.post(new Runnable() {
            // public void run() {relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));}
         //});
@@ -143,7 +145,7 @@ public class RedBeacon extends OpMode{
     } //sleep
 
     public boolean white()   {
-        if(colorSensor.red() > 240 && colorSensor.green() > 240 && colorSensor.blue() > 240) {
+        if(hsvValues[0] < 5 && hsvValues[1] < .05 && hsvValues[2] > .9) {
             return true;
         }
         return false;
