@@ -5,10 +5,6 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
 
-<<<<<<< HEAD
-=======
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -16,11 +12,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
-<<<<<<< HEAD
 @TeleOp(name="NULL TeleOp", group="Teleop")
-=======
-@TeleOp(name="Copy of NULL", group="Teleop")
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
 //@Disabled
 public class nullTeleopCopy extends OpMode {
     final static double MOTOR_POWER = 0.2;
@@ -52,12 +44,7 @@ public class nullTeleopCopy extends OpMode {
     public double time1;
     public boolean seq = true;
 
-<<<<<<< HEAD
     public nullTeleopCopy() {}
-=======
-    public nullTeleopCopy() {
-    }
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
 
     public void init() {
         //bPrevState = false;
@@ -81,37 +68,20 @@ public class nullTeleopCopy extends OpMode {
 
     @Override
     public void start() {
-<<<<<<< HEAD
         //following initializes the timer variable and initializes the servo position
         timeAuto = 0;
         timeStart = this.time;
         hold.setPosition(1);
-=======
-        //following intializes the timer variable and initializes the servo position
-
-        timeAuto = 0;
-        timeStart = this.time;
-        hold.setPosition(1);
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
     }
 
     @Override
     public void loop() {
-<<<<<<< HEAD
-=======
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
         right = gamepad1.left_stick_y;
         left = gamepad1.right_stick_y;
         leftX = gamepad1.right_stick_x;
         rightX = gamepad1.left_stick_x;
 
-<<<<<<< HEAD
         //sets the maximum range of the joystick
-=======
-//sets the maximum range of the joystick
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
         right = Range.clip(right, -1, 1);
         left = Range.clip(left, -1, 1);
         rightX = Range.clip(rightX, -1, 1);
@@ -127,12 +97,7 @@ public class nullTeleopCopy extends OpMode {
         motorLF.setPower(LF_Per);
         motorRF.setPower(RF_Per);
 
-
-<<<<<<< HEAD
         // upon pressing button b, will perform autoshoot command
-=======
-// upon pressing button b, will perform autoshoot command
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
         if (gamepad2.b) {
             shootingSeq();
         }
@@ -142,12 +107,8 @@ public class nullTeleopCopy extends OpMode {
             spin.setPower(0);
             hold.setPosition(1);
         }
-<<<<<<< HEAD
 
         //auto collecting method implemented below
-=======
-//auto collecting method implemented below
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
         if(gamepad2.a){
             hold.setPosition(1);
             shoot.setPower(0);
@@ -164,10 +125,6 @@ public class nullTeleopCopy extends OpMode {
         else if (gamepad2.left_trigger > .15)
             shoot.setPower(0);
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
         if (gamepad2.dpad_up)
             spin.setPower(.7);
         else if (gamepad2.dpad_down)
@@ -177,10 +134,6 @@ public class nullTeleopCopy extends OpMode {
         else if (gamepad2.dpad_right)
             spin.setPower(.6);
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
         //references for joystick values
         RF_Power = (right - rightX + leftX);
         LF_Power = (-right + rightX + leftX);
@@ -195,11 +148,7 @@ public class nullTeleopCopy extends OpMode {
         LB_Per = (-(right / RB_Power) - (rightX / RB_Power) + (leftX / RB_Power));
         LF_Per = (-(right / RB_Power) + (rightX / RB_Power) + (leftX / RB_Power));
 
-<<<<<<< HEAD
         // radius of joystick calculated using pythagorean theorem
-=======
-// radius of joystick calculated using pythagorean theorem
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
         joyRadius = Math.sqrt((right * right) + (rightX * rightX));
 
         //Threshold established that will allow robot to move slower if the raius of the joystick is less than threshold
@@ -216,18 +165,11 @@ public class nullTeleopCopy extends OpMode {
         telemetry.addData(("4"), ":", String.format("%.24f", (rawTotal)));
         telemetry.update();
     }
-<<<<<<< HEAD
 
-=======
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
     //delay method below
     public static void sleepCool(long sleepTime)
     {
         long wakeupTime = System.currentTimeMillis() + sleepTime;
-<<<<<<< HEAD
-=======
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
         while (sleepTime > 0)
         {
             try
@@ -241,10 +183,6 @@ public class nullTeleopCopy extends OpMode {
         }
     } //sleep
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
     public void shootingSeq() {
         spin.setPower(0);
         hold.setPosition(1);
@@ -253,32 +191,11 @@ public class nullTeleopCopy extends OpMode {
         hold.setPosition(.5);
         sleepCool(500);
         spin.setPower(.6);
-<<<<<<< HEAD
     }
 
-    public void autoCollect()
-    {}
-=======
-        }
-
-
-
-    public void autoCollect()
-    {
+    public void autoCollect() {
 
     }
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
 
     @Override
     public void stop() {

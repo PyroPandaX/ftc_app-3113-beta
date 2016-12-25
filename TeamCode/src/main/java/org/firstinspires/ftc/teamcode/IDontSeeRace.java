@@ -108,7 +108,7 @@ public class IDontSeeRace extends OpMode{
     } //sleep
 
     public boolean white()   {
-        if(hsvValues[0] < 5 && hsvValues[1] < .05 && hsvValues[2] > .9) {
+        if(hsvValues[0] > 220 && hsvValues[1] < .15 && hsvValues[2] < .4) {
             return true;
         }
         return false;

@@ -86,10 +86,10 @@ public class RedBeacon extends OpMode{
         if(sawLine) {
             timeLine = this.time - timeAuto;
             if (timeLine < .5) {
-                motorLB.setPower(-.4);
-                motorRB.setPower(-.4);
-                motorLF.setPower(-.4);
-                motorRF.setPower(-.4);
+                motorLB.setPower(-.2);
+                motorRB.setPower(-.2);
+                motorLF.setPower(-.2);
+                motorRF.setPower(-.2);
             } else if (timeLine < 1) {
                 motorLB.setPower(0);
                 motorRB.setPower(.4);
@@ -145,7 +145,7 @@ public class RedBeacon extends OpMode{
     } //sleep
 
     public boolean white()   {
-        if(hsvValues[0] < 5 && hsvValues[1] < .05 && hsvValues[2] > .9) {
+        if(hsvValues[0] > 220 && hsvValues[1] < .15 && hsvValues[2] < .4) {
             return true;
         }
         return false;

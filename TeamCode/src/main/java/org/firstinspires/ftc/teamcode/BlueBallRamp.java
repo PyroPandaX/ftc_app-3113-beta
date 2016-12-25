@@ -8,26 +8,15 @@ import android.view.View;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.Servo;
 
-<<<<<<< HEAD
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-=======
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name="BlueBallRamp", group="Demo Bot")
-<<<<<<< HEAD
 @Disabled
-=======
-//@Disabled
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
 public class BlueBallRamp extends OpMode {
     private int xVal, yVal, zVal;     // Gyro rate Values
     private int heading;              // Gyro integrated heading

@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
 package org.firstinspires.ftc.teamcode;
 import android.app.Activity;
 import android.graphics.Color;
@@ -11,46 +6,34 @@ import android.view.View;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.Servo;
 
-<<<<<<< HEAD
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-=======
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-<<<<<<< HEAD
 @Autonomous(name="Ball", group="NullBot")
-=======
-@Autonomous(name="Ball", group="Demo Bot")
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
 //@Disabled
 public class BlueBall extends OpMode {
     private int xVal, yVal, zVal;     // Gyro rate Values
     private int heading;              // Gyro integrated heading
     private int angleZ;
     boolean lastResetState = false;
-    boolean curResetState  = false;
-    public  int resetState = 0, v_state = 0;
-    public BlueBall() {}
+    boolean curResetState = false;
+    public int resetState = 0, v_state = 0;
+
+    public BlueBall() {
+    }
+
     ModernRoboticsI2cGyro gyro;
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
     public double timeAuto = 0;
     public double timeStart = 0;
-    public double time0, time1,time2,time3,time4, pos0, pos1,pos2,pos3,pos4 = 0;
+    public double time0, time1, time2, time3, time4, pos0, pos1, pos2, pos3, pos4 = 0;
     public int count = 0;
     Servo hold;
 
-<<<<<<< HEAD
-=======
-
-
-
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
     public void init() {
         //bPrevState = false;
         //bCurrState = true;
@@ -66,11 +49,7 @@ public class BlueBall extends OpMode {
         shoot = hardwareMap.dcMotor.get("shoot");
         shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-<<<<<<< HEAD
-        gyro= (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
-=======
-       gyro= (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
+        gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         //colorSensor = hardwareMap.colorSensor.get("line");
         //  while (true) {
         switch (resetState) {
@@ -85,29 +64,17 @@ public class BlueBall extends OpMode {
         }
         // }
     }
-<<<<<<< HEAD
 
     @Override
     public void start() {
         // defines timeStart as the timer at the start of autonomous to preserve an initial value
-=======
-    @Override
-    public void start() {
-        // defines timeStart as the timer at the start of autonomous to preserve an initial value
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
         timeAuto = 0;
         timeStart = this.time;
     }
 
     @Override
     public void loop() {
-<<<<<<< HEAD
         // time since autonomous began
-=======
-
-// time since autonomous began
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
         timeAuto = this.time - timeStart;
         heading = gyro.getHeading();
         angleZ = gyro.getIntegratedZValue();
@@ -116,87 +83,34 @@ public class BlueBall extends OpMode {
         yVal = gyro.rawY();
         zVal = gyro.rawZ();
 
-<<<<<<< HEAD
         if (timeAuto < .8) {
             motorLB.setPower(.5);
             motorRB.setPower(.5);
             motorLF.setPower(.5);
             motorRF.setPower(.5);
             hold.setPosition(1);
-        } else if (timeAuto <3.5 && timeAuto >.8) {
+        } else if (timeAuto < 3.5 && timeAuto > .8) {
             motorLB.setPower(0);
             motorRB.setPower(0);
             motorLF.setPower(0);
             motorRF.setPower(0);
             hold.setPosition(.5);
             shoot.setPower(.35);
-        } else  if (timeAuto> 3.5 && timeAuto<9) {
+        } else if (timeAuto > 3.5 && timeAuto < 9) {
             spin.setPower(.600);
-        } else if(timeAuto<11 && timeAuto >9)   {
+        } else if (timeAuto < 11 && timeAuto > 9) {
             motorLB.setPower(.5);
             motorRB.setPower(.5);
             motorLF.setPower(.5);
             motorRF.setPower(.5);
             shoot.setPower(0);
             spin.setPower(0);
-        } else if(timeAuto >11) {
+        } else if (timeAuto > 11) {
             motorLB.setPower(0);
             motorRB.setPower(0);
             motorLF.setPower(0);
             motorRF.setPower(0);
         }
-=======
-                if (timeAuto < .8) {
-                    motorLB.setPower(.5);
-                    motorRB.setPower(.5);
-                    motorLF.setPower(.5);
-                    motorRF.setPower(.5);
-                    hold.setPosition(1);
-
-
-                }
-                else if (timeAuto <3.5 && timeAuto >.8)
-                {
-                    motorLB.setPower(0);
-                    motorRB.setPower(0);
-                    motorLF.setPower(0);
-                    motorRF.setPower(0);
-                    hold.setPosition(.5);
-                    shoot.setPower(.35);
-
-
-
-                }
-
-                else  if (timeAuto> 3.5 && timeAuto<9) {
-
-                    spin.setPower(.600);
-
-
-                }
-                else if(timeAuto<11 && timeAuto >9){
-                    motorLB.setPower(.5);
-                    motorRB.setPower(.5);
-                    motorLF.setPower(.5);
-                    motorRF.setPower(.5);
-                    shoot.setPower(0);
-                    spin.setPower(0);
-
-                }
-                else if(timeAuto >11){
-                    motorLB.setPower(0);
-                    motorRB.setPower(0);
-                    motorLF.setPower(0);
-                    motorRF.setPower(0);
-
-
-
-
-                }
-
-
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
 
         telemetry.addData("Text", "*** Robot Data***");
         telemetry.addData("time", "elapsed time: " + Double.toString(timeAuto));
@@ -209,10 +123,6 @@ public class BlueBall extends OpMode {
     }
 
     @Override
-    public void stop() {}
-<<<<<<< HEAD
+    public void stop() {
+    }
 }
-=======
-}
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9

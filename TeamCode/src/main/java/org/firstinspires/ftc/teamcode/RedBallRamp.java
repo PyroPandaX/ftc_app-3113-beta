@@ -1,5 +1,3 @@
-
-
 package org.firstinspires.ftc.teamcode;
 import android.app.Activity;
 import android.graphics.Color;
@@ -8,49 +6,35 @@ import android.view.View;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.Servo;
 
-<<<<<<< HEAD
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-=======
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name="RedBallRamp", group="Demo Bot")
-<<<<<<< HEAD
 @Disabled
-=======
-//@Disabled
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
 public class RedBallRamp extends OpMode {
     private int xVal, yVal, zVal;     // Gyro rate Values
     private int heading;              // Gyro integrated heading
     private int angleZ;
     boolean lastResetState = false;
-    boolean curResetState  = false;
-    public  int resetState = 0, v_state = 0;
-    public RedBallRamp() {}
+    boolean curResetState = false;
+    public int resetState = 0, v_state = 0;
+
+    public RedBallRamp() {
+    }
+
     ModernRoboticsI2cGyro gyro;
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
     public double timeAuto = 0;
     public double timeStart = 0;
-    public double time0, time1,time2,time3,time4, pos0, pos1,pos2,pos3,pos4 = 0;
+    public double time0, time1, time2, time3, time4, pos0, pos1, pos2, pos3, pos4 = 0;
     public int count = 0;
     Servo hold;
     public static double powerShoot = 0;
 
-<<<<<<< HEAD
-=======
-
-
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
     public void init() {
         //bPrevState = false;
         //bCurrState = true;
@@ -65,7 +49,7 @@ public class RedBallRamp extends OpMode {
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
         shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        gyro= (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
+        gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         //colorSensor = hardwareMap.colorSensor.get("line");
         //  while (true) {
         switch (resetState) {
@@ -80,10 +64,7 @@ public class RedBallRamp extends OpMode {
         }
         // }
     }
-<<<<<<< HEAD
 
-=======
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
     @Override
     public void start() {
         timeAuto = 0;
@@ -93,12 +74,7 @@ public class RedBallRamp extends OpMode {
 
     @Override
     public void loop() {
-<<<<<<< HEAD
         // time since autonomous began
-=======
-
-// time since autonomous began
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
         timeAuto = this.time - timeStart;
         heading = gyro.getHeading();
         angleZ = gyro.getIntegratedZValue();
@@ -115,37 +91,16 @@ public class RedBallRamp extends OpMode {
             hold.setPosition(1);
             powerShoot = 0;
 
-        }
-<<<<<<< HEAD
-=======
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
-        else if (timeAuto <3.5 && timeAuto >1)
-        {
+        } else if (timeAuto < 3.5 && timeAuto > 1) {
             motorLB.setPower(0);
             motorRB.setPower(0);
             motorLF.setPower(0);
             motorRF.setPower(0);
             hold.setPosition(.5);
-            shoot.setPower(.4-powerShoot);
-<<<<<<< HEAD
-        }
-        else  if (timeAuto> 3.5 && timeAuto<7) {
+            shoot.setPower(.4 - powerShoot);
+        } else if (timeAuto > 3.5 && timeAuto < 7) {
             spin.setPower(.500);
-=======
-
-
-
-        }
-
-        else  if (timeAuto> 3.5 && timeAuto<7) {
-
-            spin.setPower(.500);
-
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
-        }
-        else if(timeAuto<9 && timeAuto >7){
+        } else if (timeAuto < 9 && timeAuto > 7) {
             motorLB.setPower(.5);
             motorRB.setPower(.5);
             motorLF.setPower(.5);
@@ -153,40 +108,20 @@ public class RedBallRamp extends OpMode {
             powerShoot = .400;
             spin.setPower(0);
 
-        }
-        else if(timeAuto >9 && timeAuto <16) {
-<<<<<<< HEAD
-=======
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
+        } else if (timeAuto > 9 && timeAuto < 16) {
             motorLB.setPower(-1);
             motorRB.setPower(-1);
             motorLF.setPower(1);
             motorRF.setPower(1);
             shoot.setPower(0);
-        }
-        else if (timeAuto >16){
-<<<<<<< HEAD
-=======
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
+        } else if (timeAuto > 16) {
             motorLB.setPower(0);
             motorRB.setPower(0);
             motorLF.setPower(0);
             motorRF.setPower(0);
             shoot.setPower(0);
-<<<<<<< HEAD
         }
 
-=======
-
-        }
-
-
-
-
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
         telemetry.addData("Text", "*** Robot Data***");
         telemetry.addData("time", "elapsed time: " + Double.toString(timeAuto));
         telemetry.addData("0", "Heading %03d", heading);
@@ -198,10 +133,6 @@ public class RedBallRamp extends OpMode {
     }
 
     @Override
-    public void stop() {}
-<<<<<<< HEAD
+    public void stop() {
+    }
 }
-=======
-}
-
->>>>>>> 410573ea0a0e0972a510999ba319691301cfa1b9
