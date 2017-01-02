@@ -9,6 +9,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.I2cDevice;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
@@ -27,12 +31,11 @@ public class IDontSeeRace extends OpMode{
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
     double timeAuto = 0, timeStart = 0, timeLine = 0;
     Servo hold;
-    ColorSensor colorSensor;
-    boolean bPrevState = false, bCurrState = false, bLedOn = true, sawLine = false;
-    float hsvValues[] = {0F,0F,0F};
-    final float values[] = hsvValues;
-    //final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(com.qualcomm.ftcrobotcontroller.R.id.RelativeLayout);
+    byte[] colorCcache;
+    I2cDevice colorC;
+    I2cDeviceSynch colorCreader;
     BeaconColorResult result;
+    boolean bool = false;
 
     public IDontSeeRace()  {}
 
@@ -48,8 +51,10 @@ public class IDontSeeRace extends OpMode{
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
         shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        colorSensor = hardwareMap.colorSensor.get("line");
-        colorSensor.enableLed(bLedOn);
+        colorC = hardwareMap.i2cDevice.get("line");
+        colorCreader = new I2cDeviceSynchImpl(colorC, I2cAddr.create8bit(0x3c), false);
+        colorCreader.engage();
+        colorCreader.write8(3, 0);
     }
 
     @Override
@@ -64,32 +69,15 @@ public class IDontSeeRace extends OpMode{
     public void loop() {
         timeAuto = this.time - timeStart;
 
-        // check for button state transitions.
-        if ((bCurrState == true) && (bCurrState != bPrevState))  {
-            bLedOn = !bLedOn;
-            colorSensor.enableLed(bLedOn);
-        }
-        // update previous state variable.
-        bPrevState = bCurrState;
-        // convert the RGB values to HSV values.
-        Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
+        colorCcache = colorCreader.read(0x04, 1);
 
-        if(white() && !sawLine) {
-            sawLine = true;
-        }
-
-        if(sawLine) {
-
+        if(colorCcache[0] == 16) {
+            bool = true;
         }
 
         telemetry.addData("Result", result);
-        telemetry.addData("White", white());
-        telemetry.addData("Hue", hsvValues[0]);
-        telemetry.addData("Saturation", hsvValues[1]);
-        telemetry.addData("Value", hsvValues[2]);
-        //relativeLayout.post(new Runnable() {
-        // public void run() {relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));}
-        //});
+        telemetry.addData("#C", colorCcache[0] & 0xFF);
+        telemetry.addData("White people be like", bool);
         telemetry.update();
         //wait before quitting (quitting clears telemetry)
         sleepCool(1000);
@@ -106,13 +94,6 @@ public class IDontSeeRace extends OpMode{
             sleepTime = wakeupTime - System.currentTimeMillis();
         }
     } //sleep
-
-    public boolean white()   {
-        if(hsvValues[0] > 220 && hsvValues[1] < .15 && hsvValues[2] < .4) {
-            return true;
-        }
-        return false;
-    }
 
     @Override
     public void stop() {}

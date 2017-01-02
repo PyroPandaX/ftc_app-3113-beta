@@ -24,9 +24,9 @@ import ftc.vision.ImageProcessorResult;
 /**
  * Created by Mac on 12/19/2016.
  */
-@Autonomous(name="RedBeacon", group="NullBot")
+@Autonomous(name="HitAndRun", group="NullBot")
 //@Disabled
-public class RedBeacon extends OpMode{
+public class HitAndRun extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
     double timeAuto = 0, timeStart = 0, timeLine = 0;
@@ -37,7 +37,7 @@ public class RedBeacon extends OpMode{
     BeaconColorResult result;
     boolean sawLine = false;
 
-    public RedBeacon()  {}
+    public HitAndRun()  {}
 
     public void init() {
         motorRB = hardwareMap.dcMotor.get("motor_1");
@@ -74,54 +74,15 @@ public class RedBeacon extends OpMode{
         if(colorCcache[0] == 16) {
             sawLine = true;
         } else  {
-            motorLB.setPower(.4);
-            motorRB.setPower(.4);
-            motorLF.setPower(.4);
-            motorRF.setPower(.4);
+            motorLB.setPower(.3);
+            motorRB.setPower(.3);
+            motorLF.setPower(.3);
+            motorRF.setPower(.3);
             sawLine = false;
-        }
-
-        if(sawLine) {
-            timeLine = this.time - timeAuto;
-            if (timeLine < .5) {
-                motorLB.setPower(-.2);
-                motorRB.setPower(-.2);
-                motorLF.setPower(-.2);
-                motorRF.setPower(-.2);
-            } else if (timeLine < 1) {
-                motorLB.setPower(0);
-                motorRB.setPower(.4);
-                motorLF.setPower(.4);
-                motorRF.setPower(0);
-            }
-            frameGrabber.grabSingleFrame();
-            while (!frameGrabber.isResultReady()) {
-                sleepCool(5); //sleep for 5 milliseconds
-            }
-            ImageProcessorResult imageProcessorResult = frameGrabber.getResult();
-            result = (BeaconColorResult) imageProcessorResult.getResult();
-            BeaconColorResult.BeaconColor leftColor = result.getLeftColor();
-            BeaconColorResult.BeaconColor rightColor = result.getRightColor();
-            if(leftColor.toString().equals("RED"))  {
-                //push.setPosition(1);
-                spin.setPower(.1);
-            } else if(rightColor.toString().equals("RED"))  {
-                //push.setPosition(0);
-                spin.setPower(.1);
-            }
-            if (timeLine < 5) {
-                motorLB.setPower(0);
-                motorRB.setPower(.5);
-                motorLF.setPower(.5);
-                motorRF.setPower(0);
-            }
         }
 
         telemetry.addData("Result", result);
         telemetry.addData("White", sawLine);
-        //relativeLayout.post(new Runnable() {
-           // public void run() {relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));}
-        //});
         telemetry.update();
         //wait before quitting (quitting clears telemetry)
         sleepCool(1000);

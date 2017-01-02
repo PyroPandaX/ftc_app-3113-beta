@@ -52,11 +52,11 @@ public class MRI_Color_Sensor extends OpMode {
         telemetry.addData("Status", "Initialized");
 
         //the below lines set up the configuration file
-        colorC = hardwareMap.i2cDevice.get("cc");
+        colorC = hardwareMap.i2cDevice.get("line");
         colorCreader = new I2cDeviceSynchImpl(colorC, I2cAddr.create8bit(0x3c), false);
         colorCreader.engage();
 
-        touch = hardwareMap.touchSensor.get("t");
+        //touch = hardwareMap.touchSensor.get("t");
     }
 
     /*
