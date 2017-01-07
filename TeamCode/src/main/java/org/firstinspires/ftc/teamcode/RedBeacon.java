@@ -30,7 +30,7 @@ public class RedBeacon extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
     double timeAuto = 0, timeStart = 0, timeLine = 0;
-    Servo hold;
+    Servo hold, push;
     byte[] colorCcache;
     I2cDevice colorC;
     I2cDeviceSynch colorCreader;
@@ -47,7 +47,7 @@ public class RedBeacon extends OpMode{
         motorRB.setDirection(DcMotor.Direction.REVERSE);
         motorRF.setDirection(DcMotor.Direction.REVERSE);
         hold = hardwareMap.servo.get("hold");
-        //push = hardwareMap.servo.get("push");
+        push = hardwareMap.servo.get("push");
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
         shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -119,9 +119,6 @@ public class RedBeacon extends OpMode{
 
         telemetry.addData("Result", result);
         telemetry.addData("White", sawLine);
-        //relativeLayout.post(new Runnable() {
-           // public void run() {relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));}
-        //});
         telemetry.update();
         //wait before quitting (quitting clears telemetry)
         sleepCool(1000);

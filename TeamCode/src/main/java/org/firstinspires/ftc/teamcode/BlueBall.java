@@ -32,12 +32,9 @@ public class BlueBall extends OpMode {
     public double timeStart = 0;
     public double time0, time1, time2, time3, time4, pos0, pos1, pos2, pos3, pos4 = 0;
     public int count = 0;
-    Servo hold;
+    Servo hold, push;
 
     public void init() {
-        //bPrevState = false;
-        //bCurrState = true;
-        //bLedOn = true;
         motorRB = hardwareMap.dcMotor.get("motor_1");
         motorRF = hardwareMap.dcMotor.get("motor_2");
         motorLB = hardwareMap.dcMotor.get("motor_3");
@@ -48,10 +45,9 @@ public class BlueBall extends OpMode {
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
         shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //push = hardwareMap.servo.get("push");
 
         gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
-        //colorSensor = hardwareMap.colorSensor.get("line");
-        //  while (true) {
         switch (resetState) {
             case 0:
                 telemetry.addData(">", "Gyro Calibrating. Do Not move!" + resetState);
@@ -62,7 +58,6 @@ public class BlueBall extends OpMode {
             case 1:
                 telemetry.addData(">", "Gyro Calibrated.  Press Start.");
         }
-        // }
     }
 
     @Override
@@ -97,7 +92,7 @@ public class BlueBall extends OpMode {
             hold.setPosition(.5);
             shoot.setPower(.35);
         } else if (timeAuto > 3.5 && timeAuto < 9) {
-            spin.setPower(.600);
+            spin.setPower(.6);
         } else if (timeAuto < 11 && timeAuto > 9) {
             motorLB.setPower(.5);
             motorRB.setPower(.5);

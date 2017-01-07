@@ -18,52 +18,27 @@ public class nullTeleopCopy extends OpMode {
     final static double MOTOR_POWER = 0.2;
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
     //ColorSensor colorSensor;
-    //float hsvValues[] = {0F,0F,0F};
-    //final float values[] = hsvValues;
-    //final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(com.qualcomm.ftcrobotcontroller.R.id.RelativeLayout);
-    //boolean bPrevState;
-    //boolean bCurrState;
-    //boolean bLedOn;
-    public double joyRadius;
-    Servo hold;
-    public double right;
-    public double left;
-    public int mechDrive;
-    public double mechVar;
-    public double rightX;
-    public double leftX;
-    public double leftNet;
-    public double rightNet;
-    public double LF_Power, RF_Power, RB_Power, LB_Power, LF_Per, LB_Per, RB_Per, RF_Per;
-    public double rawTotal;
-    public double holdValue;
-    public double servoPos;
-    public double timeAuto = 0;
-    public double timeStart = 0;
-    public int autoState, count;
-    public double time1;
+    public double joyRadius, right, left, rightX, leftX, LF_Power, RF_Power, RB_Power,
+            LB_Power, LF_Per, LB_Per, RB_Per, RF_Per, rawTotal, timeAuto, timeStart, timeWait, timeSeq;
+    public int loopControl, count;
+    ;
+    Servo hold, push;
     public boolean seq = true;
 
     public nullTeleopCopy() {}
 
     public void init() {
-        //bPrevState = false;
-        //bCurrState = true;
-        //bLedOn = true;
         motorRB = hardwareMap.dcMotor.get("motor_1");
         motorRF = hardwareMap.dcMotor.get("motor_2");
         motorLB = hardwareMap.dcMotor.get("motor_3");
         motorLF = hardwareMap.dcMotor.get("motor_4");
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
+        push = hardwareMap.servo.get("push");
 
         //below is the PID control implemented
         shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         hold = hardwareMap.servo.get("hold");
-      /*  if (gamepad1.a && mechDrive <= 10) {
-            mechDrive++;
-        }
-*/
     }
 
     @Override
@@ -72,10 +47,22 @@ public class nullTeleopCopy extends OpMode {
         timeAuto = 0;
         timeStart = this.time;
         hold.setPosition(1);
+        push.setPosition(0);
     }
 
     @Override
     public void loop() {
+        timeWait = this.time - timeSeq;
+
+        if(gamepad1.a)  {
+            push.setPosition(0);
+        } else if(gamepad1.b)   {
+            push.setPosition(1);
+        }
+        if(gamepad1.right_trigger > 0)
+            push.setDirection(Servo.Direction.FORWARD);
+        else if(gamepad1.left_trigger > 0)
+            push.setDirection(Servo.Direction.REVERSE);
         right = gamepad1.left_stick_y;
         left = gamepad1.right_stick_y;
         leftX = gamepad1.right_stick_x;
@@ -98,8 +85,12 @@ public class nullTeleopCopy extends OpMode {
         motorRF.setPower(RF_Per);
 
         // upon pressing button b, will perform autoshoot command
-        if (gamepad2.b) {
+        if(gamepad2.y) {
             shootingSeq();
+        }
+        if(!gamepad2.y){
+            count = 0;
+            timeSeq = 0;
         }
         // kill switch button that stops the shooting and collecting mechanism
         if (gamepad2.x) {
@@ -184,14 +175,42 @@ public class nullTeleopCopy extends OpMode {
     } //sleep
 
     public void shootingSeq() {
-        spin.setPower(0);
+        if (count == 0) {
+            timeWait = 0;
+            timeSeq = this.time;
+            count++;
+        }
+
+        if (count == 1) {
+            spin.setPower(0);
+            hold.setPosition(1);
+            shoot.setPower(.35);
+            if (timeWait > 1.5) {
+                count++;
+            }
+        }
+        if (count == 2) {
+            hold.setPosition(.5);
+            if (timeWait > 2) {
+                count++;
+            }
+        }
+        if (count == 3) {
+            spin.setPower(.6);
+        }
+    }
+
+
+   /*     spin.setPower(0);
         hold.setPosition(1);
         shoot.setPower(.35);
-        sleepCool(1500);
+        //shoot.setPower(.55);
+
+        //sleepCool(1500);
         hold.setPosition(.5);
-        sleepCool(500);
+        //sleepCool(500);
         spin.setPower(.6);
-    }
+    }*/
 
     public void autoCollect() {
 

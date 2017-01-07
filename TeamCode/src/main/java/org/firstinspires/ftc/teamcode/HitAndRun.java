@@ -74,10 +74,10 @@ public class HitAndRun extends OpMode{
         if(colorCcache[0] == 16) {
             sawLine = true;
         } else  {
-            motorLB.setPower(.3);
-            motorRB.setPower(.3);
-            motorLF.setPower(.3);
-            motorRF.setPower(.3);
+            motorLB.setPower(.2);
+            motorRB.setPower(.2);
+            motorLF.setPower(.2);
+            motorRF.setPower(.2);
             sawLine = false;
         }
 
@@ -85,7 +85,7 @@ public class HitAndRun extends OpMode{
         telemetry.addData("White", sawLine);
         telemetry.update();
         //wait before quitting (quitting clears telemetry)
-        sleepCool(1000);
+        sleepCool(1);
     }
 
     //delay method below
