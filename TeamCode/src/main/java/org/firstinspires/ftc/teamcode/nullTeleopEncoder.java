@@ -1,30 +1,25 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.Servo;
-import android.app.Activity;
-import android.graphics.Color;
-import android.view.View;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="NULL TeleOp", group="Teleop")
+@TeleOp(name="Encoder TeleOp", group="Teleop")
 //@Disabled
-public class nullTeleopCopy extends OpMode {
+public class nullTeleopEncoder extends OpMode {
     final static double MOTOR_POWER = 0.2;
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
     //ColorSensor colorSensor;
     public double joyRadius, right, left, rightX, leftX, LF_Power, RF_Power, RB_Power,
             LB_Power, LF_Per, LB_Per, RB_Per, RF_Per, rawTotal, timeAuto, timeStart, timeWait, timeSeq;
     public int loopControl, count;
+    ;
     Servo hold, push;
     public boolean seq = true;
 
-    public nullTeleopCopy() {}
+    public nullTeleopEncoder() {}
 
     public void init() {
         motorRB = hardwareMap.dcMotor.get("motor_1");
@@ -36,7 +31,7 @@ public class nullTeleopCopy extends OpMode {
         push = hardwareMap.servo.get("push");
 
         //below is the PID control implemented
-        shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        shoot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hold = hardwareMap.servo.get("hold");
     }
 
@@ -58,12 +53,10 @@ public class nullTeleopCopy extends OpMode {
         } else if(gamepad1.b)   {
             push.setPosition(1);
         }
-        if(gamepad1.right_trigger > 0) {
+        if(gamepad1.right_trigger > 0)
             push.setDirection(Servo.Direction.FORWARD);
-        }
-        else if(gamepad1.left_trigger > 0) {
+        else if(gamepad1.left_trigger > 0)
             push.setDirection(Servo.Direction.REVERSE);
-        }
         right = gamepad1.left_stick_y;
         left = gamepad1.right_stick_y;
         leftX = gamepad1.right_stick_x;
@@ -95,7 +88,7 @@ public class nullTeleopCopy extends OpMode {
         }
         // kill switch button that stops the shooting and collecting mechanism
         if (gamepad2.x) {
-            shoot.setPower(0);
+            shoot.setMaxSpeed(0);
             spin.setPower(0);
             hold.setPosition(1);
         }
@@ -103,36 +96,28 @@ public class nullTeleopCopy extends OpMode {
         //auto collecting method implemented below
         if(gamepad2.a){
             hold.setPosition(1);
-            shoot.setPower(0);
+            shoot.setMaxSpeed(0);
             spin.setPower(.7);
         }
 
-        if (gamepad2.right_bumper) {
+        if (gamepad2.right_bumper)
             hold.setPosition(.5);
-        }
-        if (gamepad2.left_bumper) {
+        if (gamepad2.left_bumper)
             hold.setPosition(1);
-        }
 
-        if (gamepad2.right_trigger > .15) {
-            shoot.setPower(.35);
-        }
-        else if (gamepad2.left_trigger > .15) {
-            shoot.setPower(0);
-        }
+        if (gamepad2.right_trigger > .15)
+            shoot.setMaxSpeed(1);
+        else if (gamepad2.left_trigger > .15)
+            shoot.setMaxSpeed(0);
 
-        if (gamepad2.dpad_up) {
+        if (gamepad2.dpad_up)
             spin.setPower(.7);
-        }
-        else if (gamepad2.dpad_down) {
+        else if (gamepad2.dpad_down)
             spin.setPower(-.7);
-        }
-        else if (gamepad2.dpad_left) {
+        else if (gamepad2.dpad_left)
             spin.setPower(0);
-        }
-        else if (gamepad2.dpad_right) {
+        else if (gamepad2.dpad_right)
             spin.setPower(.6);
-        }
 
         //references for joystick values
         RF_Power = (right - rightX + leftX);
@@ -157,8 +142,8 @@ public class nullTeleopCopy extends OpMode {
             RF_Per = RF_Per / 2;
             LF_Per = LF_Per / 2;
             LB_Per = LB_Per / 2;
-        }
 
+        }
         telemetry.addData("1", "rightPower", "%5.2f", (right));
         telemetry.addData("2", "leftPower", "%5.2f", (left));
         telemetry.addData("C: mechVar", ":", String.format("%.24f", (joyRadius)));
@@ -166,6 +151,22 @@ public class nullTeleopCopy extends OpMode {
         telemetry.update();
     }
 
+    //delay method below
+    public static void sleepCool(long sleepTime)
+    {
+        long wakeupTime = System.currentTimeMillis() + sleepTime;
+        while (sleepTime > 0)
+        {
+            try
+            {
+                Thread.sleep(sleepTime);
+            }
+            catch (InterruptedException e)
+            {
+            }
+            sleepTime = wakeupTime - System.currentTimeMillis();
+        }
+    } //sleep
 
     public void shootingSeq() {
         if (count == 0) {
@@ -173,10 +174,11 @@ public class nullTeleopCopy extends OpMode {
             timeSeq = this.time;
             count++;
         }
+
         if (count == 1) {
-            spin.setPower(0);
+            spin.setMaxSpeed(0);
             hold.setPosition(1);
-            shoot.setPower(.35);
+            shoot.setMaxSpeed(1);
             if (timeWait > 1.5) {
                 count++;
             }
@@ -192,6 +194,23 @@ public class nullTeleopCopy extends OpMode {
         }
     }
 
+
+   /*     spin.setPower(0);
+        hold.setPosition(1);
+        shoot.setPower(.35);
+        //shoot.setPower(.55);
+
+        //sleepCool(1500);
+        hold.setPosition(.5);
+        //sleepCool(500);
+        spin.setPower(.6);
+    }*/
+
+    public void autoCollect() {
+
+    }
+
     @Override
-    public void stop() {}
+    public void stop() {
+    }
 }

@@ -1,20 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.Servo;
-import android.app.Activity;
-import android.graphics.Color;
-import android.view.View;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="NULL TeleOp", group="Teleop")
+@TeleOp(name="Copy of NULL TeleOp", group="Teleop")
 //@Disabled
-public class nullTeleopCopy extends OpMode {
+public class nullTeleopCopy2 extends OpMode {
     final static double MOTOR_POWER = 0.2;
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
     //ColorSensor colorSensor;
@@ -24,7 +18,7 @@ public class nullTeleopCopy extends OpMode {
     Servo hold, push;
     public boolean seq = true;
 
-    public nullTeleopCopy() {}
+    public nullTeleopCopy2() {}
 
     public void init() {
         motorRB = hardwareMap.dcMotor.get("motor_1");
@@ -151,8 +145,8 @@ public class nullTeleopCopy extends OpMode {
         // radius of joystick calculated using pythagorean theorem
         joyRadius = Math.sqrt((right * right) + (rightX * rightX));
 
-        //Threshold established that will allow robot to move slower if the raius of the joystick is less than threshold
-        if (joyRadius < .5) {
+        //Threshold established that will allow robot to move slower if the radius of the joystick is less than threshold
+        if (joyRadius < .5 && joyRadius > 0) {
             RB_Per = RB_Per / 2;
             RF_Per = RF_Per / 2;
             LF_Per = LF_Per / 2;
@@ -165,7 +159,6 @@ public class nullTeleopCopy extends OpMode {
         telemetry.addData(("4"), ":", String.format("%.24f", (rawTotal)));
         telemetry.update();
     }
-
 
     public void shootingSeq() {
         if (count == 0) {
