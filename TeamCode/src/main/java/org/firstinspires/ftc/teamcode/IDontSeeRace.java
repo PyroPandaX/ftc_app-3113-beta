@@ -71,7 +71,7 @@ public class IDontSeeRace extends OpMode{
 
         colorCcache = colorCreader.read(0x04, 1);
 
-        if(colorCcache[0] == 16) {
+        if(colorCcache[0] >= 9) {
             bool = true;
         }
 
