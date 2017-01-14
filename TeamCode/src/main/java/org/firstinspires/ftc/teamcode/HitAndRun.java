@@ -71,8 +71,12 @@ public class HitAndRun extends OpMode{
 
         colorCcache = colorCreader.read(0x04, 1);
 
-        if(colorCcache[0] >= 9) {
+        if(colorCcache[0] > 6) {
             sawLine = true;
+            motorLB.setPower(0);
+            motorRB.setPower(0);
+            motorLF.setPower(0);
+            motorRF.setPower(0);
         } else  {
             motorLB.setPower(.2);
             motorRB.setPower(.2);

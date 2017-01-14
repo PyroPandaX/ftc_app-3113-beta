@@ -71,8 +71,10 @@ public class IDontSeeRace extends OpMode{
 
         colorCcache = colorCreader.read(0x04, 1);
 
-        if(colorCcache[0] >= 9) {
+        if(colorCcache[0] > 6) {
             bool = true;
+        } else  {
+            bool = false;
         }
 
         telemetry.addData("Result", result);
