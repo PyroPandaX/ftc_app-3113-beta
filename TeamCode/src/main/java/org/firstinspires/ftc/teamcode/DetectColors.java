@@ -37,7 +37,7 @@ public class DetectColors extends OpMode{
         telemetry.addData("Result", result);
         telemetry.update();
         //wait before quitting (quitting clears telemetry)
-        sleepCool(1000);
+        sleepCool(1);
     }
 
     //delay method below

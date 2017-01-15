@@ -84,7 +84,16 @@ public class nullTeleopCopy2 extends OpMode {
             shootingSeq();
         }
         if(!gamepad2.y){
-            count = 0;
+           if(count > 0){
+               count = -1;
+           }
+            if(count == -1){
+                shoot.setPower(0);
+                spin.setPower(0);
+                hold.setPosition(.35);
+                count++;
+            }
+
             timeSeq = 0;
         }
         // kill switch button that stops the shooting and collecting mechanism
@@ -161,6 +170,7 @@ public class nullTeleopCopy2 extends OpMode {
     }
 
     public void shootingSeq() {
+
         if (count == 0) {
             timeWait = 0;
             timeSeq = this.time;
