@@ -25,7 +25,7 @@ import ftc.vision.ImageProcessorResult;
  * Created by Mac on 12/19/2016.
  */
 @Autonomous(name="IDontSeeRace", group="NullBot")
-//@Disabled
+@Disabled
 public class IDontSeeRace extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;

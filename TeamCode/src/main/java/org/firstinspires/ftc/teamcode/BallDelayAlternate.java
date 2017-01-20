@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="Alternate", group="NullBot")
+@Autonomous(name="Ball with Delay", group="NullBot")
 //@Disabled
 public class BallDelayAlternate extends OpMode {
     private int xVal, yVal, zVal;     // Gyro rate Values

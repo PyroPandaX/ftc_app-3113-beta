@@ -1,14 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.app.Activity;
-import android.graphics.Color;
-import android.view.View;
-
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.I2cDevice;
@@ -18,6 +12,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 
+import java.util.ArrayList;
+
 import ftc.vision.BeaconColorResult;
 import ftc.vision.FrameGrabber;
 import ftc.vision.ImageProcessorResult;
@@ -25,12 +21,13 @@ import ftc.vision.ImageProcessorResult;
 /**
  * Created by Mac on 12/19/2016.
  */
-@Autonomous(name="Beacon", group="NullBot")
-@Disabled
-public class RedBeacon extends OpMode{
+@Autonomous(name="Strafe", group="NullBot")
+//@Disabled
+public class StrafeBeacon extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
     double timeAuto = 0, timeStart = 0, timeLine = 0;
+    ArrayList<Double> timeStep = new ArrayList<Double>();
     Servo hold, push;
     byte[] colorCcache;
     I2cDevice colorC;
@@ -42,11 +39,12 @@ public class RedBeacon extends OpMode{
     private int heading;              // Gyro integrated heading
     private int angleZ;
     public int resetState;
-    public RedBeacon()  {}
+
+    public StrafeBeacon()  {}
 
     public void init() {
-        motorRB = hardwareMap.dcMotor.get("motor_1");
-        motorRF = hardwareMap.dcMotor.get("motor_2");
+        motorRF = hardwareMap.dcMotor.get("motor_1");
+        motorRB = hardwareMap.dcMotor.get("motor_2");
         motorLB = hardwareMap.dcMotor.get("motor_3");
         motorLF = hardwareMap.dcMotor.get("motor_4");
         motorRB.setDirection(DcMotor.Direction.REVERSE);
@@ -71,6 +69,7 @@ public class RedBeacon extends OpMode{
             case 1:
                 telemetry.addData(">", "Gyro Calibrated.  Press Start.");
         }
+        hold.setPosition(1);
     }
 
     @Override
@@ -89,23 +88,48 @@ public class RedBeacon extends OpMode{
         xVal = gyro.rawX();
         yVal = gyro.rawY();
         zVal = gyro.rawZ();
+        //idealAngle();
 
         timeAuto = this.time - timeStart;
 
         colorCcache = colorCreader.read(0x04, 1);
 
-        if(colorCcache[0] > 6) {
-            sawLine = true;
+        if (timeAuto < 1) {
             motorLB.setPower(0);
             motorRB.setPower(0);
             motorLF.setPower(0);
             motorRF.setPower(0);
-        } else  {
-            motorLB.setPower(.2);
-            motorRB.setPower(.2);
-            motorLF.setPower(.2);
-            motorRF.setPower(.2);
-            sawLine = false;
+            hold.setPosition(.5);
+            shoot.setPower(.4);
+        } else if (timeAuto > 1 && timeAuto < 5) {
+            spin.setPower(.6);
+        } else if (timeAuto > 5 && timeAuto < 10.5)    {
+            hold.setPosition(1);
+            shoot.setPower(0);
+            spin.setPower(0);
+            motorLB.setPower(.7);
+            motorRB.setPower(0);
+            motorLF.setPower(0);
+            motorRF.setPower(.7);
+        }  else if (timeAuto > 10.5 && timeAuto < 11)    {
+            motorLB.setPower(-.2);
+            motorRB.setPower(-.2);
+            motorLF.setPower(-.2);
+            motorRF.setPower(-.2);
+        } else if(timeAuto > 10)   {
+            if(colorCcache[0] > 6) {
+                sawLine = true;
+                motorLB.setPower(0);
+                motorRB.setPower(0);
+                motorLF.setPower(0);
+                motorRF.setPower(0);
+            } else  {
+                motorLB.setPower(.2);
+                motorRB.setPower(.2);
+                motorLF.setPower(.2);
+                motorRF.setPower(.2);
+                sawLine = false;
+            }
         }
 
         if(sawLine) {
@@ -149,9 +173,7 @@ public class RedBeacon extends OpMode{
         }
 
         telemetry.addData("Result", result);
-
         telemetry.addData("1", "Int. Ang. %03d", angleZ);
-
         telemetry.update();
         //wait before quitting (quitting clears telemetry)
         sleepCool(1);
@@ -168,6 +190,20 @@ public class RedBeacon extends OpMode{
             sleepTime = wakeupTime - System.currentTimeMillis();
         }
     } //sleep
+
+    public void idealAngle(int z) {
+        if(z > 0) {
+            motorLB.setPower(-.2);
+            motorRB.setPower(.2);
+            motorLF.setPower(-.2);
+            motorRF.setPower(.2);
+        } else if(z < 0)  {
+            motorLB.setPower(.2);
+            motorRB.setPower(-.2);
+            motorLF.setPower(.2);
+            motorRF.setPower(-.2);
+        }
+    }
 
     @Override
     public void stop() {}

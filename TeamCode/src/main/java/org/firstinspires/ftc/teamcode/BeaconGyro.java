@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
@@ -22,7 +23,7 @@ import ftc.vision.ImageProcessorResult;
  * Created by Mac on 12/19/2016.
  */
 @Autonomous(name="Beacon with Gyro", group="NullBot")
-//@Disabled
+@Disabled
 public class BeaconGyro extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
@@ -205,12 +206,12 @@ public class BeaconGyro extends OpMode{
 
     //fix if statements
     public void idealAngle(int z, int i) {
-        if(z > i) {
+        if(i > 180) {
             motorLB.setPower(-.2);
             motorRB.setPower(.2);
             motorLF.setPower(-.2);
             motorRF.setPower(.2);
-        } else if(z < i)  {
+        } else if(i < 180)  {
             motorLB.setPower(.2);
             motorRB.setPower(-.2);
             motorLF.setPower(.2);

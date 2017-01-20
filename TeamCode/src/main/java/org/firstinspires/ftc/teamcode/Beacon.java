@@ -21,7 +21,7 @@ import ftc.vision.ImageProcessorResult;
 /**
  * Created by Mac on 12/19/2016.
  */
-@Autonomous(name="AA", group="NullBot")
+@Autonomous(name="Red Beacon", group="NullBot")
 //@Disabled
 public class Beacon extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
@@ -113,26 +113,28 @@ public class Beacon extends OpMode{
             motorRB.setPower(.2);
             motorLF.setPower(.2);
             motorRF.setPower(.2);
-        } else if (timeAuto > 5.5 && !(timeAuto > timeStep.get(0))) {
+        } else if (timeAuto > 5.5 && timeAuto < 6.75) {
             motorLB.setPower(-.2);
             motorRB.setPower(.2);
             motorLF.setPower(-.2);
             motorRF.setPower(.2);
-            if(Math.abs(angleZ) > 40 && Math.abs(angleZ) < 50)
-                timeStep.add(0, timeAuto);
-        } else if (timeAuto > timeStep.get(0) && timeAuto < (timeStep.get(0) + 5))    {
+        } else if (timeAuto > 6.75 && timeAuto < 11)    {
             motorLB.setPower(.2);
             motorRB.setPower(.2);
             motorLF.setPower(.2);
             motorRF.setPower(.2);
-        } else if (timeAuto > (timeStep.get(0) + 5) && !(timeAuto > timeStep.get(1)))   {
+        } else if (timeAuto > 11 && timeAuto < 12.25)   {
             motorLB.setPower(.2);
             motorRB.setPower(-.2);
             motorLF.setPower(.2);
             motorRF.setPower(-.2);
-            if(Math.abs(angleZ) > -5 && Math.abs(angleZ) < 5)
-                timeStep.add(1, timeAuto);
-        } else if(timeAuto > timeStep.get(1))   {
+        } else if (timeAuto > 12.25 && timeAuto < 12.75)   {
+            motorLB.setPower(-.2);
+            motorRB.setPower(-.2);
+            motorLF.setPower(-.2);
+            motorRF.setPower(-.2);
+        } else if(timeAuto > 12.75)   {
+            idealAngle(angleZ);
             if(colorCcache[0] > 6) {
                 sawLine = true;
                 motorLB.setPower(0);
@@ -206,6 +208,20 @@ public class Beacon extends OpMode{
             sleepTime = wakeupTime - System.currentTimeMillis();
         }
     } //sleep
+
+    public void idealAngle(int z) {
+        if(z > 0) {
+            motorLB.setPower(-.2);
+            motorRB.setPower(.2);
+            motorLF.setPower(-.2);
+            motorRF.setPower(.2);
+        } else if(z < 0)  {
+            motorLB.setPower(.2);
+            motorRB.setPower(-.2);
+            motorLF.setPower(.2);
+            motorRF.setPower(-.2);
+        }
+    }
 
     @Override
     public void stop() {}
