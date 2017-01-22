@@ -21,13 +21,13 @@ import ftc.vision.ImageProcessorResult;
 /**
  * Created by Mac on 12/19/2016.
  */
-@Autonomous(name="Strafe", group="NullBot")
+@Autonomous(name="StrafeRed", group="NullBot")
 //@Disabled
 public class StrafeBeacon extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
-    double timeAuto = 0, timeStart = 0, timeLine = 0;
-    ArrayList<Double> timeStep = new ArrayList<Double>();
+    double timeAuto = 0, timeStart = 0, timeLine = 0, timeColor = 0;
+    //ArrayList<Double> timeStep = new ArrayList<Double>();
     Servo hold, push;
     byte[] colorCcache;
     I2cDevice colorC;
@@ -39,6 +39,7 @@ public class StrafeBeacon extends OpMode{
     private int heading;              // Gyro integrated heading
     private int angleZ;
     public int resetState;
+    int count = 0;
 
     public StrafeBeacon()  {}
 
@@ -77,6 +78,7 @@ public class StrafeBeacon extends OpMode{
         // defines timeStart as the timer at the start of autonomous to preserve an initial value
         timeAuto = 0;
         timeLine = 0;
+        timeColor = 0;
         timeStart = this.time;
     }
 
@@ -94,16 +96,16 @@ public class StrafeBeacon extends OpMode{
 
         colorCcache = colorCreader.read(0x04, 1);
 
-        if (timeAuto < 1) {
+        if (timeAuto < 1.5) {
             motorLB.setPower(0);
             motorRB.setPower(0);
             motorLF.setPower(0);
             motorRF.setPower(0);
             hold.setPosition(.5);
-            shoot.setPower(.4);
-        } else if (timeAuto > 1 && timeAuto < 5) {
+            shoot.setPower(.35);
+        } else if (timeAuto > 1.5 && timeAuto < 5.5) {
             spin.setPower(.6);
-        } else if (timeAuto > 5 && timeAuto < 10.5)    {
+        } else if (timeAuto > 5.5 && timeAuto < 10.5)    {
             hold.setPosition(1);
             shoot.setPower(0);
             spin.setPower(0);
@@ -111,69 +113,88 @@ public class StrafeBeacon extends OpMode{
             motorRB.setPower(0);
             motorLF.setPower(0);
             motorRF.setPower(.7);
-        }  else if (timeAuto > 10.5 && timeAuto < 11)    {
-            motorLB.setPower(-.2);
-            motorRB.setPower(-.2);
-            motorLF.setPower(-.2);
-            motorRF.setPower(-.2);
-        } else if(timeAuto > 10)   {
+        }  else if (timeAuto > 10.5 && timeAuto < 11.5)    {
+                motorLB.setPower(-.2);
+                motorRB.setPower(-.2);
+                motorLF.setPower(-.2);
+                motorRF.setPower(-.2);
+        } else if(timeAuto > 12 && !sawLine)   {
             if(colorCcache[0] > 6) {
-                sawLine = true;
                 motorLB.setPower(0);
                 motorRB.setPower(0);
                 motorLF.setPower(0);
                 motorRF.setPower(0);
+                if(zero())
+                    sawLine = true;
             } else  {
                 motorLB.setPower(.2);
                 motorRB.setPower(.2);
                 motorLF.setPower(.2);
                 motorRF.setPower(.2);
-                sawLine = false;
             }
         }
 
         if(sawLine) {
             timeLine = this.time - timeAuto;
-            /*
             if (timeLine < .5) {
-                motorLB.setPower(-.2);
-                motorRB.setPower(-.2);
-                motorLF.setPower(-.2);
-                motorRF.setPower(-.2);
-            } else if (timeLine < 1) {
-                motorLB.setPower(0);
-                motorRB.setPower(.4);
-                motorLF.setPower(.4);
-                motorRF.setPower(0);
+                motorLB.setPower(-.7);
+                motorRB.setPower(.7);
+                motorLF.setPower(.7);
+                motorRF.setPower(-.7);
+            } else if(timeLine > .5) {
+                frameGrabber.grabSingleFrame();
+                while (!frameGrabber.isResultReady()) {
+                    sleepCool(5); //sleep for 5 milliseconds
+                }
+                ImageProcessorResult imageProcessorResult = frameGrabber.getResult();
+                result = (BeaconColorResult) imageProcessorResult.getResult();
+                BeaconColorResult.BeaconColor leftColor = result.getLeftColor();
+                BeaconColorResult.BeaconColor rightColor = result.getRightColor();
+
+                if (leftColor.toString().equals("RED")) {
+                    timeColor = this.time - timeLine;
+                    if (timeColor < 1.5) {
+                        motorLB.setPower(.7);
+                        motorRB.setPower(-.7);
+                        motorLF.setPower(-.7);
+                        motorRF.setPower(.7);
+                    } else if (timeColor > 1.5 && timeColor < 3) {
+                        motorLB.setPower(-.7);
+                        motorRB.setPower(.7);
+                        motorLF.setPower(.7);
+                        motorRF.setPower(-.7);
+                    }
+                } else if (leftColor.toString().equals("BLUE")) {
+                    timeColor = this.time - timeLine;
+                    if (timeColor < .5) {
+                        motorLB.setPower(.2);
+                        motorRB.setPower(.2);
+                        motorLF.setPower(.2);
+                        motorRF.setPower(.2);
+                    } else if (timeColor > .5 && timeColor < 2) {
+                        motorLB.setPower(.7);
+                        motorRB.setPower(-.7);
+                        motorLF.setPower(-.7);
+                        motorRF.setPower(.7);
+                    } else if (timeColor > 2 && timeColor < 3.5) {
+                        motorLB.setPower(-.7);
+                        motorRB.setPower(.7);
+                        motorLF.setPower(.7);
+                        motorRF.setPower(-.7);
+                    }
+                }
+
+                if (leftColor.toString().equals("RED") && rightColor.toString().equals("RED")) {
+                    if (count == 0)
+                        sawLine = false;
+                    count++;
+                }
             }
-            */
-            frameGrabber.grabSingleFrame();
-            while (!frameGrabber.isResultReady()) {
-                sleepCool(5); //sleep for 5 milliseconds
-            }
-            ImageProcessorResult imageProcessorResult = frameGrabber.getResult();
-            result = (BeaconColorResult) imageProcessorResult.getResult();
-            BeaconColorResult.BeaconColor leftColor = result.getLeftColor();
-            BeaconColorResult.BeaconColor rightColor = result.getRightColor();
-            if(leftColor.toString().equals("RED"))  {
-                //push.setPosition(1);
-                spin.setPower(.5);
-            } else if(leftColor.toString().equals("BLUE"))  {
-                //push.setPosition(0);
-                shoot.setPower(.35);
-            }
-            /*
-            if (timeLine < 5) {
-                motorLB.setPower(0);
-                motorRB.setPower(.5);
-                motorLF.setPower(.5);
-                motorRF.setPower(0);
-            }
-            */
         }
 
         telemetry.addData("Result", result);
         telemetry.addData("1", "Int. Ang. %03d", angleZ);
+        telemetry.addData("White", sawLine);
         telemetry.update();
         //wait before quitting (quitting clears telemetry)
         sleepCool(1);
@@ -191,17 +212,23 @@ public class StrafeBeacon extends OpMode{
         }
     } //sleep
 
-    public void idealAngle(int z) {
-        if(z > 0) {
-            motorLB.setPower(-.2);
-            motorRB.setPower(.2);
-            motorLF.setPower(-.2);
-            motorRF.setPower(.2);
-        } else if(z < 0)  {
+    public boolean zero() {
+        if(heading > 2) {
             motorLB.setPower(.2);
             motorRB.setPower(-.2);
             motorLF.setPower(.2);
             motorRF.setPower(-.2);
+        } else if(heading < -2)  {
+            motorLB.setPower(-.2);
+            motorRB.setPower(.2);
+            motorLF.setPower(-.2);
+            motorRF.setPower(.2);
+        }
+
+        if(heading > -2 && heading < 2)   {
+            return true;
+        } else  {
+            return false;
         }
     }
 

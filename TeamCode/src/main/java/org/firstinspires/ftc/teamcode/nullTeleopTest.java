@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="TeleOp Testing", group="Teleop")
+@TeleOp(name="NULL TeleOp", group="Teleop")
 //@Disabled
 public class nullTeleopTest extends OpMode {
     final static double MOTOR_POWER = 0.2;

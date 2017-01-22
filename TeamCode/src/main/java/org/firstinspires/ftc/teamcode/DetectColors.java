@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 
@@ -12,6 +13,7 @@ import ftc.vision.ImageProcessorResult;
  * Created by Mac on 12/19/2016.
  */
 @Autonomous(name="Colors", group="NullBot")
+@Disabled
 public class DetectColors extends OpMode{
         FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
 

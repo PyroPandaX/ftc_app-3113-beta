@@ -17,14 +17,13 @@ import java.util.ArrayList;
 
 import ftc.vision.BeaconColorResult;
 import ftc.vision.FrameGrabber;
-import ftc.vision.ImageProcessorResult;
 
 /**
  * Created by Mac on 12/19/2016.
  */
-@Autonomous(name="StrafeTest", group="NullBot")
-@Disabled
-public class Strafe45 extends OpMode{
+@Autonomous(name="360", group="NullBot")
+//@Disabled
+public class Turn360 extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
     double timeAuto = 0, timeStart = 0, timeLine = 0;
@@ -41,7 +40,7 @@ public class Strafe45 extends OpMode{
     private int angleZ;
     public int resetState;
 
-    public Strafe45()  {}
+    public Turn360()  {}
 
     public void init() {
         motorRF = hardwareMap.dcMotor.get("motor_1");
@@ -89,27 +88,29 @@ public class Strafe45 extends OpMode{
         xVal = gyro.rawX();
         yVal = gyro.rawY();
         zVal = gyro.rawZ();
-        //idealAngle();
+
 
         timeAuto = this.time - timeStart;
 
-        colorCcache = colorCreader.read(0x04, 1);
-
-        if (timeAuto < 10)    {
-            hold.setPosition(1);
-            shoot.setPower(0);
-            spin.setPower(0);
-            motorLB.setPower(.7);
-            motorRB.setPower(0);
-            motorLF.setPower(0);
-            motorRF.setPower(.7);
+        if(timeAuto < .5)   {
+            motorLB.setPower(.4);
+            motorRB.setPower(-.4);
+            motorLF.setPower(.4);
+            motorRF.setPower(-.4);
+        } else if(timeAuto > .5 && heading != 0) {
+            motorLB.setPower(.4);
+            motorRB.setPower(-.4);
+            motorLF.setPower(.4);
+            motorRF.setPower(-.4);
+        } else  {
+            sleepCool(4000);
         }
 
-        telemetry.addData("Result", result);
-        telemetry.addData("1", "Int. Ang. %03d", angleZ);
+        //telemetry.addData("Result", result);
+        telemetry.addData("1", "Heading %03d", heading);
         telemetry.update();
         //wait before quitting (quitting clears telemetry)
-        sleepCool(1);
+        //sleepCool(1);
     }
 
     //delay method below
@@ -123,20 +124,6 @@ public class Strafe45 extends OpMode{
             sleepTime = wakeupTime - System.currentTimeMillis();
         }
     } //sleep
-
-    public void idealAngle(int z) {
-        if(z > 0) {
-            motorLB.setPower(-.2);
-            motorRB.setPower(.2);
-            motorLF.setPower(-.2);
-            motorRF.setPower(.2);
-        } else if(z < 0)  {
-            motorLB.setPower(.2);
-            motorRB.setPower(-.2);
-            motorLF.setPower(.2);
-            motorRF.setPower(-.2);
-        }
-    }
 
     @Override
     public void stop() {}
