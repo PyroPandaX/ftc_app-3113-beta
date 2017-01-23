@@ -2,14 +2,13 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="Ball with Delay", group="NullBot")
-@Disabled
-public class BallDelayAlternate extends OpMode {
+@Autonomous(name="Conveyor2", group="NullBot Shoot")
+//@Disabled
+public class Conveyor2 extends OpMode {
     private int xVal, yVal, zVal;     // Gyro rate Values
     private int heading;              // Gyro integrated heading
     private int angleZ;
@@ -17,7 +16,7 @@ public class BallDelayAlternate extends OpMode {
     boolean curResetState = false;
     public int resetState = 0, v_state = 0;
 
-    public BallDelayAlternate() {}
+    public Conveyor2() {}
 
     ModernRoboticsI2cGyro gyro;
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
@@ -48,8 +47,10 @@ public class BallDelayAlternate extends OpMode {
                 if (!gyro.isCalibrating()) {
                     resetState++;
                 }
+                break;
             case 1:
                 telemetry.addData(">", "Gyro Calibrated.  Press Start.");
+                break;
         }
     }
 
@@ -63,7 +64,7 @@ public class BallDelayAlternate extends OpMode {
     @Override
     public void loop() {
         // time since autonomous began
-        timeAuto = this.time - timeStart - 10;
+        timeAuto = this.time - timeStart;
         heading = gyro.getHeading();
         angleZ = gyro.getIntegratedZValue();
         // get the x, y, and z values (rate of change of angle).
@@ -71,29 +72,29 @@ public class BallDelayAlternate extends OpMode {
         yVal = gyro.rawY();
         zVal = gyro.rawZ();
 
-        if (timeAuto < 2.6 && timeAuto > 0) {
-            motorLB.setPower(0);
-            motorRB.setPower(0);
-            motorLF.setPower(0);
-            motorRF.setPower(0);
-            hold.setPosition(.5);
-            shoot.setPower(.35);
-        } else if (timeAuto < 6.1 && timeAuto > 2.6) {
+        if (timeAuto < .7) {
             motorLB.setPower(.5);
             motorRB.setPower(.5);
             motorLF.setPower(.5);
             motorRF.setPower(.5);
             hold.setPosition(1);
+        } else if (timeAuto < 3.5 && timeAuto > .7) {
+            motorLB.setPower(0);
+            motorRB.setPower(0);
+            motorLF.setPower(0);
+            motorRF.setPower(0);
+            hold.setPosition(.5);
+            shoot.setPower(.5);
         } else if (timeAuto > 3.5 && timeAuto < 9) {
-            spin.setPower(.6);
-        } else if (timeAuto < 11 && timeAuto > 9) {
+            spin.setPower(.5);
+        } else if (timeAuto < 11.2 && timeAuto > 9) {
             motorLB.setPower(.5);
             motorRB.setPower(.5);
             motorLF.setPower(.5);
             motorRF.setPower(.5);
             shoot.setPower(0);
             spin.setPower(0);
-        } else if (timeAuto > 11) {
+        } else if (timeAuto > 11.2) {
             motorLB.setPower(0);
             motorRB.setPower(0);
             motorLF.setPower(0);
@@ -108,6 +109,7 @@ public class BallDelayAlternate extends OpMode {
         telemetry.addData("3", "Y av. %03d", yVal);
         telemetry.addData("4", "Z av. %03d", zVal);
         telemetry.addData("5", "resetState %03d", resetState);
+        telemetry.update();
     }
 
     @Override

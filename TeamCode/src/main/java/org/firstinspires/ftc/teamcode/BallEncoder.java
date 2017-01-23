@@ -2,13 +2,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="Ball Encoder", group="NullBot")
-@Disabled
+@Autonomous(name="Ball with Encoder", group="NullBot Shoot")
+//@Disabled
 public class BallEncoder extends OpMode {
     private int xVal, yVal, zVal;     // Gyro rate Values
     private int heading;              // Gyro integrated heading
@@ -17,8 +16,7 @@ public class BallEncoder extends OpMode {
     boolean curResetState = false;
     public int resetState = 0, v_state = 0;
 
-    public BallEncoder() {
-    }
+    public BallEncoder() {}
 
     ModernRoboticsI2cGyro gyro;
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
@@ -39,7 +37,6 @@ public class BallEncoder extends OpMode {
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
         shoot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //push = hardwareMap.servo.get("push");
 
         gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         switch (resetState) {
@@ -49,8 +46,10 @@ public class BallEncoder extends OpMode {
                 if (!gyro.isCalibrating()) {
                     resetState++;
                 }
+                break;
             case 1:
                 telemetry.addData(">", "Gyro Calibrated.  Press Start.");
+                break;
         }
     }
 
@@ -84,7 +83,8 @@ public class BallEncoder extends OpMode {
             motorLF.setPower(0);
             motorRF.setPower(0);
             hold.setPosition(.5);
-            shoot.setMaxSpeed(1);
+            shoot.setPower(.1);
+            shoot.setMaxSpeed(150);
         } else if (timeAuto > 3.5 && timeAuto < 9) {
             spin.setPower(.6);
         } else if (timeAuto < 11 && timeAuto > 9) {
@@ -92,7 +92,7 @@ public class BallEncoder extends OpMode {
             motorRB.setPower(.5);
             motorLF.setPower(.5);
             motorRF.setPower(.5);
-            shoot.setMaxSpeed(0);
+            shoot.setPower(0);
             spin.setPower(0);
         } else if (timeAuto > 11) {
             motorLB.setPower(0);
@@ -109,6 +109,7 @@ public class BallEncoder extends OpMode {
         telemetry.addData("3", "Y av. %03d", yVal);
         telemetry.addData("4", "Z av. %03d", zVal);
         telemetry.addData("5", "resetState %03d", resetState);
+        telemetry.update();
     }
 
     @Override

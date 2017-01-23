@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@Autonomous(name="Ball", group="NullBot")
+@Autonomous(name="Ball", group="NullBot Shoot")
 //@Disabled
 public class BlueBall extends OpMode {
     private int xVal, yVal, zVal;     // Gyro rate Values
@@ -23,8 +23,7 @@ public class BlueBall extends OpMode {
     boolean curResetState = false;
     public int resetState = 0, v_state = 0;
 
-    public BlueBall() {
-    }
+    public BlueBall() {}
 
     ModernRoboticsI2cGyro gyro;
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
@@ -55,8 +54,10 @@ public class BlueBall extends OpMode {
                 if (!gyro.isCalibrating()) {
                     resetState++;
                 }
+                break;
             case 1:
                 telemetry.addData(">", "Gyro Calibrated.  Press Start.");
+                break;
         }
     }
 
@@ -90,7 +91,7 @@ public class BlueBall extends OpMode {
             motorLF.setPower(0);
             motorRF.setPower(0);
             hold.setPosition(.5);
-            shoot.setPower(.35);
+            shoot.setPower(.5);
         } else if (timeAuto > 3.5 && timeAuto < 9) {
             spin.setPower(.6);
         } else if (timeAuto < 11 && timeAuto > 9) {
@@ -115,6 +116,7 @@ public class BlueBall extends OpMode {
         telemetry.addData("3", "Y av. %03d", yVal);
         telemetry.addData("4", "Z av. %03d", zVal);
         telemetry.addData("5", "resetState %03d", resetState);
+        telemetry.update();
     }
 
     @Override

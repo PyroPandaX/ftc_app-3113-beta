@@ -28,9 +28,6 @@ public class nullTeleopTest extends OpMode {
         motorLF = hardwareMap.dcMotor.get("motor_4");
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
-        push = hardwareMap.servo.get("push");
-
-        //below is the PID control implemented
         shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         hold = hardwareMap.servo.get("hold");
     }
@@ -177,7 +174,7 @@ public class nullTeleopTest extends OpMode {
         if (count == 1) {
             spin.setPower(0);
             hold.setPosition(1);
-            shoot.setPower(.35);
+            shoot.setPower(.5);
             if (timeWait > 1.5) {
                 count++;
             }

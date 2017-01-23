@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
@@ -13,21 +12,20 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 
-import java.util.ArrayList;
-
 import ftc.vision.BeaconColorResult;
 import ftc.vision.FrameGrabber;
+import ftc.vision.ImageProcessorResult;
 
 /**
  * Created by Mac on 12/19/2016.
  */
-@Autonomous(name="360", group="NullBot")
+@Autonomous(name="New Position", group="NullBot Shoot")
 //@Disabled
-public class Turn360 extends OpMode{
+public class NewPosition extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
-    double timeAuto = 0, timeStart = 0, timeLine = 0;
-    ArrayList<Double> timeStep = new ArrayList<Double>();
+    double timeAuto = 0, timeStart = 0, timeLine = 0, timeColor = 0, timeCheck1 = 0, timeCheck2 = 0;
+    //ArrayList<Double> timeStep = new ArrayList<Double>();
     Servo hold, push;
     byte[] colorCcache;
     I2cDevice colorC;
@@ -39,8 +37,9 @@ public class Turn360 extends OpMode{
     private int heading;              // Gyro integrated heading
     private int angleZ;
     public int resetState;
+    int count = 0, countColor = 0, countWhite = 0, countZero = 0, shit;
 
-    public Turn360()  {}
+    public NewPosition()  {}
 
     public void init() {
         motorRF = hardwareMap.dcMotor.get("motor_1");
@@ -67,7 +66,7 @@ public class Turn360 extends OpMode{
                     resetState++;
                 }
             case 1:
-                telemetry.addData(">", "Gyro Calibrated.  Press Start.");
+                telemetry.addData(">", "Wait 5 seconds and then press Start.");
         }
         hold.setPosition(1);
     }
@@ -77,6 +76,7 @@ public class Turn360 extends OpMode{
         // defines timeStart as the timer at the start of autonomous to preserve an initial value
         timeAuto = 0;
         timeLine = 0;
+        timeColor = 0;
         timeStart = this.time;
     }
 
@@ -89,23 +89,34 @@ public class Turn360 extends OpMode{
         yVal = gyro.rawY();
         zVal = gyro.rawZ();
 
-
         timeAuto = this.time - timeStart;
+        colorCcache = colorCreader.read(0x04, 1);
 
-        if (timeAuto < 5) {
+        if (timeAuto < 1.5) {
+            motorLB.setPower(0);
+            motorRB.setPower(0);
+            motorLF.setPower(0);
+            motorRF.setPower(0);
+            hold.setPosition(.5);
+            shoot.setPower(.6 );
+        } else if (timeAuto > 1.5 && timeAuto < 5.5) {
+            spin.setPower(.6);
+        }  else {
+            hold.setPosition(1);
+            shoot.setPower(0);
+            spin.setPower(0);
             motorLB.setPower(0);
             motorRB.setPower(0);
             motorLF.setPower(0);
             motorRF.setPower(0);
         }
-        if (timeAuto > 5){
-            zero();
-        }
-        telemetry.addData("1", "Heading %03d", heading);
+
+        telemetry.addData("Result", result);
         telemetry.addData("1", "Int. Ang. %03d", angleZ);
+        telemetry.addData("White", sawLine);
         telemetry.update();
         //wait before quitting (quitting clears telemetry)
-        //sleepCool(1);
+        sleepCool(1);
     }
 
     //delay method below
@@ -121,7 +132,7 @@ public class Turn360 extends OpMode{
     } //sleep
 
     public boolean zero() {
-        if(angleZ > 2) {
+        if(heading > 2) {
             motorLB.setPower(.2);
             motorRB.setPower(-.2);
             motorLF.setPower(.2);
@@ -133,7 +144,7 @@ public class Turn360 extends OpMode{
             motorRF.setPower(.2);
         }
 
-        if(angleZ < 2 && angleZ > -2)   {
+        if(heading > -2 && heading < 2)   {
             return true;
         } else  {
             return false;
