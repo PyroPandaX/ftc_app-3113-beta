@@ -10,9 +10,7 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name="Encoder TeleOp", group="Teleop")
 @Disabled
 public class nullTeleopEncoder extends OpMode {
-    final static double MOTOR_POWER = 0.2;
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
-    //ColorSensor colorSensor;
     public double joyRadius, right, left, rightX, leftX, LF_Power, RF_Power, RB_Power,
             LB_Power, LF_Per, LB_Per, RB_Per, RF_Per, rawTotal, timeAuto, timeStart, timeWait, timeSeq;
     public int loopControl, count;

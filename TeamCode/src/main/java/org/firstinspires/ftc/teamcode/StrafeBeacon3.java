@@ -19,7 +19,7 @@ import ftc.vision.BeaconColorResult;
 import ftc.vision.FrameGrabber;
 import ftc.vision.ImageProcessorResult;
 
-@Autonomous(name="StrafeGabe", group="NullBot Beacon")
+@Autonomous(name="Beacon Testing", group="NullBot Beacon")
 //@Disabled
 public class StrafeBeacon3 extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
@@ -33,8 +33,7 @@ public class StrafeBeacon3 extends OpMode{
     BeaconColorResult result;
     boolean sawLine = false, sawLine2 = false, strafe = false;
     ModernRoboticsI2cGyro gyro;
-    int xVal, yVal, zVal, heading, angleZ, resetState;
-    int countWhite = 0, countPushed = 0;
+    int xVal, yVal, zVal, heading, angleZ, resetState, countWhite = 0, countPushed = 0;
     ElapsedTime elapsed = new ElapsedTime();
 
     public StrafeBeacon3()  {}
@@ -46,8 +45,8 @@ public class StrafeBeacon3 extends OpMode{
         motorLF = hardwareMap.dcMotor.get("motor_4");
         motorRB.setDirection(DcMotor.Direction.REVERSE);
         motorRF.setDirection(DcMotor.Direction.REVERSE);
-        hold = hardwareMap.servo.get("hold");
         push = hardwareMap.servo.get("push");
+        hold = hardwareMap.servo.get("hold");
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
         shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -152,13 +151,12 @@ public class StrafeBeacon3 extends OpMode{
                         motorRB.setPower(.7);
                         motorLF.setPower(.7);
                         motorRF.setPower(-.7);
-                  }
-//                  else  {
-//                        motorLB.setPower(0);
-//                        motorRB.setPower(0);
-//                        motorLF.setPower(0);
-//                        motorRF.setPower(0);
-//                    }
+                    } else  {
+                        motorLB.setPower(0);
+                        motorRB.setPower(0);
+                        motorLF.setPower(0);
+                        motorRF.setPower(0);
+                    }
                 } else if (leftColor.toString().equals("BLUE") || rightColor.toString().equals("RED")) {
 
                     if (timeColor < .5) {

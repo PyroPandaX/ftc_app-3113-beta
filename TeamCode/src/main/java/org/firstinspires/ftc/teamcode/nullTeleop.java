@@ -4,19 +4,18 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="NULL TeleOp", group="Teleop")
 //@Disabled
 public class nullTeleop extends OpMode {
-    final static double MOTOR_POWER = 0.2;
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
-    //ColorSensor colorSensor;
-    public double joyRadius, right, left, rightX, leftX, LF_Power, RF_Power, RB_Power,
-            LB_Power, LF_Per, LB_Per, RB_Per, RF_Per, rawTotal, timeAuto, timeStart, timeWait, timeSeq;
-    public int loopControl, count;
-    Servo hold, push;
-    public boolean seq = true;
+    double joyRadius, right, left, rightX, leftX, LF_Power, RF_Power, RB_Power,
+            LB_Power, LF_Per, LB_Per, RB_Per, RF_Per, rawTotal, timeStart, timeWait, timeSeq;
+    int count;
+    Servo hold;
+    ElapsedTime elapsed = new ElapsedTime();
 
     public nullTeleop() {}
 
@@ -34,27 +33,14 @@ public class nullTeleop extends OpMode {
     @Override
     public void start() {
         //following initializes the timer variable and initializes the servo position
-        timeAuto = 0;
-        timeStart = this.time;
+        elapsed.reset();
         hold.setPosition(1);
-        push.setPosition(0);
     }
 
     @Override
     public void loop() {
-        timeWait = this.time - timeSeq;
+        timeWait = elapsed.time() - timeSeq;
 
-        if(gamepad1.a)  {
-            push.setPosition(0);
-        } else if(gamepad1.b)   {
-            push.setPosition(1);
-        }
-        if(gamepad1.right_trigger > 0) {
-            push.setDirection(Servo.Direction.FORWARD);
-        }
-        else if(gamepad1.left_trigger > 0) {
-            push.setDirection(Servo.Direction.REVERSE);
-        }
         right = gamepad1.left_stick_y;
         left = gamepad1.right_stick_y;
         leftX = gamepad1.right_stick_x;
@@ -167,7 +153,7 @@ public class nullTeleop extends OpMode {
     public void shootingSeq() {
         if (count == 0) {
             timeWait = 0;
-            timeSeq = this.time;
+            timeSeq = elapsed.time();
             count++;
         }
         if (count == 1) {

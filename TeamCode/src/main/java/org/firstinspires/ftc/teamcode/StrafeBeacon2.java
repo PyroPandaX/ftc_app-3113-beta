@@ -33,8 +33,7 @@ public class StrafeBeacon2 extends OpMode{
     BeaconColorResult result;
     boolean sawLine = false, sawLine2 = false, strafe = false;
     ModernRoboticsI2cGyro gyro;
-    int xVal, yVal, zVal, heading, angleZ, resetState;
-    int countWhite = 0, countPushed = 0;
+    int xVal, yVal, zVal, heading, angleZ, resetState, countWhite = 0, countPushed = 0;
     ElapsedTime elapsed = new ElapsedTime();
 
     public StrafeBeacon2()  {}

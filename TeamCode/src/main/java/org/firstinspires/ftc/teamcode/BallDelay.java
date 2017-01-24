@@ -6,27 +6,19 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Ball with Delay", group="NullBot")
-@Disabled
+@Autonomous(name="Ball with Delay", group="NullBot Shoot")
+//@Disabled
 public class BallDelay extends OpMode {
-    private int xVal, yVal, zVal;     // Gyro rate Values
-    private int heading;              // Gyro integrated heading
-    private int angleZ;
-    boolean lastResetState = false;
-    boolean curResetState = false;
-    public int resetState = 0, v_state = 0;
-
-    public BallDelay() {
-    }
-
-    ModernRoboticsI2cGyro gyro;
+    int xVal, yVal, zVal, heading, angleZ, resetState = 0, count = 0;
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
-    public double timeAuto = 0;
-    public double timeStart = 0;
-    public double time0, time1, time2, time3, time4, pos0, pos1, pos2, pos3, pos4 = 0;
-    public int count = 0;
-    Servo hold, push;
+    double timeAuto = 0;
+    Servo hold;
+    ModernRoboticsI2cGyro gyro;
+    ElapsedTime elapsed = new ElapsedTime();
+
+    public BallDelay() {}
 
     public void init() {
         motorRB = hardwareMap.dcMotor.get("motor_1");
@@ -39,8 +31,6 @@ public class BallDelay extends OpMode {
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
         shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        //push = hardwareMap.servo.get("push");
-
         gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         switch (resetState) {
             case 0:
@@ -58,15 +48,13 @@ public class BallDelay extends OpMode {
 
     @Override
     public void start() {
-        // defines timeStart as the timer at the start of autonomous to preserve an initial value
-        timeAuto = 0;
-        timeStart = this.time;
+        elapsed.reset();
     }
 
     @Override
     public void loop() {
         // time since autonomous began
-        timeAuto = this.time - timeStart - 10;
+        timeAuto = elapsed.time() - 10;
         heading = gyro.getHeading();
         angleZ = gyro.getIntegratedZValue();
         // get the x, y, and z values (rate of change of angle).

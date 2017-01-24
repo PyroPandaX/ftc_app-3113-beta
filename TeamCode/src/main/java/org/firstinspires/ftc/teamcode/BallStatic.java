@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 
@@ -19,25 +20,20 @@ import ftc.vision.ImageProcessorResult;
 /**
  * Created by Mac on 12/19/2016.
  */
-@Autonomous(name="Ball from Wall", group="NullBot Shoot")
+@Autonomous(name="Ball from Side", group="NullBot Shoot")
 //@Disabled
 public class BallStatic extends OpMode{
-    FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
-    double timeAuto = 0, timeStart = 0, timeLine = 0, timeColor = 0, timeCheck1 = 0, timeCheck2 = 0;
-    //ArrayList<Double> timeStep = new ArrayList<Double>();
-    Servo hold, push;
+    double timeAuto = 0;
+    Servo hold;
     byte[] colorCcache;
     I2cDevice colorC;
     I2cDeviceSynch colorCreader;
     BeaconColorResult result;
     boolean sawLine = false;
     ModernRoboticsI2cGyro gyro;
-    private int xVal, yVal, zVal;     // Gyro rate Values
-    private int heading;              // Gyro integrated heading
-    private int angleZ;
-    public int resetState;
-    int count = 0, countColor = 0, countWhite = 0, countZero = 0, shit;
+    int xVal, yVal, zVal, heading, angleZ, resetState, count = 0;
+    ElapsedTime elapsed = new ElapsedTime();
 
     public BallStatic()  {}
 
@@ -49,7 +45,6 @@ public class BallStatic extends OpMode{
         motorRB.setDirection(DcMotor.Direction.REVERSE);
         motorRF.setDirection(DcMotor.Direction.REVERSE);
         hold = hardwareMap.servo.get("hold");
-        push = hardwareMap.servo.get("push");
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
         shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -65,19 +60,17 @@ public class BallStatic extends OpMode{
                 if (!gyro.isCalibrating()) {
                     resetState++;
                 }
+                break;
             case 1:
-                telemetry.addData(">", "Wait 5 seconds and then press Start.");
+                telemetry.addData(">", "Gyro Calibrated.  Press Start.");
+                break;
         }
         hold.setPosition(1);
     }
 
     @Override
     public void start() {
-        // defines timeStart as the timer at the start of autonomous to preserve an initial value
-        timeAuto = 0;
-        timeLine = 0;
-        timeColor = 0;
-        timeStart = this.time;
+        elapsed.reset();
     }
 
     @Override
@@ -89,7 +82,7 @@ public class BallStatic extends OpMode{
         yVal = gyro.rawY();
         zVal = gyro.rawZ();
 
-        timeAuto = this.time - timeStart;
+        timeAuto = elapsed.time();
         colorCcache = colorCreader.read(0x04, 1);
 
         if (timeAuto < 1.5) {
