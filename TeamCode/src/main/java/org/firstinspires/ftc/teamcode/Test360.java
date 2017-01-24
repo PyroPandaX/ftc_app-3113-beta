@@ -17,14 +17,13 @@ import java.util.ArrayList;
 
 import ftc.vision.BeaconColorResult;
 import ftc.vision.FrameGrabber;
-import ftc.vision.ImageProcessorResult;
 
 /**
  * Created by Mac on 12/19/2016.
  */
-@Autonomous(name="Turn 45", group="NullBot")
-@Disabled
-public class Turn45 extends OpMode{
+@Autonomous(name="Test 360", group="Test")
+//@Disabled
+public class Test360 extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
     double timeAuto = 0, timeStart = 0, timeLine = 0;
@@ -41,11 +40,11 @@ public class Turn45 extends OpMode{
     private int angleZ;
     public int resetState;
 
-    public Turn45()  {}
+    public Test360()  {}
 
     public void init() {
-        motorRB = hardwareMap.dcMotor.get("motor_1");
-        motorRF = hardwareMap.dcMotor.get("motor_2");
+        motorRF = hardwareMap.dcMotor.get("motor_1");
+        motorRB = hardwareMap.dcMotor.get("motor_2");
         motorLB = hardwareMap.dcMotor.get("motor_3");
         motorLF = hardwareMap.dcMotor.get("motor_4");
         motorRB.setDirection(DcMotor.Direction.REVERSE);
@@ -79,8 +78,6 @@ public class Turn45 extends OpMode{
         timeAuto = 0;
         timeLine = 0;
         timeStart = this.time;
-        timeStep.add(31.0);
-        timeStep.add(31.0);
     }
 
     @Override
@@ -91,30 +88,24 @@ public class Turn45 extends OpMode{
         xVal = gyro.rawX();
         yVal = gyro.rawY();
         zVal = gyro.rawZ();
-        //idealAngle();
+
 
         timeAuto = this.time - timeStart;
 
-        colorCcache = colorCreader.read(0x04, 1);
-
-        if (timeAuto < 1.25) {
-            motorLB.setPower(-.2);
-            motorRB.setPower(.2);
-            motorLF.setPower(-.2);
-            motorRF.setPower(.2);
-        } else if (timeAuto > 1.25)   {
+        if (timeAuto < 5) {
             motorLB.setPower(0);
             motorRB.setPower(0);
             motorLF.setPower(0);
             motorRF.setPower(0);
         }
-
-
-        telemetry.addData("Result", result);
+        if (timeAuto > 5){
+            zero();
+        }
+        telemetry.addData("1", "Heading %03d", heading);
         telemetry.addData("1", "Int. Ang. %03d", angleZ);
         telemetry.update();
         //wait before quitting (quitting clears telemetry)
-        sleepCool(1);
+        //sleepCool(1);
     }
 
     //delay method below
@@ -128,6 +119,26 @@ public class Turn45 extends OpMode{
             sleepTime = wakeupTime - System.currentTimeMillis();
         }
     } //sleep
+
+    public boolean zero() {
+        if(angleZ > 2) {
+            motorLB.setPower(.2);
+            motorRB.setPower(-.2);
+            motorLF.setPower(.2);
+            motorRF.setPower(-.2);
+        } else if(angleZ < -2)  {
+            motorLB.setPower(-.2);
+            motorRB.setPower(.2);
+            motorLF.setPower(-.2);
+            motorRF.setPower(.2);
+        }
+
+        if(angleZ < 2 && angleZ > -2)   {
+            return true;
+        } else  {
+            return false;
+        }
+    }
 
     @Override
     public void stop() {}

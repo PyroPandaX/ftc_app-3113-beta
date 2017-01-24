@@ -10,10 +10,10 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@Autonomous(name="DemoTest", group="Demo Bot")
-@Disabled
-public class DemoTest extends OpMode {
-    final static double MOTOR_POWER = 0.2;
+@Autonomous(name="Test Motors", group="Test")
+//@Disabled
+public class TestMotors extends OpMode {
+    final static double MOTOR_POWER = 0.5;
     DcMotor motorRB, motorRF, motorLB, motorLF;
     //ColorSensor colorSensor;
     //float hsvValues[] = {0F,0F,0F};
@@ -24,7 +24,7 @@ public class DemoTest extends OpMode {
     //boolean bLedOn;
 
 
-    public DemoTest() {}
+    public TestMotors() {}
 
     public void init() {
         //bPrevState = false;

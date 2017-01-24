@@ -24,9 +24,9 @@ import ftc.vision.ImageProcessorResult;
 /**
  * Created by Mac on 12/19/2016.
  */
-@Autonomous(name="HitAndRun", group="NullBot")
-@Disabled
-public class HitAndRun extends OpMode{
+@Autonomous(name="TestWhiteLine", group="Test")
+//@Disabled
+public class TestWhiteLine extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
     double timeAuto = 0, timeStart = 0, timeLine = 0;
@@ -35,9 +35,9 @@ public class HitAndRun extends OpMode{
     I2cDevice colorC;
     I2cDeviceSynch colorCreader;
     BeaconColorResult result;
-    boolean sawLine = false;
+    boolean bool = false;
 
-    public HitAndRun()  {}
+    public TestWhiteLine()  {}
 
     public void init() {
         motorRB = hardwareMap.dcMotor.get("motor_1");
@@ -72,24 +72,17 @@ public class HitAndRun extends OpMode{
         colorCcache = colorCreader.read(0x04, 1);
 
         if(colorCcache[0] > 6) {
-            sawLine = true;
-            motorLB.setPower(0);
-            motorRB.setPower(0);
-            motorLF.setPower(0);
-            motorRF.setPower(0);
+            bool = true;
         } else  {
-            motorLB.setPower(.2);
-            motorRB.setPower(.2);
-            motorLF.setPower(.2);
-            motorRF.setPower(.2);
-            sawLine = false;
+            bool = false;
         }
 
         telemetry.addData("Result", result);
-        telemetry.addData("White", sawLine);
+        telemetry.addData("#C", colorCcache[0] & 0xFF);
+        telemetry.addData("White people be like", bool);
         telemetry.update();
         //wait before quitting (quitting clears telemetry)
-        sleepCool(1);
+        sleepCool(1000);
     }
 
     //delay method below

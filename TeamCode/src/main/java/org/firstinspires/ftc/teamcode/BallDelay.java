@@ -49,8 +49,10 @@ public class BallDelay extends OpMode {
                 if (!gyro.isCalibrating()) {
                     resetState++;
                 }
+                break;
             case 1:
                 telemetry.addData(">", "Gyro Calibrated.  Press Start.");
+                break;
         }
     }
 

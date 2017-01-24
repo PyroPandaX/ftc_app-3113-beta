@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 
@@ -20,7 +21,7 @@ import ftc.vision.ImageProcessorResult;
 
 @Autonomous(name="StrafeGabe", group="NullBot Beacon")
 //@Disabled
-public class TestGabe extends OpMode{
+public class StrafeBeacon3 extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
     double timeAuto, timeStart, timeLine, timeColor, timeLine2, timeColor2, timePushed;
@@ -33,9 +34,10 @@ public class TestGabe extends OpMode{
     boolean sawLine = false, sawLine2 = false, strafe = false;
     ModernRoboticsI2cGyro gyro;
     int xVal, yVal, zVal, heading, angleZ, resetState;
-    int countColor = 0, countWhite = 0, countZero = 0, countWhite2 = 0, countZero2 = 0, countPushed = 0, countColor2 = 0;
+    int countWhite = 0, countPushed = 0;
+    ElapsedTime elapsed = new ElapsedTime();
 
-    public TestGabe()  {}
+    public StrafeBeacon3()  {}
 
     public void init() {
         motorRF = hardwareMap.dcMotor.get("motor_1");
@@ -72,7 +74,7 @@ public class TestGabe extends OpMode{
     @Override
     public void start() {
         // defines timeStart as the timer at the start of autonomous to preserve an initial value
-        timeStart = this.time;
+        elapsed.reset();
     }
 
     @Override
@@ -84,7 +86,7 @@ public class TestGabe extends OpMode{
         yVal = gyro.rawY();
         zVal = gyro.rawZ();
 
-        timeAuto = this.time - timeStart;
+        timeAuto = elapsed.time();
         colorCcache = colorCreader.read(0x04, 1);
 
         if (timeAuto < 1.5) {
@@ -137,7 +139,7 @@ public class TestGabe extends OpMode{
                 result = (BeaconColorResult) imageProcessorResult.getResult();
                 BeaconColorResult.BeaconColor leftColor = result.getLeftColor();
                 BeaconColorResult.BeaconColor rightColor = result.getRightColor();
-                timeStep.add(this.time);
+                timeStep.add(elapsed.time());
                 timeColor = this.time - timeStep.get(0);
                 if (leftColor.toString().equals("RED") || rightColor.toString().equals("BLUE")) {
                     if (timeColor < .5) {
@@ -273,7 +275,6 @@ public class TestGabe extends OpMode{
 //                }
             }
 
-
         telemetry.addData("Result", result);
         telemetry.addData("", "Int. Ang. %03d", angleZ);
         telemetry.addData("White", sawLine);
@@ -313,6 +314,11 @@ public class TestGabe extends OpMode{
         } else  {
             return false;
         }
+    }
+
+    public void move(double power, String direction, double time)   {
+        final double MOVE_START = elapsed.time();
+
     }
 
     @Override
