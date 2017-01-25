@@ -28,13 +28,13 @@ public class nullTeleop extends OpMode {
         shoot = hardwareMap.dcMotor.get("shoot");
         shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         hold = hardwareMap.servo.get("hold");
+        hold.setPosition(1);
     }
 
     @Override
     public void start() {
         //following initializes the timer variable and initializes the servo position
         elapsed.reset();
-        hold.setPosition(1);
     }
 
     @Override

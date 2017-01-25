@@ -97,7 +97,7 @@ public class Ball extends OpMode {
         }
 
         telemetry.addData("Text", "*** Robot Data***");
-        telemetry.addData("time", "elapsed time: " + Double.toString(timeAuto));
+        telemetry.addData("Time", "elapsed time: " + Double.toString(elapsed.time()));
         telemetry.addData("0", "Heading %03d", heading);
         telemetry.addData("1", "Int. Ang. %03d", angleZ);
         telemetry.addData("2", "X av. %03d", xVal);

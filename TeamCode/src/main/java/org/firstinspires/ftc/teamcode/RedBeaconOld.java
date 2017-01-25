@@ -22,7 +22,7 @@ import ftc.vision.ImageProcessorResult;
 
 @Autonomous(name="StrafeRed", group="NullBot Beacon")
 @Disabled
-public class StrafeBeacon extends OpMode{
+public class RedBeaconOld extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
     double timeAuto, timeStart, timeLine, timeColor, timeLine2, timeColor2, timePushed;
@@ -37,7 +37,7 @@ public class StrafeBeacon extends OpMode{
     int xVal, yVal, zVal, heading, angleZ, resetState;
     int countColor = 0, countWhite = 0, countZero = 0, countWhite2 = 0, countZero2 = 0, countPushed = 0, countColor2 = 0;
 
-    public StrafeBeacon()  {}
+    public RedBeaconOld()  {}
 
     public void init() {
         motorRF = hardwareMap.dcMotor.get("motor_1");

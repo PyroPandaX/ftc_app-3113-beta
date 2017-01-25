@@ -53,6 +53,7 @@ public class BallDelay extends OpMode {
 
     @Override
     public void loop() {
+        sleepCool(10000);
         // time since autonomous began
         timeAuto = elapsed.time() - 10;
         heading = gyro.getHeading();
@@ -92,13 +93,25 @@ public class BallDelay extends OpMode {
         }
 
         telemetry.addData("Text", "*** Robot Data***");
-        telemetry.addData("time", "elapsed time: " + Double.toString(timeAuto));
+        telemetry.addData("Time", "elapsed time: " + Double.toString(elapsed.time()));
         telemetry.addData("0", "Heading %03d", heading);
         telemetry.addData("1", "Int. Ang. %03d", angleZ);
         telemetry.addData("2", "X av. %03d", xVal);
         telemetry.addData("3", "Y av. %03d", yVal);
         telemetry.addData("4", "Z av. %03d", zVal);
         telemetry.addData("5", "resetState %03d", resetState);
+    }
+
+    //delay method below
+    public static void sleepCool(long sleepTime)    {
+        long wakeupTime = System.currentTimeMillis() + sleepTime;
+        while (sleepTime > 0) {
+            try {
+                Thread.sleep(sleepTime);
+            }
+            catch (InterruptedException e) {}
+            sleepTime = wakeupTime - System.currentTimeMillis();
+        }
     }
 
     @Override

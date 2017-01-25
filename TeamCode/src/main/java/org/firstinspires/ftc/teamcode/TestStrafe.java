@@ -23,7 +23,7 @@ import ftc.vision.ImageProcessorResult;
 /**
  * Created by Mac on 12/19/2016.
  */
-@Autonomous(name="Test Strafe 45 degrees", group="Test")
+@Autonomous(name="Test Strafe", group="Test")
 //@Disabled
 public class TestStrafe extends OpMode  {
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;

@@ -5,18 +5,18 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="Encoder TeleOp", group="Teleop")
-@Disabled
+//@Disabled
 public class nullTeleopEncoder extends OpMode {
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
-    public double joyRadius, right, left, rightX, leftX, LF_Power, RF_Power, RB_Power,
-            LB_Power, LF_Per, LB_Per, RB_Per, RF_Per, rawTotal, timeAuto, timeStart, timeWait, timeSeq;
-    public int loopControl, count;
-    ;
-    Servo hold, push;
-    public boolean seq = true;
+    double joyRadius, right, left, rightX, leftX, LF_Power, RF_Power, RB_Power,
+            LB_Power, LF_Per, LB_Per, RB_Per, RF_Per, rawTotal, timeWait, timeSeq;
+    int count;
+    Servo hold;
+    ElapsedTime elapsed = new ElapsedTime();
 
     public nullTeleopEncoder() {}
 
@@ -27,35 +27,20 @@ public class nullTeleopEncoder extends OpMode {
         motorLF = hardwareMap.dcMotor.get("motor_4");
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
-        push = hardwareMap.servo.get("push");
-
-        //below is the PID control implemented
         shoot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hold = hardwareMap.servo.get("hold");
+        hold.setPosition(1);
     }
 
     @Override
     public void start() {
-        //following initializes the timer variable and initializes the servo position
-        timeAuto = 0;
-        timeStart = this.time;
-        hold.setPosition(1);
-        push.setPosition(0);
+        elapsed.reset();
     }
 
     @Override
     public void loop() {
-        timeWait = this.time - timeSeq;
+        timeWait = elapsed.time() - timeSeq;
 
-        if(gamepad1.a)  {
-            push.setPosition(0);
-        } else if(gamepad1.b)   {
-            push.setPosition(1);
-        }
-        if(gamepad1.right_trigger > 0)
-            push.setDirection(Servo.Direction.FORWARD);
-        else if(gamepad1.left_trigger > 0)
-            push.setDirection(Servo.Direction.REVERSE);
         right = gamepad1.left_stick_y;
         left = gamepad1.right_stick_y;
         leftX = gamepad1.right_stick_x;
@@ -170,10 +155,9 @@ public class nullTeleopEncoder extends OpMode {
     public void shootingSeq() {
         if (count == 0) {
             timeWait = 0;
-            timeSeq = this.time;
+            timeSeq = elapsed.time();
             count++;
         }
-
         if (count == 1) {
             spin.setMaxSpeed(0);
             hold.setPosition(1);
@@ -205,9 +189,7 @@ public class nullTeleopEncoder extends OpMode {
         spin.setPower(.6);
     }*/
 
-    public void autoCollect() {
-
-    }
+    public void autoCollect() {}
 
     @Override
     public void stop() {

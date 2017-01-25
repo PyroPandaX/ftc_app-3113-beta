@@ -12,10 +12,10 @@ import ftc.vision.ImageProcessorResult;
 /**
  * Created by Mac on 12/19/2016.
  */
-@Autonomous(name="Colors", group="NullBot")
-@Disabled
-public class DetectColors extends OpMode{
-        FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
+@Autonomous(name="Test Colors", group="Test")
+//@Disabled
+public class TestColors extends OpMode{
+    FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
 
     public void init() {}
 
@@ -28,13 +28,9 @@ public class DetectColors extends OpMode{
         while (!frameGrabber.isResultReady()) { //Wait for the result
             sleepCool(5); //sleep for 5 milliseconds
         }
-
         //Get the result
         ImageProcessorResult imageProcessorResult = frameGrabber.getResult();
         BeaconColorResult result = (BeaconColorResult) imageProcessorResult.getResult();
-
-        BeaconColorResult.BeaconColor leftColor = result.getLeftColor();
-        BeaconColorResult.BeaconColor rightColor = result.getRightColor();
 
         telemetry.addData("Result", result);
         telemetry.update();

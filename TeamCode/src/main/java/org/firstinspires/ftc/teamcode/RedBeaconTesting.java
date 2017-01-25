@@ -19,24 +19,24 @@ import ftc.vision.BeaconColorResult;
 import ftc.vision.FrameGrabber;
 import ftc.vision.ImageProcessorResult;
 
-@Autonomous(name="Beacon Testing", group="NullBot Beacon")
+@Autonomous(name="Red Beacon Testing", group="NullBot Beacon")
 //@Disabled
-public class StrafeBeacon3 extends OpMode{
+public class RedBeaconTesting extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
-    double timeAuto, timeStart, timeColor;
-    ArrayList<Double> timeStep = new ArrayList<Double>();
+    double timeAuto, timeColor;
+    ArrayList<Double> timeStep = new ArrayList<>();
     Servo hold;
     byte[] colorCcache;
     I2cDevice colorC;
     I2cDeviceSynch colorCreader;
     BeaconColorResult result;
-    boolean sawLine = false, sawLine2 = false, strafe = false;
+    boolean sawLine = false, strafe = false;
     ModernRoboticsI2cGyro gyro;
     int xVal, yVal, zVal, heading, angleZ, resetState, countWhite = 0, countPushed = 0;
     ElapsedTime elapsed = new ElapsedTime();
 
-    public StrafeBeacon3()  {}
+    public RedBeaconTesting()  {}
 
     public void init() {
         motorRF = hardwareMap.dcMotor.get("motor_1");
@@ -54,6 +54,11 @@ public class StrafeBeacon3 extends OpMode{
         colorCreader.engage();
         colorCreader.write8(3, 0);
         gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
+        hold.setPosition(1);
+    }
+
+    @Override
+    public void start() {
         switch (resetState) {
             case 0:
                 telemetry.addData(">", "Gyro Calibrating. Do Not move!" + resetState);
@@ -66,12 +71,6 @@ public class StrafeBeacon3 extends OpMode{
                 telemetry.addData(">", "Gyro Calibrated.  Press Start.");
                 break;
         }
-        hold.setPosition(1);
-    }
-
-    @Override
-    public void start() {
-        // defines timeStart as the timer at the start of autonomous to preserve an initial value
         elapsed.reset();
     }
 
@@ -93,10 +92,7 @@ public class StrafeBeacon3 extends OpMode{
             spin.setPower(.6);
         } else if (timeAuto > 5.5 && timeAuto < 10) {
             resetShoot();
-            motorLB.setPower(.7);
-            motorRB.setPower(0);
-            motorLF.setPower(0);
-            motorRF.setPower(.7);
+            strafe(.7, "45", "FORWARD_LEFT");
         } else if (timeAuto > 10 && timeAuto < 11 && zero()) {
             straight(-.2);
         } else if (!sawLine) {
@@ -122,134 +118,27 @@ public class StrafeBeacon3 extends OpMode{
                 BeaconColorResult.BeaconColor leftColor = result.getLeftColor();
                 BeaconColorResult.BeaconColor rightColor = result.getRightColor();
                 timeStep.add(elapsed.time());
-                timeColor = this.time - timeStep.get(0);
-                if (leftColor.toString().equals("RED") || rightColor.toString().equals("BLUE")) {
+                timeColor = elapsed.time() - timeStep.get(0);
+                if (leftColor.toString().equals("RED") || rightColor.toString().equals("BLUE") && !rightColor.toString().equals("RED")) {
                     if (timeColor < .5) {
-                        motorLB.setPower(.7);
-                        motorRB.setPower(-.7);
-                        motorLF.setPower(-.7);
-                        motorRF.setPower(.7);
+                        strafe(.7, "90", "LEFT");
                     } else if (timeColor > .5 && timeColor < 4.5) {
-                        motorLB.setPower(-.7);
-                        motorRB.setPower(.7);
-                        motorLF.setPower(.7);
-                        motorRF.setPower(-.7);
+                        strafe(.7, "90", "RIGHT");
                     } else  {
                         stopDrive();
                     }
-                } else if (leftColor.toString().equals("BLUE") || rightColor.toString().equals("RED")) {
-
+                } else if (leftColor.toString().equals("BLUE") || rightColor.toString().equals("RED") && !leftColor.toString().equals("RED")) {
                     if (timeColor < .5) {
                         straight(.2);
                     } else if (timeColor > .5 && timeColor < 1) {
-                        motorLB.setPower(.7);
-                        motorRB.setPower(-.7);
-                        motorLF.setPower(-.7);
-                        motorRF.setPower(.7);
+                        strafe(.7, "90", "LEFT");
                     } else if (timeColor > 1 && timeColor < 1.5) {
-                        motorLB.setPower(-.7);
-                        motorRB.setPower(.7);
-                        motorLF.setPower(.7);
-                        motorRF.setPower(-.7);
+                        strafe(.7, "90", "RIGHT");
                     } else  {
                         stopDrive();
                     }
                 }
             strafe = false;
-
-
-//                if (leftColor.toString().equals("RED") && rightColor.toString().equals("RED")) {
-//                    if (countPushed == 0 && zero()) {
-//                        timeStep.add(timeAuto);
-//                        countPushed++;
-//                    }
-//                }
-                //timePushed = this.time - timeStep.get(3);
-//                if (countPushed == 1) {
-//                      if(timePushed < .5) {
-//                          motorLB.setPower(.2);
-//                          motorRB.setPower(.2);
-//                          motorLF.setPower(.2);
-//                          motorRF.setPower(.2);
-//                      }
-//                    else if (timePushed > .5) {
-//                        if (!sawLine2) {
-//                            if (colorCcache[0] > 6) {
-//                                motorLB.setPower(0);
-//                                motorRB.setPower(0);
-//                                motorLF.setPower(0);
-//                                motorRF.setPower(0);
-//                                if (countWhite2 == 0) {
-//                                    sawLine = true;
-//                                    countWhite2++;
-//                                }
-//                            } else {
-//                                motorLB.setPower(.2);
-//                                motorRB.setPower(.2);
-//                                motorLF.setPower(.2);
-//                                motorRF.setPower(.2);
-//                            }
-//                        }
-//                    }
-//                }
-//                if (sawLine2) {
-//                    if (zero() && countZero2 == 0) {
-//                        timeStep.add(this.time);
-//                        countZero2++;
-//                    }
-//                    if (countZero2 == 1) {
-//                        timeLine2 = this.time - timeStep.get(4);
-//                        frameGrabber.grabSingleFrame();
-//                        while (!frameGrabber.isResultReady()) {
-//                            sleepCool(5); //sleep for 5 milliseconds
-//                        }
-//                        ImageProcessorResult imageProcessorResult2 = frameGrabber.getResult();
-//                        result = (BeaconColorResult) imageProcessorResult.getResult();
-//                        BeaconColorResult.BeaconColor leftColor2 = result.getLeftColor();
-//                        BeaconColorResult.BeaconColor rightColor2 = result.getRightColor();
-//
-//                        if (leftColor.toString().equals("RED")) {
-//                            if (countColor2 == 0) {
-//                                timeStep.add(this.time);
-//                                countColor2++;
-//                            }
-//                            timeColor2 = this.time - timeStep.get(5);
-//                            if (timeColor2 < 1.5) {
-//                                motorLB.setPower(.7);
-//                                motorRB.setPower(-.7);
-//                                motorLF.setPower(-.7);
-//                                motorRF.setPower(.7);
-//                            } else if (timeColor2 > 1.5 && timeColor2 < 3) {
-//                                motorLB.setPower(-.7);
-//                                motorRB.setPower(.7);
-//                                motorLF.setPower(.7);
-//                                motorRF.setPower(-.7);
-//                            }
-//                        } else if (leftColor.toString().equals("BLUE")) {
-//                            if (countColor2 == 0) {
-//                                timeStep.add(this.time);
-//                                countColor2++;
-//                            }
-//                            timeColor2 = this.time - timeStep.get(4);
-//                            if (timeColor2 < .5) {
-//                                motorLB.setPower(.2);
-//                                motorRB.setPower(.2);
-//                                motorLF.setPower(.2);
-//                                motorRF.setPower(.2);
-//                            } else if (timeColor2 > .5 && timeColor2 < 2) {
-//                                motorLB.setPower(.7);
-//                                motorRB.setPower(-.7);
-//                                motorLF.setPower(-.7);
-//                                motorRF.setPower(.7);
-//                            } else if (timeColor2 > 2 && timeColor2 < 3.5) {
-//                                motorLB.setPower(-.7);
-//                                motorRB.setPower(.7);
-//                                motorLF.setPower(.7);
-//                                motorRF.setPower(-.7);
-//                            }
-//                        }
-//                    }
-//                }
             }
 
         telemetry.addData("Result", result);
@@ -271,7 +160,7 @@ public class StrafeBeacon3 extends OpMode{
             catch (InterruptedException e) {}
             sleepTime = wakeupTime - System.currentTimeMillis();
         }
-    } //sleep
+    }
 
     boolean zero() {
         if(angleZ > 2) {
@@ -279,17 +168,11 @@ public class StrafeBeacon3 extends OpMode{
         } else if(angleZ < -2)  {
             turn(.2, "RIGHT");
         }
-
         if(angleZ < 5 && angleZ > -5)   {
             return true;
         } else  {
             return false;
         }
-    }
-
-    void move(double power, String direction, double time)   {
-        final double MOVE_START = elapsed.time();
-
     }
 
     void straight(double power) {
@@ -312,6 +195,16 @@ public class StrafeBeacon3 extends OpMode{
         spin.setPower(0);
     }
 
+    void resetRobot()   {
+        motorLB.setPower(0);
+        motorRB.setPower(0);
+        motorLF.setPower(0);
+        motorRF.setPower(0);
+        hold.setPosition(1);
+        shoot.setPower(0);
+        spin.setPower(0);
+    }
+
     void turn(double power, String direction) {
         if(direction.equals("LEFT")) {
             motorLB.setPower(-power);
@@ -326,8 +219,42 @@ public class StrafeBeacon3 extends OpMode{
         }
     }
 
-    void strafe()   {
-
+    void strafe(double power, String angle, String direction)   {
+        if(angle.equals("90"))  {
+            if(direction.equals("LEFT"))    {
+                motorLB.setPower(power);
+                motorRB.setPower(-power);
+                motorLF.setPower(-power);
+                motorRF.setPower(power);
+            } else if(direction.equals("RIGHT"))    {
+                motorLB.setPower(-power);
+                motorRB.setPower(power);
+                motorLF.setPower(power);
+                motorRF.setPower(-power);
+            }
+        } else if(angle.equals("45"))   {
+            if(direction.equals("FORWARD_LEFT"))    {
+                motorLB.setPower(power);
+                motorRB.setPower(0);
+                motorLF.setPower(0);
+                motorRF.setPower(power);
+            } else if(direction.equals("FORWARD_RIGHT"))    {
+                motorLB.setPower(0);
+                motorRB.setPower(power);
+                motorLF.setPower(power);
+                motorRF.setPower(0);
+            } else if(direction.equals("BACKWARD_LEFT"))    {
+                motorLB.setPower(-power);
+                motorRB.setPower(0);
+                motorLF.setPower(0);
+                motorRF.setPower(-power);
+            } else if(direction.equals("BACKWARD_RIGHT"))    {
+                motorLB.setPower(0);
+                motorRB.setPower(-power);
+                motorLF.setPower(-power);
+                motorRF.setPower(0);
+            }
+        }
     }
 
     void curve()    {}

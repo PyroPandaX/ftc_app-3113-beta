@@ -5,28 +5,29 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.I2cDevice;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
+
+import java.util.ArrayList;
+
+import ftc.vision.BeaconColorResult;
+import ftc.vision.FrameGrabber;
 
 @Autonomous(name="Test Shooter with Encoder", group="Test")
 //@Disabled
 public class TestShooterEncoder extends OpMode {
-    private int xVal, yVal, zVal;     // Gyro rate Values
-    private int heading;              // Gyro integrated heading
-    private int angleZ;
-    boolean lastResetState = false;
-    boolean curResetState = false;
-    public int resetState = 0, v_state = 0;
-
-    public TestShooterEncoder() {
-    }
-
-    ModernRoboticsI2cGyro gyro;
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
-    public double timeAuto = 0;
-    public double timeStart = 0;
-    public double time0, time1, time2, time3, time4, pos0, pos1, pos2, pos3, pos4 = 0;
-    public int count = 0;
-    Servo hold, push;
+    double timeAuto;
+    Servo hold;
+    ModernRoboticsI2cGyro gyro;
+    int xVal, yVal, zVal, heading, angleZ, resetState;
+    ElapsedTime elapsed = new ElapsedTime();
+
+    public TestShooterEncoder() {}
 
     public void init() {
         motorRB = hardwareMap.dcMotor.get("motor_1");
@@ -39,7 +40,6 @@ public class TestShooterEncoder extends OpMode {
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
         shoot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //push = hardwareMap.servo.get("push");
 
         gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         switch (resetState) {
@@ -58,15 +58,13 @@ public class TestShooterEncoder extends OpMode {
 
     @Override
     public void start() {
-        // defines timeStart as the timer at the start of autonomous to preserve an initial value
-        timeAuto = 0;
-        timeStart = this.time;
+        elapsed.reset();
     }
 
     @Override
     public void loop() {
         // time since autonomous began
-        timeAuto = this.time - timeStart;
+        timeAuto = elapsed.time();
         heading = gyro.getHeading();
         angleZ = gyro.getIntegratedZValue();
         // get the x, y, and z values (rate of change of angle).
@@ -74,7 +72,7 @@ public class TestShooterEncoder extends OpMode {
         yVal = gyro.rawY();
         zVal = gyro.rawZ();
 
-        shoot.setMaxSpeed(100);
+        shoot.setMaxSpeed(2000);
         shoot.setPower(.35);
 
         telemetry.addData("Text", "*** Robot Data***");

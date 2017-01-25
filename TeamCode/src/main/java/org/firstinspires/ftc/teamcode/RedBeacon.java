@@ -19,13 +19,13 @@ import ftc.vision.BeaconColorResult;
 import ftc.vision.FrameGrabber;
 import ftc.vision.ImageProcessorResult;
 
-@Autonomous(name="Beacon", group="NullBot Beacon")
+@Autonomous(name="Red Beacon", group="NullBot Beacon")
 //@Disabled
-public class StrafeBeacon2 extends OpMode{
+public class RedBeacon extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
     double timeAuto, timeColor;
-    ArrayList<Double> timeStep = new ArrayList<Double>();
+    ArrayList<Double> timeStep = new ArrayList<>();
     Servo hold;
     byte[] colorCcache;
     I2cDevice colorC;
@@ -36,7 +36,7 @@ public class StrafeBeacon2 extends OpMode{
     int xVal, yVal, zVal, heading, angleZ, resetState, countWhite = 0, countPushed = 0;
     ElapsedTime elapsed = new ElapsedTime();
 
-    public StrafeBeacon2()  {}
+    public RedBeacon()  {}
 
     public void init() {
         motorRF = hardwareMap.dcMotor.get("motor_1");
@@ -294,7 +294,7 @@ public class StrafeBeacon2 extends OpMode{
             catch (InterruptedException e) {}
             sleepTime = wakeupTime - System.currentTimeMillis();
         }
-    } //sleep
+    }
 
     public boolean zero() {
         if(angleZ > 2) {

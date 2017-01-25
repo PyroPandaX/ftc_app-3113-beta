@@ -20,7 +20,7 @@ import ftc.vision.ImageProcessorResult;
 /**
  * Created by Mac on 12/19/2016.
  */
-@Autonomous(name="Ball from Side", group="NullBot Shoot")
+@Autonomous(name="Ball Static", group="NullBot Shoot")
 //@Disabled
 public class BallStatic extends OpMode{
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
