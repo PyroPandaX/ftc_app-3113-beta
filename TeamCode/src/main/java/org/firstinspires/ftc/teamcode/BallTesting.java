@@ -14,12 +14,9 @@ import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity
 import java.util.ArrayList;
 import ftc.vision.*;
 
-/*
-code description
- */
-@Autonomous(name="Red Beacon Testing", group="NullBot Beacon")
+@Autonomous(name="Ball Testing", group="NullBot Shoot")
 //@Disabled
-public class RedBeaconTesting extends OpMode{
+public class BallTesting extends OpMode {
     //hardware variables
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot; //add lift motors here
     Servo hold;
@@ -38,11 +35,11 @@ public class RedBeaconTesting extends OpMode{
     //counters
     int pushed = 0, step = 0;
     //standard powers
-    final double STRAFE_POWER = .7, DRIVE_POWER = .2, SHOOT_POWER = .6, CONVEYOR_POWER = .6;
+    final double STRAFE_POWER = .7, DRIVE_POWER = .5, SHOOT_POWER = .5, CONVEYOR_POWER = .6;
     //standard servo positions
     final double UP_POSITION = .5, DOWN_POSITION = 1;
 
-    public RedBeaconTesting()  {}
+    public BallTesting()  {}
 
     public void init() {
         //hardware config
@@ -97,59 +94,15 @@ public class RedBeaconTesting extends OpMode{
         zVal = gyro.rawZ();
         colorCcache = colorCreader.read(0x04, 1);
 
-        if(shoot(2, SHOOT_POWER, CONVEYOR_POWER) && step == 0)
+        if(move("STRAIGHT", .8, DRIVE_POWER, "", "") && step == 0)
             step++;
-        else if(move("STRAFE", 5.5, STRAFE_POWER, "45", "FORWARD_LEFT") && step == 1)
+        else if(shoot(2, SHOOT_POWER, CONVEYOR_POWER) && step == 1)
             step++;
-        else if(turnToAngle(0) && step == 2)
+        else if(move("STRAIGHT", 2, DRIVE_POWER, "", "") && step == 2)
             step++;
-        else if(move("STRAIGHT", 1, -DRIVE_POWER, "", "") && step == 3)
+        else if(move("STRAIGHT", 1, DRIVE_POWER, "", "") && step == 3)
             step++;
-        else if(step == 4 && pushed <= 1) {
-            if(white()) {
-                resetDrive();
-                timeStep.clear();
-                step++;
-            } else {
-                straight(.2);
-            }
-        } else if(pushed > 1)   {
-            step = 6;
-        } else if(step == 5) {
-            frameGrabber.grabSingleFrame();
-            while (!frameGrabber.isResultReady()) {
-                sleepCool(5);
-            }
-            ImageProcessorResult imageProcessorResult = frameGrabber.getResult();
-            result = (BeaconColorResult) imageProcessorResult.getResult();
-            BeaconColorResult.BeaconColor leftColor = result.getLeftColor();
-            BeaconColorResult.BeaconColor rightColor = result.getRightColor();
-            if (leftColor.toString().equals("RED") || rightColor.toString().equals("BLUE") && !rightColor.toString().equals("RED")) {
-                if (displacement < .5) {
-                    strafe(STRAFE_POWER, "90", "LEFT");
-                } else if (displacement > .5 && displacement < 1) {
-                    strafe(STRAFE_POWER, "90", "RIGHT");
-                } else  {
-                    resetDrive();
-                    timeStep.clear();
-                    pushed++;
-                    step = 4;
-                }
-            } else if (leftColor.toString().equals("BLUE") || rightColor.toString().equals("RED") && !leftColor.toString().equals("RED")) {
-                if (displacement < .5) {
-                    straight(DRIVE_POWER);
-                } else if (displacement > .5 && displacement < 1) {
-                    strafe(STRAFE_POWER, "90", "LEFT");
-                } else if (displacement > 1 && displacement < 1.5) {
-                    strafe(STRAFE_POWER, "90", "RIGHT");
-                } else  {
-                    resetDrive();
-                    timeStep.clear();
-                    pushed++;
-                    step = 4;
-                }
-            }
-        } else if(step == 6)    {
+        else if(step == 4)    {
             resetRobot();
         }
 
@@ -332,4 +285,3 @@ public class RedBeaconTesting extends OpMode{
     @Override
     public void stop() {}
 }
-
