@@ -24,9 +24,9 @@ import ftc.vision.ImageProcessorResult;
 public class StrafeBeacon2 extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
-    double timeAuto, timeStart, timeLine, timeColor, timeLine2, timeColor2, timePushed;
+    double timeAuto, timeColor;
     ArrayList<Double> timeStep = new ArrayList<Double>();
-    Servo hold, push;
+    Servo hold;
     byte[] colorCcache;
     I2cDevice colorC;
     I2cDeviceSynch colorCreader;
@@ -46,7 +46,6 @@ public class StrafeBeacon2 extends OpMode{
         motorRB.setDirection(DcMotor.Direction.REVERSE);
         motorRF.setDirection(DcMotor.Direction.REVERSE);
         hold = hardwareMap.servo.get("hold");
-        push = hardwareMap.servo.get("push");
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
         shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -54,7 +53,13 @@ public class StrafeBeacon2 extends OpMode{
         colorCreader = new I2cDeviceSynchImpl(colorC, I2cAddr.create8bit(0x3c), false);
         colorCreader.engage();
         colorCreader.write8(3, 0);
-        gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
+        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
+        hold.setPosition(1);
+    }
+
+    @Override
+    public void start() {
+        //test this switch here
         switch (resetState) {
             case 0:
                 telemetry.addData(">", "Gyro Calibrating. Do Not move!" + resetState);
@@ -67,12 +72,7 @@ public class StrafeBeacon2 extends OpMode{
                 telemetry.addData(">", "Gyro Calibrated.  Press Start.");
                 break;
         }
-        hold.setPosition(1);
-    }
-
-    @Override
-    public void start() {
-        // defines timeStart as the timer at the start of autonomous to preserve an initial value
+        //want to see if it works
         elapsed.reset();
     }
 
@@ -94,10 +94,10 @@ public class StrafeBeacon2 extends OpMode{
             motorLF.setPower(0);
             motorRF.setPower(0);
             hold.setPosition(.5);
-            shoot.setPower(.6);
+            shoot.setPower(.65);
         } else if (timeAuto > 1.5 && timeAuto < 5.5) {
             spin.setPower(.6);
-        } else if (timeAuto > 5.5 && timeAuto < 10) {
+        } else if (timeAuto > 5.5 && timeAuto < 12) {
             hold.setPosition(1);
             shoot.setPower(0);
             spin.setPower(0);
@@ -105,7 +105,7 @@ public class StrafeBeacon2 extends OpMode{
             motorRB.setPower(0);
             motorLF.setPower(0);
             motorRF.setPower(.7);
-        } else if (timeAuto > 10 && timeAuto < 11 && zero()) {
+        } else if (timeAuto > 12 && timeAuto < 13 && zero()) {
             motorLB.setPower(-.2);
             motorRB.setPower(-.2);
             motorLF.setPower(-.2);

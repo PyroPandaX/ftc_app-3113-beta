@@ -24,9 +24,9 @@ import ftc.vision.ImageProcessorResult;
 public class StrafeBeacon3 extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
-    double timeAuto, timeStart, timeLine, timeColor, timeLine2, timeColor2, timePushed;
+    double timeAuto, timeStart, timeColor;
     ArrayList<Double> timeStep = new ArrayList<Double>();
-    Servo hold, push;
+    Servo hold;
     byte[] colorCcache;
     I2cDevice colorC;
     I2cDeviceSynch colorCreader;
@@ -45,7 +45,6 @@ public class StrafeBeacon3 extends OpMode{
         motorLF = hardwareMap.dcMotor.get("motor_4");
         motorRB.setDirection(DcMotor.Direction.REVERSE);
         motorRF.setDirection(DcMotor.Direction.REVERSE);
-        push = hardwareMap.servo.get("push");
         hold = hardwareMap.servo.get("hold");
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
@@ -84,48 +83,32 @@ public class StrafeBeacon3 extends OpMode{
         xVal = gyro.rawX();
         yVal = gyro.rawY();
         zVal = gyro.rawZ();
-
         timeAuto = elapsed.time();
         colorCcache = colorCreader.read(0x04, 1);
 
         if (timeAuto < 1.5) {
-            motorLB.setPower(0);
-            motorRB.setPower(0);
-            motorLF.setPower(0);
-            motorRF.setPower(0);
             hold.setPosition(.5);
             shoot.setPower(.6);
         } else if (timeAuto > 1.5 && timeAuto < 5.5) {
             spin.setPower(.6);
         } else if (timeAuto > 5.5 && timeAuto < 10) {
-            hold.setPosition(1);
-            shoot.setPower(0);
-            spin.setPower(0);
+            resetShoot();
             motorLB.setPower(.7);
             motorRB.setPower(0);
             motorLF.setPower(0);
             motorRF.setPower(.7);
         } else if (timeAuto > 10 && timeAuto < 11 && zero()) {
-            motorLB.setPower(-.2);
-            motorRB.setPower(-.2);
-            motorLF.setPower(-.2);
-            motorRF.setPower(-.2);
+            straight(-.2);
         } else if (!sawLine) {
             if (colorCcache[0] > 6) {
-                motorLB.setPower(0);
-                motorRB.setPower(0);
-                motorLF.setPower(0);
-                motorRF.setPower(0);
+                stopDrive();
                 if (countWhite == 0) {
                     sawLine = true;
                     strafe = true;
                     countWhite++;
                 }
             } else {
-                motorLB.setPower(.2);
-                motorRB.setPower(.2);
-                motorLF.setPower(.2);
-                motorRF.setPower(.2);
+                straight(.2);
             }
         }
 
@@ -152,18 +135,12 @@ public class StrafeBeacon3 extends OpMode{
                         motorLF.setPower(.7);
                         motorRF.setPower(-.7);
                     } else  {
-                        motorLB.setPower(0);
-                        motorRB.setPower(0);
-                        motorLF.setPower(0);
-                        motorRF.setPower(0);
+                        stopDrive();
                     }
                 } else if (leftColor.toString().equals("BLUE") || rightColor.toString().equals("RED")) {
 
                     if (timeColor < .5) {
-                        motorLB.setPower(.2);
-                        motorRB.setPower(.2);
-                        motorLF.setPower(.2);
-                        motorRF.setPower(.2);
+                        straight(.2);
                     } else if (timeColor > .5 && timeColor < 1) {
                         motorLB.setPower(.7);
                         motorRB.setPower(-.7);
@@ -174,6 +151,8 @@ public class StrafeBeacon3 extends OpMode{
                         motorRB.setPower(.7);
                         motorLF.setPower(.7);
                         motorRF.setPower(-.7);
+                    } else  {
+                        stopDrive();
                     }
                 }
             strafe = false;
@@ -283,7 +262,7 @@ public class StrafeBeacon3 extends OpMode{
     }
 
     //delay method below
-    public static void sleepCool(long sleepTime)    {
+    static void sleepCool(long sleepTime)    {
         long wakeupTime = System.currentTimeMillis() + sleepTime;
         while (sleepTime > 0) {
             try {
@@ -294,17 +273,11 @@ public class StrafeBeacon3 extends OpMode{
         }
     } //sleep
 
-    public boolean zero() {
+    boolean zero() {
         if(angleZ > 2) {
-            motorLB.setPower(.2);
-            motorRB.setPower(-.2);
-            motorLF.setPower(.2);
-            motorRF.setPower(-.2);
+            turn(.2, "LEFT");
         } else if(angleZ < -2)  {
-            motorLB.setPower(-.2);
-            motorRB.setPower(.2);
-            motorLF.setPower(-.2);
-            motorRF.setPower(.2);
+            turn(.2, "RIGHT");
         }
 
         if(angleZ < 5 && angleZ > -5)   {
@@ -314,10 +287,52 @@ public class StrafeBeacon3 extends OpMode{
         }
     }
 
-    public void move(double power, String direction, double time)   {
+    void move(double power, String direction, double time)   {
         final double MOVE_START = elapsed.time();
 
     }
+
+    void straight(double power) {
+        motorLB.setPower(power);
+        motorRB.setPower(power);
+        motorLF.setPower(power);
+        motorRF.setPower(power);
+    }
+
+    void stopDrive() {
+        motorLB.setPower(0);
+        motorRB.setPower(0);
+        motorLF.setPower(0);
+        motorRF.setPower(0);
+    }
+
+    void resetShoot() {
+        hold.setPosition(1);
+        shoot.setPower(0);
+        spin.setPower(0);
+    }
+
+    void turn(double power, String direction) {
+        if(direction.equals("LEFT")) {
+            motorLB.setPower(-power);
+            motorRB.setPower(power);
+            motorLF.setPower(-power);
+            motorRF.setPower(power);
+        } else if(direction.equals("RIGHT"))    {
+            motorLB.setPower(power);
+            motorRB.setPower(-power);
+            motorLF.setPower(power);
+            motorRF.setPower(-power);
+        }
+    }
+
+    void strafe()   {
+
+    }
+
+    void curve()    {}
+
+
 
     @Override
     public void stop() {}

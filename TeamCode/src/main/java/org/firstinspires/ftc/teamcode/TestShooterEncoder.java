@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="Shooter with Encoder Test", group="Test")
+@Autonomous(name="Test Shooter with Encoder", group="Test")
 //@Disabled
 public class TestShooterEncoder extends OpMode {
     private int xVal, yVal, zVal;     // Gyro rate Values
