@@ -55,11 +55,6 @@ public class RedBeacon extends OpMode{
         colorCreader.write8(3, 0);
         gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
         hold.setPosition(1);
-    }
-
-    @Override
-    public void start() {
-        //test this switch here
         switch (resetState) {
             case 0:
                 telemetry.addData(">", "Gyro Calibrating. Do Not move!" + resetState);
@@ -72,7 +67,10 @@ public class RedBeacon extends OpMode{
                 telemetry.addData(">", "Gyro Calibrated.  Press Start.");
                 break;
         }
-        //want to see if it works
+    }
+
+    @Override
+    public void start() {
         elapsed.reset();
     }
 

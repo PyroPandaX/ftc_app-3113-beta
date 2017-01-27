@@ -21,7 +21,6 @@ import ftc.vision.FrameGrabber;
 //@Disabled
 public class TestShooterEncoder extends OpMode {
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
-    double timeAuto;
     Servo hold;
     ModernRoboticsI2cGyro gyro;
     int xVal, yVal, zVal, heading, angleZ, resetState;
@@ -40,11 +39,11 @@ public class TestShooterEncoder extends OpMode {
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
         shoot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
+        gyro.calibrate();
         switch (resetState) {
             case 0:
-                telemetry.addData(">", "Gyro Calibrating. Do Not move!" + resetState);
+                telemetry.addData(">", "Gyro Calibrating. Do Not move! " + resetState);
                 gyro.calibrate();
                 if (!gyro.isCalibrating()) {
                     resetState++;
@@ -63,26 +62,14 @@ public class TestShooterEncoder extends OpMode {
 
     @Override
     public void loop() {
-        // time since autonomous began
-        timeAuto = elapsed.time();
-        heading = gyro.getHeading();
-        angleZ = gyro.getIntegratedZValue();
-        // get the x, y, and z values (rate of change of angle).
-        xVal = gyro.rawX();
-        yVal = gyro.rawY();
-        zVal = gyro.rawZ();
+        hold.setPosition(.5);
+        shoot.setMaxSpeed(500);
+        shoot.setPower(1);
+        spin.setPower(.6);
 
-        shoot.setMaxSpeed(2000);
-        shoot.setPower(.35);
 
         telemetry.addData("Text", "*** Robot Data***");
-        telemetry.addData("time", "elapsed time: " + Double.toString(timeAuto));
-        telemetry.addData("0", "Heading %03d", heading);
-        telemetry.addData("1", "Int. Ang. %03d", angleZ);
-        telemetry.addData("2", "X av. %03d", xVal);
-        telemetry.addData("3", "Y av. %03d", yVal);
-        telemetry.addData("4", "Z av. %03d", zVal);
-        telemetry.addData("5", "resetState %03d", resetState);
+        telemetry.addData("time", "elapsed time: " + elapsed.toString());
     }
 
     @Override

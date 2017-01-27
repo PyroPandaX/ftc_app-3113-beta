@@ -94,13 +94,13 @@ public class BallTesting extends OpMode {
         zVal = gyro.rawZ();
         colorCcache = colorCreader.read(0x04, 1);
 
-        if(move("STRAIGHT", .8, DRIVE_POWER, "", "") && step == 0)
+        if(step == 0 && move("STRAIGHT", .8, DRIVE_POWER, "", ""))
             step++;
-        else if(shoot(2, SHOOT_POWER, CONVEYOR_POWER) && step == 1)
+        else if(step == 1 && shoot(2, SHOOT_POWER, CONVEYOR_POWER))
             step++;
-        else if(move("STRAIGHT", 2, DRIVE_POWER, "", "") && step == 2)
+        else if(step == 2 && move("STRAIGHT", 2, DRIVE_POWER, "", ""))
             step++;
-        else if(move("STRAIGHT", 1, DRIVE_POWER, "", "") && step == 3)
+        else if(step == 3 && move("STRAIGHT", 1, DRIVE_POWER, "", ""))
             step++;
         else if(step == 4)    {
             resetRobot();

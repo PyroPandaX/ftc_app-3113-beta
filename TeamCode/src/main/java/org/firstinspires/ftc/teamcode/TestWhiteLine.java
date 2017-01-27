@@ -24,7 +24,7 @@ import ftc.vision.ImageProcessorResult;
 /**
  * Created by Mac on 12/19/2016.
  */
-@Autonomous(name="TestWhiteLine", group="Test")
+@Autonomous(name="Test White Line", group="Test")
 //@Disabled
 public class TestWhiteLine extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber

@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Encoder TeleOp", group="Teleop")
+@TeleOp(name="NULL Encoder TeleOp", group="Teleop")
 //@Disabled
 public class nullTeleopEncoder extends OpMode {
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
@@ -28,6 +28,7 @@ public class nullTeleopEncoder extends OpMode {
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
         shoot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shoot.setMaxSpeed(1000);
         hold = hardwareMap.servo.get("hold");
         hold.setPosition(1);
     }
@@ -62,17 +63,24 @@ public class nullTeleopEncoder extends OpMode {
         motorLF.setPower(LF_Per);
         motorRF.setPower(RF_Per);
 
-        // upon pressing button b, will perform autoshoot command
+        // upon pressing button y, will perform autoshoot command
         if(gamepad2.y) {
             shootingSeq();
         }
         if(!gamepad2.y){
-            count = 0;
+            if(count > 0)
+                count = -1;
+            if(count == -1) {
+                shoot.setPower(0);
+                spin.setPower(0);
+                hold.setPosition(.5);
+                count++;
+            }
             timeSeq = 0;
         }
         // kill switch button that stops the shooting and collecting mechanism
         if (gamepad2.x) {
-            shoot.setMaxSpeed(0);
+            shoot.setPower(0);
             spin.setPower(0);
             hold.setPosition(1);
         }
@@ -80,7 +88,7 @@ public class nullTeleopEncoder extends OpMode {
         //auto collecting method implemented below
         if(gamepad2.a){
             hold.setPosition(1);
-            shoot.setMaxSpeed(0);
+            shoot.setPower(0);
             spin.setPower(.7);
         }
 
@@ -90,9 +98,9 @@ public class nullTeleopEncoder extends OpMode {
             hold.setPosition(1);
 
         if (gamepad2.right_trigger > .15)
-            shoot.setMaxSpeed(1);
+            shoot.setPower(1);
         else if (gamepad2.left_trigger > .15)
-            shoot.setMaxSpeed(0);
+            shoot.setPower(0);
 
         if (gamepad2.dpad_up)
             spin.setPower(.7);
@@ -159,9 +167,9 @@ public class nullTeleopEncoder extends OpMode {
             count++;
         }
         if (count == 1) {
-            spin.setMaxSpeed(0);
+            spin.setPower(0);
             hold.setPosition(1);
-            shoot.setMaxSpeed(1);
+            shoot.setPower(.5);
             if (timeWait > 1.5) {
                 count++;
             }
@@ -177,21 +185,6 @@ public class nullTeleopEncoder extends OpMode {
         }
     }
 
-
-   /*     spin.setPower(0);
-        hold.setPosition(1);
-        shoot.setPower(.35);
-        //shoot.setPower(.55);
-
-        //sleepCool(1500);
-        hold.setPosition(.5);
-        //sleepCool(500);
-        spin.setPower(.6);
-    }*/
-
-    public void autoCollect() {}
-
     @Override
-    public void stop() {
-    }
+    public void stop() {}
 }

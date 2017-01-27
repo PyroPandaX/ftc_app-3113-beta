@@ -7,23 +7,25 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="NULL TeleOp", group="Teleop")
+@TeleOp(name="NULL Lift TeleOp", group="Teleop")
 //@Disabled
-public class nullTeleop extends OpMode {
-    DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
+public class nullTeleopLift extends OpMode {
+    DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot, liftL, liftR;
     double joyRadius, right, left, rightX, leftX, LF_Power, RF_Power, RB_Power,
             LB_Power, LF_Per, LB_Per, RB_Per, RF_Per, rawTotal, timeWait, timeSeq;
     int count;
     Servo hold;
     ElapsedTime elapsed = new ElapsedTime();
 
-    public nullTeleop() {}
+    public nullTeleopLift() {}
 
     public void init() {
         motorRB = hardwareMap.dcMotor.get("motor_1");
         motorRF = hardwareMap.dcMotor.get("motor_2");
         motorLB = hardwareMap.dcMotor.get("motor_3");
         motorLF = hardwareMap.dcMotor.get("motor_4");
+        liftL = hardwareMap.dcMotor.get("motor_5");
+        liftR = hardwareMap.dcMotor.get("motor_6");
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
         shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -140,6 +142,21 @@ public class nullTeleop extends OpMode {
             RF_Per = RF_Per / 2;
             LF_Per = LF_Per / 2;
             LB_Per = LB_Per / 2;
+        }
+
+        if(gamepad1.right_bumper)  {
+            liftL.setPower(.5);
+            liftR.setPower(.5);
+        }
+
+        if(gamepad1.left_bumper)    {
+            liftL.setPower(0);
+            liftR.setPower(0);
+        }
+
+        if(gamepad1.dpad_down)  {
+            liftL.setPower(-.5);
+            liftR.setPower(-.5);
         }
 
         telemetry.addData("1", "rightPower", "%5.2f", (right));
