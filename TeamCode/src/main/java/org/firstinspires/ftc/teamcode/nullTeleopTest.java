@@ -31,7 +31,7 @@ public class nullTeleopTest extends OpMode {
         push = hardwareMap.servo.get("push");
 
         //below is the PID control implemented
-        shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        shoot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hold = hardwareMap.servo.get("hold");
     }
 
@@ -117,7 +117,8 @@ public class nullTeleopTest extends OpMode {
         }
 
         if (gamepad2.right_trigger > .15) {
-            shoot.setPower(.35);
+            shoot.setPower(1);
+            shoot.setMaxSpeed(280);
         }
         else if (gamepad2.left_trigger > .15) {
             shoot.setPower(0);

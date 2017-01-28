@@ -25,7 +25,7 @@ public class Diamond extends OpMode {
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
     double timeAuto = 0, timeStart = 0, timeLine = 0, timeColor = 0;
-    ArrayList<Double> timeStep = new ArrayList<Double>();
+    ArrayList<Double> timeMove = new ArrayList<Double>();
     Servo hold, push;
     byte[] colorCcache;
     I2cDevice colorC;
@@ -133,12 +133,9 @@ public class Diamond extends OpMode {
     //Makes the robot move in a specified direction in a certain ammount of time at a certain speed
 
     public void movementTarget(double powerTarget, double timeTarget, double angleTarget) {
-        if (m_count == 0) {
-            timeStep.set(0, timeAuto);
-            m_count++;
-        }
+        timeMove.add(timeAuto);
 
-        if ((timeStep.get(m_count) - timeStep.get(m_count - 1)) == timeTarget) {
+        if ((timeMove.get(m_count) - timeMove.get(m_count - 1)) == timeTarget) {
             motorLB.setPower(0);
             motorLF.setPower(0);
             motorRB.setPower(0);
@@ -146,7 +143,7 @@ public class Diamond extends OpMode {
             m_count++;
             t_state++;
         } else {
-            timeStep.set(m_count, timeAuto);
+            timeMove.set(m_count, timeAuto);
             motorLB.setPower(powerTarget * LB_Vector);
             motorLF.setPower(powerTarget * LF_Vector);
             motorRB.setPower(powerTarget * RB_Vector);
@@ -159,8 +156,6 @@ public class Diamond extends OpMode {
         LF_Vector = (-Math.sin(radTarget) + Math.cos(radTarget));
         RB_Vector = (Math.sin(radTarget) + Math.cos(radTarget));
         RF_Vector = (Math.sin(radTarget) - Math.cos(radTarget));
-
-
     }
 
     public void shooterMech(double maxTime){

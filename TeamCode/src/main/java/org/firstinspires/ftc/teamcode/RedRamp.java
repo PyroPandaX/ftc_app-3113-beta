@@ -1,46 +1,63 @@
 package org.firstinspires.ftc.teamcode;
-import android.app.Activity;
-import android.graphics.Color;
-import android.view.View;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.I2cDevice;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
+import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
+import org.opencv.core.Mat;
+
+import java.util.ArrayList;
+
+import ftc.vision.BeaconColorResult;
+import ftc.vision.FrameGrabber;
+import ftc.vision.ImageProcessorResult;
 
 @Autonomous(name="RedRamp", group="Demo Bot")
-@Disabled
+//@Disabled
 public class RedRamp extends OpMode {
-    final static double MOTOR_POWER = 0.2;
-    private int xVal, yVal, zVal;     // Gyro rate Values
-    private int heading;              // Gyro integrated heading
-    private int angleZ;
-    boolean lastResetState = false;
-    boolean curResetState  = false;
-    public  int resetState = 0, v_state = 0;
-    public RedRamp() {}
-    ModernRoboticsI2cGyro gyro;
-    DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
-    public double timeAuto = 0;
-    public double timeStart = 0;
-    public double time0, time1,time2,time3,time4, pos0, pos1,pos2,pos3,pos4 = 0;
-    public int count = 0;
+    FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
+        DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
+        double timeAuto = 0, timeStart = 0, timeLine = 0, timeColor = 0;
+        ArrayList<Double> timeStep = new ArrayList<Double>();
+        Servo hold, push;
+        byte[] colorCcache;
+        I2cDevice colorC;
+        I2cDeviceSynch colorCreader;
+        BeaconColorResult result;
+        boolean sawLine = false;
+        ModernRoboticsI2cGyro gyro;
+        private int xVal, yVal, zVal;     // Gyro rate Values
+        private int heading;              // Gyro integrated heading
+        private int angleZ;
+        public int resetState;
+        int count = 0;
+        public int m_count;
+        public double LB_Vector,RB_Vector, LF_Vector, RF_Vector, radTarget;
 
     public void init() {
-        //bPrevState = false;
-        //bCurrState = true;
-        //bLedOn = true;
-        motorRB = hardwareMap.dcMotor.get("motor_1");
-        motorRF = hardwareMap.dcMotor.get("motor_2");
+        motorRF = hardwareMap.dcMotor.get("motor_1");
+        motorRB = hardwareMap.dcMotor.get("motor_2");
         motorLB = hardwareMap.dcMotor.get("motor_3");
         motorLF = hardwareMap.dcMotor.get("motor_4");
-        motorLB.setDirection(DcMotor.Direction.REVERSE);
-        motorLF.setDirection(DcMotor.Direction.REVERSE);
+        motorRB.setDirection(DcMotor.Direction.REVERSE);
+        motorRF.setDirection(DcMotor.Direction.REVERSE);
+        hold = hardwareMap.servo.get("hold");
+        push = hardwareMap.servo.get("push");
+        spin = hardwareMap.dcMotor.get("spin");
+        shoot = hardwareMap.dcMotor.get("shoot");
+        shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        colorC = hardwareMap.i2cDevice.get("line");
+        colorCreader = new I2cDeviceSynchImpl(colorC, I2cAddr.create8bit(0x3c), false);
+        colorCreader.engage();
+        colorCreader.write8(3, 0);
         gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
-        //colorSensor = hardwareMap.colorSensor.get("line");
-        //  while (true) {
         switch (resetState) {
             case 0:
                 telemetry.addData(">", "Gyro Calibrating. Do Not move!" + resetState);
@@ -51,7 +68,6 @@ public class RedRamp extends OpMode {
             case 1:
                 telemetry.addData(">", "Gyro Calibrated.  Press Start.");
         }
-        // }
     }
     @Override
     public void start() {
@@ -68,78 +84,36 @@ public class RedRamp extends OpMode {
         xVal = gyro.rawX();
         yVal = gyro.rawY();
         zVal = gyro.rawZ();
-        switch(v_state) {
-            case 0:
-                if (timeAuto < 2) {
-                    spin.setPower(1);
-                    shoot.setPower(.4);
-                }
-                else if (timeAuto < 3 ) {
-                    motorLB.setPower(.5);
-                    motorRB.setPower(.5);
-                    motorLF.setPower(.5);
-                    motorRF.setPower(.5);
-                }
-                else if (80 > angleZ) {
-                    motorRB.setPower(.4);
-                    motorLF.setPower(-.4);
-                    motorLB.setPower(-.4);
-                    motorRF.setPower(.4);
-                }
-                if (100 < angleZ) {
-                    motorRB.setPower(-.4);
-                    motorLF.setPower(.4);
-                    motorLB.setPower(.4);
-                    motorRF.setPower(-.4);
-                }
 
-                if (80 < angleZ && angleZ < 100) {
-                    motorRB.setPower(0);
-                    motorLF.setPower(0);
-                    motorRF.setPower(0);
-                    motorLB.setPower(0);
+        //Makes the robot move in a specified direction in a certain ammount of time at a certain speed
+        public void movementTarget(double powerTarget, double timeTarget, double angleTarget) {
+            if (m_count == 0) {
+                timeStep.set(0, timeAuto);
+                m_count++;
+            }
 
-                    v_state++;
-                    if (count == 0) {
-                        time1 = timeAuto;
-                        pos1 = angleZ;
-                        count++;
-                    }
-                }case 1:
-                if ((timeAuto - time1) > 1) {
-                    if(angleZ > 92) {
-                        motorRB.setPower(0);
-                        motorLF.setPower(.5);
-                        motorRF.setPower(0);
-                        motorLB.setPower(.5);
-                    }
-                    else if (angleZ < 88){
-                        motorRB.setPower(0);
-                        motorLF.setPower(.5);
-                        motorRF.setPower(0);
-                        motorLB.setPower(.5);
+            if ((timeStep.get(m_count) - timeStep.get(m_count - 1)) == timeTarget) {
+                motorLB.setPower(0);
+                motorLF.setPower(0);
+                motorRB.setPower(0);
+                motorRF.setPower(0);
+                m_count++;
+            } else {
+                timeStep.set(m_count, timeAuto);
+                motorLB.setPower(powerTarget * LB_Vector);
+                motorLF.setPower(powerTarget * LF_Vector);
+                motorRB.setPower(powerTarget * RB_Vector);
+                motorRF.setPower(powerTarget * RF_Vector);
 
-                    }
-                } else{
-                    v_state++;
-                    if (count == 1) {
-                        time2 = timeAuto;
-                        pos2 = angleZ;
-                        count++;
-                        motorRB.setPower(0);
-                        motorLF.setPower(0);
-                        motorRF.setPower(0);
-                        motorLB.setPower(0);
-                    }
-                    if ((timeAuto - time2) > 3) {
-                        motorRB.setPower(5);
-                        motorLF.setPower(.5);
-                        motorRF.setPower(.5);
-                        motorLB.setPower(.5);
-                    }
-                }
-
+            }
+            //converts angles to radians, which is accepeted by Math.java trig methods
+            radTarget = angleTarget*(3.14159265/180);
+            LB_Vector = (-Math.sin(radTarget) - Math.cos(radTarget));
+            LF_Vector = (-Math.sin(radTarget) + Math.cos(radTarget));
+            RB_Vector = (Math.sin(radTarget) + Math.cos(radTarget));
+            RF_Vector = (Math.sin(radTarget) - Math.cos(radTarget));
         }
+
 
         telemetry.addData("Text", "*** Robot Data***");
         telemetry.addData("time", "elapsed time: " + Double.toString(timeAuto));
