@@ -31,6 +31,8 @@ public class RedBeaconTesting extends OpMode{
     BeaconColorResult result;
     ModernRoboticsI2cGyro gyro;
     int xVal, yVal, zVal, heading, angleZ, resetState;
+    BeaconColorResult.BeaconColor leftColor;
+    BeaconColorResult.BeaconColor rightColor;
     //time variables
     ElapsedTime elapsed = new ElapsedTime();
     ArrayList<Double> timeStep = new ArrayList<>();
@@ -97,16 +99,20 @@ public class RedBeaconTesting extends OpMode{
         zVal = gyro.rawZ();
         colorCcache = colorCreader.read(0x04, 1);
 
-        if(step == 0 && shoot(2, SHOOT_POWER, CONVEYOR_POWER))
+        if (step == 0 && shoot(2, SHOOT_POWER, CONVEYOR_POWER)) {
             step++;
-        else if(step == 1 && move("STRAFE", 6.25, STRAFE_POWER, "45", "FORWARD_LEFT"))
+            timeStep.clear();
+        } else if (step == 1 && move("STRAFE", 5.25, STRAFE_POWER, "45", "FORWARD_LEFT")) {
             step++;
-        else if(step == 2 && turnToAngle(0))
+            timeStep.clear();
+        } else if (step == 2 && turnToAngle(0)) {
             step++;
-        else if(step == 3 && move("STRAIGHT", 2, -DRIVE_POWER, "", ""))
+            timeStep.clear();
+        } else if (step == 3 && move("STRAIGHT", 1.75, -DRIVE_POWER, "", "")) {
             step++;
-        else if(step == 4) {
-            if(pushed == 0) {
+            timeStep.clear();
+        } else if (step == 4) {
+            if (pushed == 0) {
                 if (white()) {
                     resetDrive();
                     timeStep.clear();
@@ -114,8 +120,8 @@ public class RedBeaconTesting extends OpMode{
                 } else {
                     straight(DRIVE_POWER);
                 }
-            } else if(pushed == 1)  {
-                if(displacement < 2)    {
+            } else if (pushed == 1) {
+                if (displacement < 2) {
                     straight(.2);
                 } else if (white()) {
                     resetDrive();
@@ -124,8 +130,10 @@ public class RedBeaconTesting extends OpMode{
                 } else {
                     straight(DRIVE_POWER);
                 }
-            } else if(pushed > 1)   {
-                step = 6;
+            } else if (pushed > 1) {
+                timeStep.clear();
+                resetDrive();
+                step = 7;
             }
         } else if(step == 5) {
             frameGrabber.grabSingleFrame();
@@ -134,35 +142,41 @@ public class RedBeaconTesting extends OpMode{
             }
             ImageProcessorResult imageProcessorResult = frameGrabber.getResult();
             result = (BeaconColorResult) imageProcessorResult.getResult();
-            BeaconColorResult.BeaconColor leftColor = result.getLeftColor();
-            BeaconColorResult.BeaconColor rightColor = result.getRightColor();
-            if (result.getLeftColor().equals("RED") || rightColor.toString().equals("BLUE")) {
-                if (displacement < 1.5) {
+            leftColor = result.getLeftColor();
+            rightColor = result.getRightColor();
+            if(!leftColor.toString().equals("UNKNOWN")) {
+                step++;
+                timeStep.clear();
+            }
+        }   else if(step == 6) {
+            if (leftColor.toString().equals("RED")) {
+                if (displacement > 0 && displacement < 1.5) {
                     strafe(STRAFE_POWER, "90", "LEFT");
                 } else if (displacement > 1.5 && displacement < 2.5) {
                     strafe(STRAFE_POWER, "90", "RIGHT");
+                } else if(displacement > 2.5 && turnToAngle(0)) {
+                } else {
+                    resetDrive();
+                    timeStep.clear();
+                    pushed++;
+                    step = 4;
+                }
+            } else if (leftColor.toString().equals("BLUE")) {
+                if (displacement < .5) {
+                    straight(DRIVE_POWER);
+                } else if (displacement > .5 && displacement < 2) {
+                    strafe(STRAFE_POWER, "90", "LEFT");
+                } else if (displacement > 2 && displacement < 3) {
+                    strafe(STRAFE_POWER, "90", "RIGHT");
+                } else if(displacement > 3 && turnToAngle(0)) {
                 } else  {
                     resetDrive();
                     timeStep.clear();
                     pushed++;
                     step = 4;
                 }
-            } else if (leftColor.toString().equals("BLUE") || rightColor.toString().equals("RED")) {
-//                if (displacement < 1.5) {
-//                    straight(DRIVE_POWER);
-//                } else if (displacement > 1.5 && displacement < 3) {
-//                    strafe(STRAFE_POWER, "90", "LEFT");
-//                } else if (displacement > 3 && displacement < 4) {
-//                    strafe(STRAFE_POWER, "90", "RIGHT");
-//                } else  {
-//                    resetDrive();
-//                    timeStep.clear();
-//                    pushed++;
-//                    step = 4;
-//                }
-                straight(.2);
             }
-        } else if(step == 6)    {
+        } else if(step == 7)    {
             resetRobot();
         }
 
@@ -206,7 +220,6 @@ public class RedBeaconTesting extends OpMode{
                 }
             } else  {
                 resetShoot();
-                timeStep.clear();
                 return true;
             }
         } else if(balls == 2)   {
@@ -219,7 +232,6 @@ public class RedBeaconTesting extends OpMode{
                 }
             } else  {
                 resetShoot();
-                timeStep.clear();
                 return true;
             }
         }
@@ -237,7 +249,6 @@ public class RedBeaconTesting extends OpMode{
             }
         } else  {
             resetDrive();
-            timeStep.clear();
             return true;
         }
         return false;
@@ -265,14 +276,13 @@ public class RedBeaconTesting extends OpMode{
     }
 
     boolean turnToAngle(double angle) {
-        if(angleZ > angle + 2) {
-            turn(.2, "LEFT");
-        } else if(angleZ < angle - 2)  {
+        if(angleZ > angle + 5) {
             turn(.2, "RIGHT");
+        } else if(angleZ < angle - 5)  {
+            turn(.2, "LEFT");
         }
-        if(angleZ < 5 + angle && angleZ > angle - 5)   {
+        if(angleZ < angle + 5 && angleZ > angle - 5)   {
             resetDrive();
-            timeStep.clear();
             return true;
         } else  {
             return false;
