@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
@@ -20,7 +21,7 @@ import ftc.vision.FrameGrabber;
 import ftc.vision.ImageProcessorResult;
 
 @Autonomous(name="Red Beacon", group="NullBot Beacon")
-//@Disabled
+@Disabled
 public class RedBeacon extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
@@ -151,10 +152,10 @@ public class RedBeacon extends OpMode{
                         motorRF.setPower(-.7);
                   }
 //                  else  {
-//                        motorLB.setPower(0);
-//                        motorRB.setPower(0);
-//                        motorLF.setPower(0);
-//                        motorRF.setPower(0);
+//                        driveLB.setPower(0);
+//                        driveRB.setPower(0);
+//                        driveLF.setPower(0);
+//                        driveRF.setPower(0);
 //                    }
                 } else if (leftColor.toString().equals("BLUE") || rightColor.toString().equals("RED")) {
 
@@ -187,27 +188,27 @@ public class RedBeacon extends OpMode{
                 //timePushed = this.time - timeStep.get(3);
 //                if (countPushed == 1) {
 //                      if(timePushed < .5) {
-//                          motorLB.setPower(.2);
-//                          motorRB.setPower(.2);
-//                          motorLF.setPower(.2);
-//                          motorRF.setPower(.2);
+//                          driveLB.setPower(.2);
+//                          driveRB.setPower(.2);
+//                          driveLF.setPower(.2);
+//                          driveRF.setPower(.2);
 //                      }
 //                    else if (timePushed > .5) {
 //                        if (!sawLine2) {
 //                            if (colorCcache[0] > 6) {
-//                                motorLB.setPower(0);
-//                                motorRB.setPower(0);
-//                                motorLF.setPower(0);
-//                                motorRF.setPower(0);
+//                                driveLB.setPower(0);
+//                                driveRB.setPower(0);
+//                                driveLF.setPower(0);
+//                                driveRF.setPower(0);
 //                                if (countWhite2 == 0) {
 //                                    sawLine = true;
 //                                    countWhite2++;
 //                                }
 //                            } else {
-//                                motorLB.setPower(.2);
-//                                motorRB.setPower(.2);
-//                                motorLF.setPower(.2);
-//                                motorRF.setPower(.2);
+//                                driveLB.setPower(.2);
+//                                driveRB.setPower(.2);
+//                                driveLF.setPower(.2);
+//                                driveRF.setPower(.2);
 //                            }
 //                        }
 //                    }
@@ -235,15 +236,15 @@ public class RedBeacon extends OpMode{
 //                            }
 //                            timeColor2 = this.time - timeStep.get(5);
 //                            if (timeColor2 < 1.5) {
-//                                motorLB.setPower(.7);
-//                                motorRB.setPower(-.7);
-//                                motorLF.setPower(-.7);
-//                                motorRF.setPower(.7);
+//                                driveLB.setPower(.7);
+//                                driveRB.setPower(-.7);
+//                                driveLF.setPower(-.7);
+//                                driveRF.setPower(.7);
 //                            } else if (timeColor2 > 1.5 && timeColor2 < 3) {
-//                                motorLB.setPower(-.7);
-//                                motorRB.setPower(.7);
-//                                motorLF.setPower(.7);
-//                                motorRF.setPower(-.7);
+//                                driveLB.setPower(-.7);
+//                                driveRB.setPower(.7);
+//                                driveLF.setPower(.7);
+//                                driveRF.setPower(-.7);
 //                            }
 //                        } else if (leftColor.toString().equals("BLUE")) {
 //                            if (countColor2 == 0) {
@@ -252,20 +253,20 @@ public class RedBeacon extends OpMode{
 //                            }
 //                            timeColor2 = this.time - timeStep.get(4);
 //                            if (timeColor2 < .5) {
-//                                motorLB.setPower(.2);
-//                                motorRB.setPower(.2);
-//                                motorLF.setPower(.2);
-//                                motorRF.setPower(.2);
+//                                driveLB.setPower(.2);
+//                                driveRB.setPower(.2);
+//                                driveLF.setPower(.2);
+//                                driveRF.setPower(.2);
 //                            } else if (timeColor2 > .5 && timeColor2 < 2) {
-//                                motorLB.setPower(.7);
-//                                motorRB.setPower(-.7);
-//                                motorLF.setPower(-.7);
-//                                motorRF.setPower(.7);
+//                                driveLB.setPower(.7);
+//                                driveRB.setPower(-.7);
+//                                driveLF.setPower(-.7);
+//                                driveRF.setPower(.7);
 //                            } else if (timeColor2 > 2 && timeColor2 < 3.5) {
-//                                motorLB.setPower(-.7);
-//                                motorRB.setPower(.7);
-//                                motorLF.setPower(.7);
-//                                motorRF.setPower(-.7);
+//                                driveLB.setPower(-.7);
+//                                driveRB.setPower(.7);
+//                                driveLF.setPower(.7);
+//                                driveRF.setPower(-.7);
 //                            }
 //                        }
 //                    }

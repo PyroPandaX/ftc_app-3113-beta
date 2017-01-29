@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
@@ -25,7 +24,7 @@ import ftc.vision.FrameGrabber;
 //@Disabled
 public class Test360 extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
-    DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
+    DcMotor driveRB, driveRF, driveLB, driveLF, spin, shoot;
     double timeAuto = 0, timeStart = 0, timeLine = 0;
     ArrayList<Double> timeStep = new ArrayList<Double>();
     Servo hold, push;
@@ -43,12 +42,12 @@ public class Test360 extends OpMode{
     public Test360()  {}
 
     public void init() {
-        motorRF = hardwareMap.dcMotor.get("motor_1");
-        motorRB = hardwareMap.dcMotor.get("motor_2");
-        motorLB = hardwareMap.dcMotor.get("motor_3");
-        motorLF = hardwareMap.dcMotor.get("motor_4");
-        motorRB.setDirection(DcMotor.Direction.REVERSE);
-        motorRF.setDirection(DcMotor.Direction.REVERSE);
+        driveRF = hardwareMap.dcMotor.get("driveRF");
+        driveRB = hardwareMap.dcMotor.get("driveRB");
+        driveLB = hardwareMap.dcMotor.get("driveLB");
+        driveLF = hardwareMap.dcMotor.get("driveLF");
+        driveRB.setDirection(DcMotor.Direction.REVERSE);
+        driveRF.setDirection(DcMotor.Direction.REVERSE);
         hold = hardwareMap.servo.get("hold");
         push = hardwareMap.servo.get("push");
         spin = hardwareMap.dcMotor.get("spin");
@@ -93,10 +92,10 @@ public class Test360 extends OpMode{
         timeAuto = this.time - timeStart;
 
         if (timeAuto < 5) {
-            motorLB.setPower(0);
-            motorRB.setPower(0);
-            motorLF.setPower(0);
-            motorRF.setPower(0);
+            driveLB.setPower(0);
+            driveRB.setPower(0);
+            driveLF.setPower(0);
+            driveRF.setPower(0);
         }
         if (timeAuto > 5){
             zero();
@@ -122,15 +121,15 @@ public class Test360 extends OpMode{
 
     public boolean zero() {
         if(angleZ > 2) {
-            motorLB.setPower(.2);
-            motorRB.setPower(-.2);
-            motorLF.setPower(.2);
-            motorRF.setPower(-.2);
+            driveLB.setPower(.2);
+            driveRB.setPower(-.2);
+            driveLF.setPower(.2);
+            driveRF.setPower(-.2);
         } else if(angleZ < -2)  {
-            motorLB.setPower(-.2);
-            motorRB.setPower(.2);
-            motorLF.setPower(-.2);
-            motorRF.setPower(.2);
+            driveLB.setPower(-.2);
+            driveRB.setPower(.2);
+            driveLF.setPower(-.2);
+            driveRF.setPower(.2);
         }
 
         if(angleZ < 2 && angleZ > -2)   {

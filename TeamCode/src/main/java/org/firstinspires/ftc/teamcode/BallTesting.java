@@ -18,7 +18,7 @@ import ftc.vision.*;
 //@Disabled
 public class BallTesting extends OpMode {
     //hardware variables
-    DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot; //add lift motors here
+    DcMotor driveRB, driveRF, driveLB, driveLF, spin, shoot; //add lift motors here
     Servo hold;
     //sensor variables
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber;
@@ -43,12 +43,12 @@ public class BallTesting extends OpMode {
 
     public void init() {
         //hardware config
-        motorRF = hardwareMap.dcMotor.get("motor_1");
-        motorRB = hardwareMap.dcMotor.get("motor_2");
-        motorLB = hardwareMap.dcMotor.get("motor_3");
-        motorLF = hardwareMap.dcMotor.get("motor_4");
-        motorRB.setDirection(DcMotor.Direction.REVERSE);
-        motorRF.setDirection(DcMotor.Direction.REVERSE);
+        driveRF = hardwareMap.dcMotor.get("driveRF");
+        driveRB = hardwareMap.dcMotor.get("driveRB");
+        driveLB = hardwareMap.dcMotor.get("driveLB");
+        driveLF = hardwareMap.dcMotor.get("driveLF");
+        driveRB.setDirection(DcMotor.Direction.REVERSE);
+        driveRF.setDirection(DcMotor.Direction.REVERSE);
         hold = hardwareMap.servo.get("hold");
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
@@ -184,23 +184,23 @@ public class BallTesting extends OpMode {
     }
 
     void straight(double power) {
-        motorLB.setPower(power);
-        motorRB.setPower(power);
-        motorLF.setPower(power);
-        motorRF.setPower(power);
+        driveLB.setPower(power);
+        driveRB.setPower(power);
+        driveLF.setPower(power);
+        driveRF.setPower(power);
     }
 
     void turn(double power, String direction) {
         if(direction.equals("LEFT")) {
-            motorLB.setPower(-power);
-            motorRB.setPower(power);
-            motorLF.setPower(-power);
-            motorRF.setPower(power);
+            driveLB.setPower(-power);
+            driveRB.setPower(power);
+            driveLF.setPower(-power);
+            driveRF.setPower(power);
         } else if(direction.equals("RIGHT"))    {
-            motorLB.setPower(power);
-            motorRB.setPower(-power);
-            motorLF.setPower(power);
-            motorRF.setPower(-power);
+            driveLB.setPower(power);
+            driveRB.setPower(-power);
+            driveLF.setPower(power);
+            driveRF.setPower(-power);
         }
     }
 
@@ -222,37 +222,37 @@ public class BallTesting extends OpMode {
     void strafe(double power, String angle, String direction)   {
         if(angle.equals("90"))  {
             if(direction.equals("LEFT"))    {
-                motorLB.setPower(power);
-                motorRB.setPower(-power);
-                motorLF.setPower(-power);
-                motorRF.setPower(power);
+                driveLB.setPower(power);
+                driveRB.setPower(-power);
+                driveLF.setPower(-power);
+                driveRF.setPower(power);
             } else if(direction.equals("RIGHT"))    {
-                motorLB.setPower(-power);
-                motorRB.setPower(power);
-                motorLF.setPower(power);
-                motorRF.setPower(-power);
+                driveLB.setPower(-power);
+                driveRB.setPower(power);
+                driveLF.setPower(power);
+                driveRF.setPower(-power);
             }
         } else if(angle.equals("45"))   {
             if(direction.equals("FORWARD_LEFT"))    {
-                motorLB.setPower(power);
-                motorRB.setPower(0);
-                motorLF.setPower(0);
-                motorRF.setPower(power);
+                driveLB.setPower(power);
+                driveRB.setPower(0);
+                driveLF.setPower(0);
+                driveRF.setPower(power);
             } else if(direction.equals("FORWARD_RIGHT"))    {
-                motorLB.setPower(0);
-                motorRB.setPower(power);
-                motorLF.setPower(power);
-                motorRF.setPower(0);
+                driveLB.setPower(0);
+                driveRB.setPower(power);
+                driveLF.setPower(power);
+                driveRF.setPower(0);
             } else if(direction.equals("BACKWARD_LEFT"))    {
-                motorLB.setPower(-power);
-                motorRB.setPower(0);
-                motorLF.setPower(0);
-                motorRF.setPower(-power);
+                driveLB.setPower(-power);
+                driveRB.setPower(0);
+                driveLF.setPower(0);
+                driveRF.setPower(-power);
             } else if(direction.equals("BACKWARD_RIGHT"))    {
-                motorLB.setPower(0);
-                motorRB.setPower(-power);
-                motorLF.setPower(-power);
-                motorRF.setPower(0);
+                driveLB.setPower(0);
+                driveRB.setPower(-power);
+                driveLF.setPower(-power);
+                driveRF.setPower(0);
             }
         }
     }
@@ -260,10 +260,10 @@ public class BallTesting extends OpMode {
     void curve()    {}
 
     void resetDrive() {
-        motorLB.setPower(0);
-        motorRB.setPower(0);
-        motorLF.setPower(0);
-        motorRF.setPower(0);
+        driveLB.setPower(0);
+        driveRB.setPower(0);
+        driveLF.setPower(0);
+        driveRF.setPower(0);
     }
 
     void resetShoot() {
@@ -273,10 +273,10 @@ public class BallTesting extends OpMode {
     }
 
     void resetRobot()   {
-        motorLB.setPower(0);
-        motorRB.setPower(0);
-        motorLF.setPower(0);
-        motorRF.setPower(0);
+        driveLB.setPower(0);
+        driveRB.setPower(0);
+        driveLF.setPower(0);
+        driveRF.setPower(0);
         hold.setPosition(1);
         shoot.setPower(0);
         spin.setPower(0);

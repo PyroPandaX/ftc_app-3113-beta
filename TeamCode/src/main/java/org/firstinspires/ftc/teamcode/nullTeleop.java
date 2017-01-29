@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name="NULL TeleOp", group="Teleop")
 //@Disabled
 public class nullTeleop extends OpMode {
-    DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
+    DcMotor driveRB, driveRF, driveLB, driveLF, spin, shoot;
     double joyRadius, right, left, rightX, leftX, LF_Power, RF_Power, RB_Power,
             LB_Power, LF_Per, LB_Per, RB_Per, RF_Per, rawTotal, timeWait, timeSeq;
     int count;
@@ -20,10 +20,10 @@ public class nullTeleop extends OpMode {
     public nullTeleop() {}
 
     public void init() {
-        motorRB = hardwareMap.dcMotor.get("motor_1");
-        motorRF = hardwareMap.dcMotor.get("motor_2");
-        motorLB = hardwareMap.dcMotor.get("motor_3");
-        motorLF = hardwareMap.dcMotor.get("motor_4");
+        driveRF = hardwareMap.dcMotor.get("driveRF");
+        driveRB = hardwareMap.dcMotor.get("driveRB");
+        driveLB = hardwareMap.dcMotor.get("driveLB");
+        driveLF = hardwareMap.dcMotor.get("driveLF");
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
         shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -56,10 +56,10 @@ public class nullTeleop extends OpMode {
         LF_Per = Range.clip(LF_Per, -1, 1);
         LB_Per = Range.clip(LB_Per, -1, 1);
 
-        motorRB.setPower(RB_Per);
-        motorLB.setPower(LB_Per);
-        motorLF.setPower(LF_Per);
-        motorRF.setPower(RF_Per);
+        driveRB.setPower(RB_Per);
+        driveLB.setPower(LB_Per);
+        driveLF.setPower(LF_Per);
+        driveRF.setPower(RF_Per);
 
         // upon pressing button y, will perform autoshoot command
         if(gamepad2.y) {

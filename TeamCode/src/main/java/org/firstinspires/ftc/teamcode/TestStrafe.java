@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
@@ -12,13 +11,7 @@ import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
-
-import java.util.ArrayList;
-
 import ftc.vision.BeaconColorResult;
-import ftc.vision.FrameGrabber;
-import ftc.vision.ImageProcessorResult;
 
 /**
  * Created by Mac on 12/19/2016.
@@ -26,7 +19,7 @@ import ftc.vision.ImageProcessorResult;
 @Autonomous(name="Test Strafe", group="Test")
 //@Disabled
 public class TestStrafe extends OpMode  {
-    DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
+    DcMotor driveRB, driveRF, driveLB, driveLF, spin, shoot;
     double timeAuto;
     Servo hold;
     byte[] colorCcache;
@@ -40,12 +33,12 @@ public class TestStrafe extends OpMode  {
     public TestStrafe()  {}
 
     public void init() {
-        motorRF = hardwareMap.dcMotor.get("motor_1");
-        motorRB = hardwareMap.dcMotor.get("motor_2");
-        motorLB = hardwareMap.dcMotor.get("motor_3");
-        motorLF = hardwareMap.dcMotor.get("motor_4");
-        motorRB.setDirection(DcMotor.Direction.REVERSE);
-        motorRF.setDirection(DcMotor.Direction.REVERSE);
+        driveRF = hardwareMap.dcMotor.get("driveRF");
+        driveRB = hardwareMap.dcMotor.get("driveRB");
+        driveLB = hardwareMap.dcMotor.get("driveLB");
+        driveLF = hardwareMap.dcMotor.get("driveLF");
+        driveRB.setDirection(DcMotor.Direction.REVERSE);
+        driveRF.setDirection(DcMotor.Direction.REVERSE);
         hold = hardwareMap.servo.get("hold");
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
@@ -87,10 +80,10 @@ public class TestStrafe extends OpMode  {
         timeAuto = elapsed.time();
 
         if (timeAuto < 10)    {
-            motorLB.setPower(.7);
-            motorRB.setPower(0);
-            motorLF.setPower(0);
-            motorRF.setPower(.7);
+            driveLB.setPower(.7);
+            driveRB.setPower(0);
+            driveLF.setPower(0);
+            driveRF.setPower(.7);
         }
 
         telemetry.addData("Result", result);

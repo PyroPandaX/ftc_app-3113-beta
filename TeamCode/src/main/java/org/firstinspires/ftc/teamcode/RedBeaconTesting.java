@@ -21,7 +21,7 @@ code description
 //@Disabled
 public class RedBeaconTesting extends OpMode{
     //hardware variables
-    DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot; //add lift motors here
+    DcMotor driveRB, driveRF, driveLB, driveLF, spin, shoot; //add lift motors here
     Servo hold;
     //sensor variables
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber;
@@ -48,12 +48,12 @@ public class RedBeaconTesting extends OpMode{
 
     public void init() {
         //hardware config
-        motorRF = hardwareMap.dcMotor.get("motor_1");
-        motorRB = hardwareMap.dcMotor.get("motor_2");
-        motorLB = hardwareMap.dcMotor.get("motor_3");
-        motorLF = hardwareMap.dcMotor.get("motor_4");
-        motorRB.setDirection(DcMotor.Direction.REVERSE);
-        motorRF.setDirection(DcMotor.Direction.REVERSE);
+        driveRF = hardwareMap.dcMotor.get("driveRF");
+        driveRB = hardwareMap.dcMotor.get("driveRB");
+        driveLB = hardwareMap.dcMotor.get("driveLB");
+        driveLF = hardwareMap.dcMotor.get("driveLF");
+        driveRB.setDirection(DcMotor.Direction.REVERSE);
+        driveRF.setDirection(DcMotor.Direction.REVERSE);
         hold = hardwareMap.servo.get("hold");
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
@@ -68,7 +68,7 @@ public class RedBeaconTesting extends OpMode{
         hold.setPosition(DOWN_POSITION);
         switch (resetState) {
             case 0:
-                telemetry.addData(">", "Gyro Calibrating. Do Not move!" + resetState);
+                telemetry.addData(">", "Gyro Calibrating. Do Not move! " + resetState);
                 gyro.calibrate();
                 if (!gyro.isCalibrating()) {
                     resetState++;
@@ -122,7 +122,8 @@ public class RedBeaconTesting extends OpMode{
                 }
             } else if (pushed == 1) {
                 if (displacement < 2) {
-                    straight(.2);
+                    straight(DRIVE_POWER);
+                } else if(displacement > 2 && !turnToAngle(0)) {
                 } else if (white()) {
                     resetDrive();
                     timeStep.clear();
@@ -136,39 +137,32 @@ public class RedBeaconTesting extends OpMode{
                 step = 7;
             }
         } else if(step == 5) {
-            frameGrabber.grabSingleFrame();
-            while (!frameGrabber.isResultReady()) {
-                sleepCool(5);
-            }
-            ImageProcessorResult imageProcessorResult = frameGrabber.getResult();
-            result = (BeaconColorResult) imageProcessorResult.getResult();
-            leftColor = result.getLeftColor();
-            rightColor = result.getRightColor();
-            if(!leftColor.toString().equals("UNKNOWN")) {
+            captureFrame();
+            if(!getLeftColor().equals("UNKNOWN")) {
                 step++;
                 timeStep.clear();
             }
         }   else if(step == 6) {
-            if (leftColor.toString().equals("RED")) {
+            if (leftColor.toString().equals("RED") || (rightColor.toString().equals("BLUE") || rightColor.toString().equals("UNKNOWN"))) {
                 if (displacement > 0 && displacement < 1.5) {
                     strafe(STRAFE_POWER, "90", "LEFT");
                 } else if (displacement > 1.5 && displacement < 2.5) {
                     strafe(STRAFE_POWER, "90", "RIGHT");
-                } else if(displacement > 2.5 && turnToAngle(0)) {
+                } else if(displacement > 2.5 && !turnToAngle(0)) {
                 } else {
                     resetDrive();
                     timeStep.clear();
                     pushed++;
                     step = 4;
                 }
-            } else if (leftColor.toString().equals("BLUE")) {
+            } else if (leftColor.toString().equals("BLUE") || (rightColor.toString().equals("RED") || rightColor.toString().equals("UNKNOWN"))) {
                 if (displacement < .5) {
                     straight(DRIVE_POWER);
                 } else if (displacement > .5 && displacement < 2) {
                     strafe(STRAFE_POWER, "90", "LEFT");
                 } else if (displacement > 2 && displacement < 3) {
                     strafe(STRAFE_POWER, "90", "RIGHT");
-                } else if(displacement > 3 && turnToAngle(0)) {
+                } else if(displacement > 3 && !turnToAngle(0)) {
                 } else  {
                     resetDrive();
                     timeStep.clear();
@@ -201,6 +195,25 @@ public class RedBeaconTesting extends OpMode{
             } catch (InterruptedException e) {}
             sleepTime = wakeupTime - System.currentTimeMillis();
         }
+    }
+
+    void captureFrame() {
+        frameGrabber.grabSingleFrame();
+        while (!frameGrabber.isResultReady()) {
+            sleepCool(5);
+        }
+        ImageProcessorResult imageProcessorResult = frameGrabber.getResult();
+        result = (BeaconColorResult) imageProcessorResult.getResult();
+        leftColor = result.getLeftColor();
+        rightColor = result.getRightColor();
+    }
+
+    String getLeftColor()    {
+        return leftColor.toString();
+    }
+
+    String getRightColor()    {
+        return rightColor.toString();
     }
 
     boolean white() {
@@ -255,30 +268,30 @@ public class RedBeaconTesting extends OpMode{
     }
 
     void straight(double power) {
-        motorLB.setPower(power);
-        motorRB.setPower(power);
-        motorLF.setPower(power);
-        motorRF.setPower(power);
+        driveLB.setPower(power);
+        driveRB.setPower(power);
+        driveLF.setPower(power);
+        driveRF.setPower(power);
     }
 
     void turn(double power, String direction) {
         if(direction.equals("LEFT")) {
-            motorLB.setPower(-power);
-            motorRB.setPower(power);
-            motorLF.setPower(-power);
-            motorRF.setPower(power);
+            driveLB.setPower(-power);
+            driveRB.setPower(power);
+            driveLF.setPower(-power);
+            driveRF.setPower(power);
         } else if(direction.equals("RIGHT"))    {
-            motorLB.setPower(power);
-            motorRB.setPower(-power);
-            motorLF.setPower(power);
-            motorRF.setPower(-power);
+            driveLB.setPower(power);
+            driveRB.setPower(-power);
+            driveLF.setPower(power);
+            driveRF.setPower(-power);
         }
     }
 
     boolean turnToAngle(double angle) {
-        if(angleZ > angle + 5) {
+        if(angleZ > angle + 2) {
             turn(.2, "RIGHT");
-        } else if(angleZ < angle - 5)  {
+        } else if(angleZ < angle - 2)  {
             turn(.2, "LEFT");
         }
         if(angleZ < angle + 5 && angleZ > angle - 5)   {
@@ -292,46 +305,46 @@ public class RedBeaconTesting extends OpMode{
     void strafe(double power, String angle, String direction)   {
         if(angle.equals("90"))  {
             if(direction.equals("LEFT"))    {
-                motorLB.setPower(power);
-                motorRB.setPower(-power);
-                motorLF.setPower(-power);
-                motorRF.setPower(power);
+                driveLB.setPower(power);
+                driveRB.setPower(-power);
+                driveLF.setPower(-power);
+                driveRF.setPower(power);
             } else if(direction.equals("RIGHT"))    {
-                motorLB.setPower(-power);
-                motorRB.setPower(power);
-                motorLF.setPower(power);
-                motorRF.setPower(-power);
+                driveLB.setPower(-power);
+                driveRB.setPower(power);
+                driveLF.setPower(power);
+                driveRF.setPower(-power);
             }
         } else if(angle.equals("45"))   {
             if(direction.equals("FORWARD_LEFT"))    {
-                motorLB.setPower(power);
-                motorRB.setPower(0);
-                motorLF.setPower(0);
-                motorRF.setPower(power);
+                driveLB.setPower(power);
+                driveRB.setPower(0);
+                driveLF.setPower(0);
+                driveRF.setPower(power);
             } else if(direction.equals("FORWARD_RIGHT"))    {
-                motorLB.setPower(0);
-                motorRB.setPower(power);
-                motorLF.setPower(power);
-                motorRF.setPower(0);
+                driveLB.setPower(0);
+                driveRB.setPower(power);
+                driveLF.setPower(power);
+                driveRF.setPower(0);
             } else if(direction.equals("BACKWARD_LEFT"))    {
-                motorLB.setPower(-power);
-                motorRB.setPower(0);
-                motorLF.setPower(0);
-                motorRF.setPower(-power);
+                driveLB.setPower(-power);
+                driveRB.setPower(0);
+                driveLF.setPower(0);
+                driveRF.setPower(-power);
             } else if(direction.equals("BACKWARD_RIGHT"))    {
-                motorLB.setPower(0);
-                motorRB.setPower(-power);
-                motorLF.setPower(-power);
-                motorRF.setPower(0);
+                driveLB.setPower(0);
+                driveRB.setPower(-power);
+                driveLF.setPower(-power);
+                driveRF.setPower(0);
             }
         }
     }
 
     void resetDrive() {
-        motorLB.setPower(0);
-        motorRB.setPower(0);
-        motorLF.setPower(0);
-        motorRF.setPower(0);
+        driveLB.setPower(0);
+        driveRB.setPower(0);
+        driveLF.setPower(0);
+        driveRF.setPower(0);
     }
 
     void resetShoot() {
@@ -341,10 +354,10 @@ public class RedBeaconTesting extends OpMode{
     }
 
     void resetRobot()   {
-        motorLB.setPower(0);
-        motorRB.setPower(0);
-        motorLF.setPower(0);
-        motorRF.setPower(0);
+        driveLB.setPower(0);
+        driveRB.setPower(0);
+        driveLF.setPower(0);
+        driveRF.setPower(0);
         hold.setPosition(1);
         shoot.setPower(0);
         spin.setPower(0);

@@ -11,11 +11,7 @@ import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
-
 import ftc.vision.BeaconColorResult;
-import ftc.vision.FrameGrabber;
-import ftc.vision.ImageProcessorResult;
 
 /**
  * Created by Mac on 12/19/2016.
@@ -23,7 +19,7 @@ import ftc.vision.ImageProcessorResult;
 @Autonomous(name="Ball Static", group="NullBot Shoot")
 //@Disabled
 public class BallStatic extends OpMode{
-    DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
+    DcMotor driveRB, driveRF, driveLB, driveLF, spin, shoot;
     double timeAuto = 0;
     Servo hold;
     byte[] colorCcache;
@@ -38,12 +34,12 @@ public class BallStatic extends OpMode{
     public BallStatic()  {}
 
     public void init() {
-        motorRF = hardwareMap.dcMotor.get("motor_1");
-        motorRB = hardwareMap.dcMotor.get("motor_2");
-        motorLB = hardwareMap.dcMotor.get("motor_3");
-        motorLF = hardwareMap.dcMotor.get("motor_4");
-        motorRB.setDirection(DcMotor.Direction.REVERSE);
-        motorRF.setDirection(DcMotor.Direction.REVERSE);
+        driveRF = hardwareMap.dcMotor.get("driveRF");
+        driveRB = hardwareMap.dcMotor.get("driveRB");
+        driveLB = hardwareMap.dcMotor.get("driveLB");
+        driveLF = hardwareMap.dcMotor.get("driveLF");
+        driveRB.setDirection(DcMotor.Direction.REVERSE);
+        driveRF.setDirection(DcMotor.Direction.REVERSE);
         hold = hardwareMap.servo.get("hold");
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
@@ -86,10 +82,10 @@ public class BallStatic extends OpMode{
         colorCcache = colorCreader.read(0x04, 1);
 
         if (timeAuto < 1.5) {
-            motorLB.setPower(0);
-            motorRB.setPower(0);
-            motorLF.setPower(0);
-            motorRF.setPower(0);
+            driveLB.setPower(0);
+            driveRB.setPower(0);
+            driveLF.setPower(0);
+            driveRF.setPower(0);
             hold.setPosition(.5);
             shoot.setPower(.6 );
         } else if (timeAuto > 1.5 && timeAuto < 5.5) {
@@ -98,10 +94,10 @@ public class BallStatic extends OpMode{
             hold.setPosition(1);
             shoot.setPower(0);
             spin.setPower(0);
-            motorLB.setPower(0);
-            motorRB.setPower(0);
-            motorLF.setPower(0);
-            motorRF.setPower(0);
+            driveLB.setPower(0);
+            driveRB.setPower(0);
+            driveLF.setPower(0);
+            driveRF.setPower(0);
         }
 
         telemetry.addData("Result", result);
@@ -126,15 +122,15 @@ public class BallStatic extends OpMode{
 
     public boolean zero() {
         if(heading > 2) {
-            motorLB.setPower(.2);
-            motorRB.setPower(-.2);
-            motorLF.setPower(.2);
-            motorRF.setPower(-.2);
+            driveLB.setPower(.2);
+            driveRB.setPower(-.2);
+            driveLF.setPower(.2);
+            driveRF.setPower(-.2);
         } else if(angleZ < -2)  {
-            motorLB.setPower(-.2);
-            motorRB.setPower(.2);
-            motorLF.setPower(-.2);
-            motorRF.setPower(.2);
+            driveLB.setPower(-.2);
+            driveRB.setPower(.2);
+            driveLF.setPower(-.2);
+            driveRF.setPower(.2);
         }
 
         if(heading > -2 && heading < 2)   {

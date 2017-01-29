@@ -1,20 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.app.Activity;
-import android.graphics.Color;
-import android.view.View;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name="Test Motors", group="Test")
 //@Disabled
 public class TestMotors extends OpMode {
     final static double MOTOR_POWER = 0.5;
-    DcMotor motorRB, motorRF, motorLB, motorLF;
+    DcMotor driveRB, driveRF, driveLB, driveLF;
     //ColorSensor colorSensor;
     //float hsvValues[] = {0F,0F,0F};
     //final float values[] = hsvValues;
@@ -30,12 +24,12 @@ public class TestMotors extends OpMode {
         //bPrevState = false;
         //bCurrState = true;
         //bLedOn = true;
-        motorRB = hardwareMap.dcMotor.get("motor_1");
-        motorRF = hardwareMap.dcMotor.get("motor_2");
-        motorLB = hardwareMap.dcMotor.get("motor_3");
-        motorLF = hardwareMap.dcMotor.get("motor_4");
-        motorLB.setDirection(DcMotor.Direction.REVERSE);
-        motorLF.setDirection(DcMotor.Direction.REVERSE);
+        driveRF = hardwareMap.dcMotor.get("driveRF");
+        driveRB = hardwareMap.dcMotor.get("driveRB");
+        driveLB = hardwareMap.dcMotor.get("driveLB");
+        driveLF = hardwareMap.dcMotor.get("driveLF");
+        driveLB.setDirection(DcMotor.Direction.REVERSE);
+        driveLF.setDirection(DcMotor.Direction.REVERSE);
         //colorSensor = hardwareMap.colorSensor.get("line");
 
     }
@@ -53,22 +47,22 @@ public class TestMotors extends OpMode {
         }
         */
         if (this.time <= 3) {
-            motorRB.setPower(MOTOR_POWER);
-            motorRF.setPower(MOTOR_POWER);
-            motorLB.setPower(MOTOR_POWER);
-            motorLF.setPower(MOTOR_POWER);
+            driveRB.setPower(MOTOR_POWER);
+            driveRF.setPower(MOTOR_POWER);
+            driveLB.setPower(MOTOR_POWER);
+            driveLF.setPower(MOTOR_POWER);
         }
         else if (this.time <= 6) {
-            motorRB.setPower(MOTOR_POWER);
-            motorRF.setPower(MOTOR_POWER);
-            motorLB.setPower(-MOTOR_POWER);
-            motorLF.setPower(-MOTOR_POWER);
+            driveRB.setPower(MOTOR_POWER);
+            driveRF.setPower(MOTOR_POWER);
+            driveLB.setPower(-MOTOR_POWER);
+            driveLF.setPower(-MOTOR_POWER);
         }
         else if (this.time <= 9) {
-            motorRB.setPower(-MOTOR_POWER);
-            motorRF.setPower(-MOTOR_POWER);
-            motorLB.setPower(MOTOR_POWER);
-            motorLF.setPower(MOTOR_POWER);
+            driveRB.setPower(-MOTOR_POWER);
+            driveRF.setPower(-MOTOR_POWER);
+            driveLB.setPower(MOTOR_POWER);
+            driveLF.setPower(MOTOR_POWER);
         }
         /*
         relativeLayout.post(new Runnable() {

@@ -29,7 +29,7 @@ import ftc.vision.ImageProcessorResult;
 public class TestWhiteLine extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
     DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
-    double timeAuto = 0, timeStart = 0, timeLine = 0;
+    double timeAuto = 0, timeStart = 0;
     Servo hold;
     byte[] colorCcache;
     I2cDevice colorC;
@@ -40,17 +40,6 @@ public class TestWhiteLine extends OpMode{
     public TestWhiteLine()  {}
 
     public void init() {
-        motorRB = hardwareMap.dcMotor.get("motor_1");
-        motorRF = hardwareMap.dcMotor.get("motor_2");
-        motorLB = hardwareMap.dcMotor.get("motor_3");
-        motorLF = hardwareMap.dcMotor.get("motor_4");
-        motorRB.setDirection(DcMotor.Direction.REVERSE);
-        motorRF.setDirection(DcMotor.Direction.REVERSE);
-        hold = hardwareMap.servo.get("hold");
-        //push = hardwareMap.servo.get("push");
-        spin = hardwareMap.dcMotor.get("spin");
-        shoot = hardwareMap.dcMotor.get("shoot");
-        shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         colorC = hardwareMap.i2cDevice.get("line");
         colorCreader = new I2cDeviceSynchImpl(colorC, I2cAddr.create8bit(0x3c), false);
         colorCreader.engage();
@@ -61,7 +50,6 @@ public class TestWhiteLine extends OpMode{
     public void start() {
         // defines timeStart as the timer at the start of autonomous to preserve an initial value
         timeAuto = 0;
-        timeLine = 0;
         timeStart = this.time;
     }
 
