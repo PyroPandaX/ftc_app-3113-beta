@@ -113,28 +113,22 @@ public class RedBeaconTesting extends OpMode{
             timeStep.clear();
         } else if (step == 4) {
             if (pushed == 0) {
-                if (white()) {
-                    resetDrive();
-                    timeStep.clear();
-                    step++;
-                } else {
-                    straight(DRIVE_POWER);
-                }
+                findLine();
             } else if (pushed == 1) {
-                if (displacement < 2) {
-                    straight(DRIVE_POWER);
-                } else if(displacement > 2 && !turnToAngle(0)) {
-                } else if (white()) {
-                    resetDrive();
-                    timeStep.clear();
-                    step++;
-                } else {
-                    straight(DRIVE_POWER);
-                }
+//                if (displacement < 2) {
+//                    straight(DRIVE_POWER);
+//                } else if(displacement > 2 && !turnToAngle(0)) {
+//                } else  {
+//                    findLine();
+//                }
+                move("STRAIGHT", DRIVE_POWER, 2, "", "");
+                if(displacement > 2 && !turnToAngle(0)){}
+                else
+                    findLine();
             } else if (pushed > 1) {
-                timeStep.clear();
                 resetDrive();
                 step = 7;
+                timeStep.clear();
             }
         } else if(step == 5) {
             captureFrame();
@@ -143,39 +137,13 @@ public class RedBeaconTesting extends OpMode{
                 timeStep.clear();
             }
         }   else if(step == 6) {
-            if (leftColor.toString().equals("RED") || (rightColor.toString().equals("BLUE") || rightColor.toString().equals("UNKNOWN"))) {
-                if (displacement > 0 && displacement < 1.5) {
-                    strafe(STRAFE_POWER, "90", "LEFT");
-                } else if (displacement > 1.5 && displacement < 2.5) {
-                    strafe(STRAFE_POWER, "90", "RIGHT");
-                } else if(displacement > 2.5 && !turnToAngle(0)) {
-                } else {
-                    resetDrive();
-                    timeStep.clear();
-                    pushed++;
-                    step = 4;
-                }
-            } else if (leftColor.toString().equals("BLUE") || (rightColor.toString().equals("RED") || rightColor.toString().equals("UNKNOWN"))) {
-                if (displacement < .5) {
-                    straight(DRIVE_POWER);
-                } else if (displacement > .5 && displacement < 2) {
-                    strafe(STRAFE_POWER, "90", "LEFT");
-                } else if (displacement > 2 && displacement < 3) {
-                    strafe(STRAFE_POWER, "90", "RIGHT");
-                } else if(displacement > 3 && !turnToAngle(0)) {
-                } else  {
-                    resetDrive();
-                    timeStep.clear();
-                    pushed++;
-                    step = 4;
-                }
-            }
+            beacon();
         } else if(step == 7)    {
             resetRobot();
         }
 
         telemetry.addData("Result", result);
-        telemetry.addData("", "Int. Ang. %03d", angleZ);
+        telemetry.addData("Angle", angleZ);
         telemetry.addData("White", white());
         telemetry.addData("Pushed", pushed);
         telemetry.update();
@@ -216,10 +184,77 @@ public class RedBeaconTesting extends OpMode{
         return rightColor.toString();
     }
 
+    void findLine() {
+        if (white()) {
+            resetDrive();
+            timeStep.clear();
+            step++;
+        } else {
+            straight(DRIVE_POWER);
+        }
+    }
+
     boolean white() {
         if(colorCcache[0] > 6)
             return true;
         return false;
+    }
+
+    void beacon()   {
+//        if (leftColor.toString().equals("RED")) {
+//            if (displacement > 0 && displacement < 1.5) {
+//                strafe(STRAFE_POWER, "90", "LEFT");
+//            } else if (displacement > 1.5 && displacement < 2.5) {
+//                strafe(STRAFE_POWER, "90", "RIGHT");
+//            } else if(displacement > 2.5 && !turnToAngle(0)) {
+//            } else {
+//                resetDrive();
+//                timeStep.clear();
+//                pushed++;
+//                step = 4;
+//            }
+//        } else if (leftColor.toString().equals("BLUE")) {
+//            if (displacement < .5) {
+//                straight(DRIVE_POWER);
+//            } else if (displacement > .5 && displacement < 2) {
+//                strafe(STRAFE_POWER, "90", "LEFT");
+//            } else if (displacement > 2 && displacement < 3) {
+//                strafe(STRAFE_POWER, "90", "RIGHT");
+//            } else if(displacement > 3 && !turnToAngle(0)) {
+//            } else  {
+//                resetDrive();
+//                timeStep.clear();
+//                pushed++;
+//                step = 4;
+//            }
+//        }
+        if (leftColor.toString().equals("RED")) {
+            if (displacement > 0 && displacement < 1.5) {
+                strafe(STRAFE_POWER, "90", "LEFT");
+            } else if (displacement > 1.5 && displacement < 2.5) {
+                strafe(STRAFE_POWER, "90", "RIGHT");
+            } else if(displacement > 2.5 && !turnToAngle(0)) {
+            } else {
+                resetDrive();
+                timeStep.clear();
+                pushed++;
+                step = 4;
+            }
+        } else if (leftColor.toString().equals("BLUE")) {
+            if (displacement < .5) {
+                straight(DRIVE_POWER);
+            } else if (displacement > .5 && displacement < 2) {
+                strafe(STRAFE_POWER, "90", "LEFT");
+            } else if (displacement > 2 && displacement < 3) {
+                strafe(STRAFE_POWER, "90", "RIGHT");
+            } else if(displacement > 3 && !turnToAngle(0)) {
+            } else  {
+                resetDrive();
+                timeStep.clear();
+                pushed++;
+                step = 4;
+            }
+        }
     }
 
     boolean shoot(int balls, double powerShoot, double powerConveyor)  {
