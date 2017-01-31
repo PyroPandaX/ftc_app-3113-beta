@@ -1,3 +1,4 @@
+//Merge Failed
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
@@ -10,21 +11,16 @@ import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
-
 import java.util.ArrayList;
-
-import ftc.vision.BeaconColorResult;
-import ftc.vision.FrameGrabber;
-import ftc.vision.ImageProcessorResult;
+import ftc.vision.*;
 
 /*
 code description
  */
-@Autonomous(name="Blue Beacon", group="NullBot Beacon")
+@Autonomous(name="Red Beacon Testing", group="NullBot Beacon")
 //@Disabled
-public class BlueBeacon extends OpMode{
+public class RedBeaconTesting extends OpMode{
     //hardware variables
     DcMotor driveRB, driveRF, driveLB, driveLF, spin, shoot; //add lift motors here
     Servo hold;
@@ -36,6 +32,8 @@ public class BlueBeacon extends OpMode{
     BeaconColorResult result;
     ModernRoboticsI2cGyro gyro;
     int xVal, yVal, zVal, heading, angleZ, resetState;
+    BeaconColorResult.BeaconColor leftColor;
+    BeaconColorResult.BeaconColor rightColor;
     //time variables
     ElapsedTime elapsed = new ElapsedTime();
     ArrayList<Double> timeStep = new ArrayList<>();
@@ -47,7 +45,7 @@ public class BlueBeacon extends OpMode{
     //standard servo positions
     final double UP_POSITION = .5, DOWN_POSITION = 1;
 
-    public BlueBeacon()  {}
+    public RedBeaconTesting()  {}
 
     public void init() {
         //hardware config
@@ -71,7 +69,7 @@ public class BlueBeacon extends OpMode{
         hold.setPosition(DOWN_POSITION);
         switch (resetState) {
             case 0:
-                telemetry.addData(">", "Gyro Calibrating. Do Not move!" + resetState);
+                telemetry.addData(">", "Gyro Calibrating. Do Not move! " + resetState);
                 gyro.calibrate();
                 if (!gyro.isCalibrating()) {
                     resetState++;
@@ -102,66 +100,51 @@ public class BlueBeacon extends OpMode{
         zVal = gyro.rawZ();
         colorCcache = colorCreader.read(0x04, 1);
 
-        if(step == 0 && shoot(2, SHOOT_POWER, CONVEYOR_POWER))
+        if (step == 0 && shoot(2, SHOOT_POWER, CONVEYOR_POWER)) {
             step++;
-        else if(step == 1 && move("STRAFE", 6.5, STRAFE_POWER, "45", "FORWARD_RIGHT"))
+            timeStep.clear();
+        } else if (step == 1 && move("STRAFE", 5.25, STRAFE_POWER, "45", "FORWARD_LEFT")) {
             step++;
-        else if(step == 2 && turnToAngle(180))
+            timeStep.clear();
+        } else if (step == 2 && turnToAngle(0)) {
             step++;
-        else if(step == 3 && move("STRAIGHT", 1, DRIVE_POWER, "", ""))
+            timeStep.clear();
+        } else if (step == 3 && move("STRAIGHT", 1.75, -DRIVE_POWER, "", "")) {
             step++;
-        else if(step == 4 && pushed <= 1) {
-            if(white()) {
+            timeStep.clear();
+        } else if (step == 4) {
+            if (pushed == 0) {
+                findLine();
+            } else if (pushed == 1) {
+//                if (displacement < 2) {
+//                    straight(DRIVE_POWER);
+//                } else if(displacement > 2 && !turnToAngle(0)) {
+//                } else  {
+//                    findLine();
+//                }
+                move("STRAIGHT", DRIVE_POWER, 2, "", "");
+                if(displacement > 2 && !turnToAngle(0)){}
+                else
+                    findLine();
+            } else if (pushed > 1) {
                 resetDrive();
+                step = 7;
                 timeStep.clear();
+            }
+        } else if(step == 5) {
+            captureFrame();
+            if(!getLeftColor().equals("UNKNOWN")) {
                 step++;
-            } else {
-                straight(-DRIVE_POWER);
+                timeStep.clear();
             }
-        } else if(pushed > 1)   {
-            step = 7;
-        } else if(step == 5 && move("STRAIGHT", .5, -DRIVE_POWER, "", ""))    {
-            step++;
-        } else if(step == 6) {
-            frameGrabber.grabSingleFrame();
-            while (!frameGrabber.isResultReady()) {
-                sleepCool(5);
-            }
-            ImageProcessorResult imageProcessorResult = frameGrabber.getResult();
-            result = (BeaconColorResult) imageProcessorResult.getResult();
-            BeaconColorResult.BeaconColor leftColor = result.getLeftColor();
-            BeaconColorResult.BeaconColor rightColor = result.getRightColor();
-            if (rightColor.toString().equals("BLUE") || leftColor.toString().equals("RED") && !leftColor.toString().equals("BLUE")) {
-                if (displacement < .5) {
-                    strafe(STRAFE_POWER, "90", "LEFT");
-                } else if (displacement > .5 && displacement < 1) {
-                    strafe(STRAFE_POWER, "90", "RIGHT");
-                } else  {
-                    resetDrive();
-                    timeStep.clear();
-                    pushed++;
-                    step = 4;
-                }
-            } else if (leftColor.toString().equals("BLUE") || rightColor.toString().equals("RED") && !rightColor.toString().equals("BLUE")) {
-                if (displacement < .5) {
-                    straight(DRIVE_POWER);
-                } else if (displacement > .5 && displacement < 1) {
-                    strafe(STRAFE_POWER, "90", "LEFT");
-                } else if (displacement > 1 && displacement < 1.5) {
-                    strafe(STRAFE_POWER, "90", "RIGHT");
-                } else  {
-                    resetDrive();
-                    timeStep.clear();
-                    pushed++;
-                    step = 4;
-                }
-            }
+        }   else if(step == 6) {
+            beacon();
         } else if(step == 7)    {
             resetRobot();
         }
 
         telemetry.addData("Result", result);
-        telemetry.addData("", "Int. Ang. %03d", angleZ);
+        telemetry.addData("Angle", angleZ);
         telemetry.addData("White", white());
         telemetry.addData("Pushed", pushed);
         telemetry.update();
@@ -183,10 +166,96 @@ public class BlueBeacon extends OpMode{
         }
     }
 
+    void captureFrame() {
+        frameGrabber.grabSingleFrame();
+        while (!frameGrabber.isResultReady()) {
+            sleepCool(5);
+        }
+        ImageProcessorResult imageProcessorResult = frameGrabber.getResult();
+        result = (BeaconColorResult) imageProcessorResult.getResult();
+        leftColor = result.getLeftColor();
+        rightColor = result.getRightColor();
+    }
+
+    String getLeftColor()    {
+        return leftColor.toString();
+    }
+
+    String getRightColor()    {
+        return rightColor.toString();
+    }
+
+    void findLine() {
+        if (white()) {
+            resetDrive();
+            timeStep.clear();
+            step++;
+        } else {
+            straight(DRIVE_POWER);
+        }
+    }
+
     boolean white() {
         if(colorCcache[0] > 6)
             return true;
         return false;
+    }
+
+    void beacon()   {
+//        if (leftColor.toString().equals("RED")) {
+//            if (displacement > 0 && displacement < 1.5) {
+//                strafe(STRAFE_POWER, "90", "LEFT");
+//            } else if (displacement > 1.5 && displacement < 2.5) {
+//                strafe(STRAFE_POWER, "90", "RIGHT");
+//            } else if(displacement > 2.5 && !turnToAngle(0)) {
+//            } else {
+//                resetDrive();
+//                timeStep.clear();
+//                pushed++;
+//                step = 4;
+//            }
+//        } else if (leftColor.toString().equals("BLUE")) {
+//            if (displacement < .5) {
+//                straight(DRIVE_POWER);
+//            } else if (displacement > .5 && displacement < 2) {
+//                strafe(STRAFE_POWER, "90", "LEFT");
+//            } else if (displacement > 2 && displacement < 3) {
+//                strafe(STRAFE_POWER, "90", "RIGHT");
+//            } else if(displacement > 3 && !turnToAngle(0)) {
+//            } else  {
+//                resetDrive();
+//                timeStep.clear();
+//                pushed++;
+//                step = 4;
+//            }
+//        }
+        if (leftColor.toString().equals("RED")) {
+            if (displacement > 0 && displacement < 1.5) {
+                strafe(STRAFE_POWER, "90", "LEFT");
+            } else if (displacement > 1.5 && displacement < 2.5) {
+                strafe(STRAFE_POWER, "90", "RIGHT");
+            } else if(displacement > 2.5 && !turnToAngle(0)) {
+            } else {
+                resetDrive();
+                timeStep.clear();
+                pushed++;
+                step = 4;
+            }
+        } else if (leftColor.toString().equals("BLUE")) {
+            if (displacement < .5) {
+                straight(DRIVE_POWER);
+            } else if (displacement > .5 && displacement < 2) {
+                strafe(STRAFE_POWER, "90", "LEFT");
+            } else if (displacement > 2 && displacement < 3) {
+                strafe(STRAFE_POWER, "90", "RIGHT");
+            } else if(displacement > 3 && !turnToAngle(0)) {
+            } else  {
+                resetDrive();
+                timeStep.clear();
+                pushed++;
+                step = 4;
+            }
+        }
     }
 
     boolean shoot(int balls, double powerShoot, double powerConveyor)  {
@@ -200,7 +269,6 @@ public class BlueBeacon extends OpMode{
                 }
             } else  {
                 resetShoot();
-                timeStep.clear();
                 return true;
             }
         } else if(balls == 2)   {
@@ -213,7 +281,6 @@ public class BlueBeacon extends OpMode{
                 }
             } else  {
                 resetShoot();
-                timeStep.clear();
                 return true;
             }
         }
@@ -231,7 +298,6 @@ public class BlueBeacon extends OpMode{
             }
         } else  {
             resetDrive();
-            timeStep.clear();
             return true;
         }
         return false;
@@ -260,13 +326,12 @@ public class BlueBeacon extends OpMode{
 
     boolean turnToAngle(double angle) {
         if(angleZ > angle + 2) {
-            turn(.2, "LEFT");
-        } else if(angleZ < angle - 2)  {
             turn(.2, "RIGHT");
+        } else if(angleZ < angle - 2)  {
+            turn(.2, "LEFT");
         }
-        if(angleZ < 5 + angle && angleZ > angle - 5)   {
+        if(angleZ < angle + 5 && angleZ > angle - 5)   {
             resetDrive();
-            timeStep.clear();
             return true;
         } else  {
             return false;

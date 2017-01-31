@@ -2,14 +2,13 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="Encoder Test", group="NullBot")
-@Disabled
-public class ShootEncoderTest extends OpMode {
+@Autonomous(name="Conveyor2", group="NullBot Shoot")
+//@Disabled
+public class Conveyor2 extends OpMode {
     private int xVal, yVal, zVal;     // Gyro rate Values
     private int heading;              // Gyro integrated heading
     private int angleZ;
@@ -17,11 +16,10 @@ public class ShootEncoderTest extends OpMode {
     boolean curResetState = false;
     public int resetState = 0, v_state = 0;
 
-    public ShootEncoderTest() {
-    }
+    public Conveyor2() {}
 
     ModernRoboticsI2cGyro gyro;
-    DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
+    DcMotor driveRB, driveRF, driveLB, driveLF, spin, shoot;
     public double timeAuto = 0;
     public double timeStart = 0;
     public double time0, time1, time2, time3, time4, pos0, pos1, pos2, pos3, pos4 = 0;
@@ -29,16 +27,16 @@ public class ShootEncoderTest extends OpMode {
     Servo hold, push;
 
     public void init() {
-        motorRB = hardwareMap.dcMotor.get("motor_1");
-        motorRF = hardwareMap.dcMotor.get("motor_2");
-        motorLB = hardwareMap.dcMotor.get("motor_3");
-        motorLF = hardwareMap.dcMotor.get("motor_4");
-        motorRB.setDirection(DcMotor.Direction.REVERSE);
-        motorRF.setDirection(DcMotor.Direction.REVERSE);
+        driveRF = hardwareMap.dcMotor.get("driveRF");
+        driveRB = hardwareMap.dcMotor.get("driveRB");
+        driveLB = hardwareMap.dcMotor.get("driveLB");
+        driveLF = hardwareMap.dcMotor.get("driveLF");
+        driveRB.setDirection(DcMotor.Direction.REVERSE);
+        driveRF.setDirection(DcMotor.Direction.REVERSE);
         hold = hardwareMap.servo.get("hold");
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
-        shoot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //push = hardwareMap.servo.get("push");
 
         gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
@@ -49,8 +47,10 @@ public class ShootEncoderTest extends OpMode {
                 if (!gyro.isCalibrating()) {
                     resetState++;
                 }
+                break;
             case 1:
                 telemetry.addData(">", "Gyro Calibrated.  Press Start.");
+                break;
         }
     }
 
@@ -72,8 +72,34 @@ public class ShootEncoderTest extends OpMode {
         yVal = gyro.rawY();
         zVal = gyro.rawZ();
 
-        shoot.setMaxSpeed(100);
-        shoot.setPower(.35);
+        if (timeAuto < .7) {
+            driveLB.setPower(.5);
+            driveRB.setPower(.5);
+            driveLF.setPower(.5);
+            driveRF.setPower(.5);
+            hold.setPosition(1);
+        } else if (timeAuto < 3.5 && timeAuto > .7) {
+            driveLB.setPower(0);
+            driveRB.setPower(0);
+            driveLF.setPower(0);
+            driveRF.setPower(0);
+            hold.setPosition(.5);
+            shoot.setPower(.5);
+        } else if (timeAuto > 3.5 && timeAuto < 9) {
+            spin.setPower(.5);
+        } else if (timeAuto < 11.2 && timeAuto > 9) {
+            driveLB.setPower(.5);
+            driveRB.setPower(.5);
+            driveLF.setPower(.5);
+            driveRF.setPower(.5);
+            shoot.setPower(0);
+            spin.setPower(0);
+        } else if (timeAuto > 11.2) {
+            driveLB.setPower(0);
+            driveRB.setPower(0);
+            driveLF.setPower(0);
+            driveRF.setPower(0);
+        }
 
         telemetry.addData("Text", "*** Robot Data***");
         telemetry.addData("time", "elapsed time: " + Double.toString(timeAuto));
@@ -83,6 +109,7 @@ public class ShootEncoderTest extends OpMode {
         telemetry.addData("3", "Y av. %03d", yVal);
         telemetry.addData("4", "Z av. %03d", zVal);
         telemetry.addData("5", "resetState %03d", resetState);
+        telemetry.update();
     }
 
     @Override

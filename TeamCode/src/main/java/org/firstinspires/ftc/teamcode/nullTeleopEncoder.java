@@ -1,63 +1,46 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Encoder TeleOp", group="Teleop")
-@Disabled
+@TeleOp(name="NULL Encoder TeleOp", group="Teleop")
+//@Disabled
 public class nullTeleopEncoder extends OpMode {
-    final static double MOTOR_POWER = 0.2;
-    DcMotor motorRB, motorRF, motorLB, motorLF, spin, shoot;
-    //ColorSensor colorSensor;
-    public double joyRadius, right, left, rightX, leftX, LF_Power, RF_Power, RB_Power,
-            LB_Power, LF_Per, LB_Per, RB_Per, RF_Per, rawTotal, timeAuto, timeStart, timeWait, timeSeq;
-    public int loopControl, count;
-    ;
-    Servo hold, push;
-    public boolean seq = true;
+    DcMotor driveRB, driveRF, driveLB, driveLF, spin, shoot;
+    double joyRadius, right, left, rightX, leftX, LF_Power, RF_Power, RB_Power,
+            LB_Power, LF_Per, LB_Per, RB_Per, RF_Per, rawTotal, timeWait, timeSeq;
+    int count;
+    Servo hold;
+    ElapsedTime elapsed = new ElapsedTime();
 
     public nullTeleopEncoder() {}
 
     public void init() {
-        motorRB = hardwareMap.dcMotor.get("motor_1");
-        motorRF = hardwareMap.dcMotor.get("motor_2");
-        motorLB = hardwareMap.dcMotor.get("motor_3");
-        motorLF = hardwareMap.dcMotor.get("motor_4");
+        driveRF = hardwareMap.dcMotor.get("driveRF");
+        driveRB = hardwareMap.dcMotor.get("driveRB");
+        driveLB = hardwareMap.dcMotor.get("driveLB");
+        driveLF = hardwareMap.dcMotor.get("driveLF");
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
-        push = hardwareMap.servo.get("push");
-
-        //below is the PID control implemented
         shoot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shoot.setMaxSpeed(1000);
         hold = hardwareMap.servo.get("hold");
+        hold.setPosition(1);
     }
 
     @Override
     public void start() {
-        //following initializes the timer variable and initializes the servo position
-        timeAuto = 0;
-        timeStart = this.time;
-        hold.setPosition(1);
-        push.setPosition(0);
+        elapsed.reset();
     }
 
     @Override
     public void loop() {
-        timeWait = this.time - timeSeq;
+        timeWait = elapsed.time() - timeSeq;
 
-        if(gamepad1.a)  {
-            push.setPosition(0);
-        } else if(gamepad1.b)   {
-            push.setPosition(1);
-        }
-        if(gamepad1.right_trigger > 0)
-            push.setDirection(Servo.Direction.FORWARD);
-        else if(gamepad1.left_trigger > 0)
-            push.setDirection(Servo.Direction.REVERSE);
         right = gamepad1.left_stick_y;
         left = gamepad1.right_stick_y;
         leftX = gamepad1.right_stick_x;
@@ -74,22 +57,29 @@ public class nullTeleopEncoder extends OpMode {
         LF_Per = Range.clip(LF_Per, -1, 1);
         LB_Per = Range.clip(LB_Per, -1, 1);
 
-        motorRB.setPower(RB_Per);
-        motorLB.setPower(LB_Per);
-        motorLF.setPower(LF_Per);
-        motorRF.setPower(RF_Per);
+        driveRB.setPower(RB_Per);
+        driveLB.setPower(LB_Per);
+        driveLF.setPower(LF_Per);
+        driveRF.setPower(RF_Per);
 
-        // upon pressing button b, will perform autoshoot command
+        // upon pressing button y, will perform autoshoot command
         if(gamepad2.y) {
             shootingSeq();
         }
         if(!gamepad2.y){
-            count = 0;
+            if(count > 0)
+                count = -1;
+            if(count == -1) {
+                shoot.setPower(0);
+                spin.setPower(0);
+                hold.setPosition(.5);
+                count++;
+            }
             timeSeq = 0;
         }
         // kill switch button that stops the shooting and collecting mechanism
         if (gamepad2.x) {
-            shoot.setMaxSpeed(0);
+            shoot.setPower(0);
             spin.setPower(0);
             hold.setPosition(1);
         }
@@ -97,7 +87,7 @@ public class nullTeleopEncoder extends OpMode {
         //auto collecting method implemented below
         if(gamepad2.a){
             hold.setPosition(1);
-            shoot.setMaxSpeed(0);
+            shoot.setPower(0);
             spin.setPower(.7);
         }
 
@@ -107,9 +97,9 @@ public class nullTeleopEncoder extends OpMode {
             hold.setPosition(1);
 
         if (gamepad2.right_trigger > .15)
-            shoot.setMaxSpeed(1);
+            shoot.setPower(1);
         else if (gamepad2.left_trigger > .15)
-            shoot.setMaxSpeed(0);
+            shoot.setPower(0);
 
         if (gamepad2.dpad_up)
             spin.setPower(.7);
@@ -172,14 +162,13 @@ public class nullTeleopEncoder extends OpMode {
     public void shootingSeq() {
         if (count == 0) {
             timeWait = 0;
-            timeSeq = this.time;
+            timeSeq = elapsed.time();
             count++;
         }
-
         if (count == 1) {
-            spin.setMaxSpeed(0);
+            spin.setPower(0);
             hold.setPosition(1);
-            shoot.setMaxSpeed(1);
+            shoot.setPower(.5);
             if (timeWait > 1.5) {
                 count++;
             }
@@ -195,23 +184,6 @@ public class nullTeleopEncoder extends OpMode {
         }
     }
 
-
-   /*     spin.setPower(0);
-        hold.setPosition(1);
-        shoot.setPower(.35);
-        //shoot.setPower(.55);
-
-        //sleepCool(1500);
-        hold.setPosition(.5);
-        //sleepCool(500);
-        spin.setPower(.6);
-    }*/
-
-    public void autoCollect() {
-
-    }
-
     @Override
-    public void stop() {
-    }
+    public void stop() {}
 }

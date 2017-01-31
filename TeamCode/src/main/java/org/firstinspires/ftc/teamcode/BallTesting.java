@@ -10,21 +10,13 @@ import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
-
 import java.util.ArrayList;
+import ftc.vision.*;
 
-import ftc.vision.BeaconColorResult;
-import ftc.vision.FrameGrabber;
-import ftc.vision.ImageProcessorResult;
-
-/*
-code description
- */
-@Autonomous(name="Blue Beacon", group="NullBot Beacon")
+@Autonomous(name="Ball Testing", group="NullBot Shoot")
 //@Disabled
-public class BlueBeacon extends OpMode{
+public class BallTesting extends OpMode {
     //hardware variables
     DcMotor driveRB, driveRF, driveLB, driveLF, spin, shoot; //add lift motors here
     Servo hold;
@@ -43,11 +35,11 @@ public class BlueBeacon extends OpMode{
     //counters
     int pushed = 0, step = 0;
     //standard powers
-    final double STRAFE_POWER = .7, DRIVE_POWER = .2, SHOOT_POWER = .6, CONVEYOR_POWER = .6;
+    final double STRAFE_POWER = .7, DRIVE_POWER = .5, SHOOT_POWER = .5, CONVEYOR_POWER = .6;
     //standard servo positions
     final double UP_POSITION = .5, DOWN_POSITION = 1;
 
-    public BlueBeacon()  {}
+    public BallTesting()  {}
 
     public void init() {
         //hardware config
@@ -69,6 +61,10 @@ public class BlueBeacon extends OpMode{
         gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         //initialize position(s)
         hold.setPosition(DOWN_POSITION);
+    }
+
+    @Override
+    public void start() {
         switch (resetState) {
             case 0:
                 telemetry.addData(">", "Gyro Calibrating. Do Not move!" + resetState);
@@ -81,10 +77,6 @@ public class BlueBeacon extends OpMode{
                 telemetry.addData(">", "Gyro Calibrated.  Press Start.");
                 break;
         }
-    }
-
-    @Override
-    public void start() {
         elapsed.reset(); //time starts on game start instead of init
     }
 
@@ -102,61 +94,15 @@ public class BlueBeacon extends OpMode{
         zVal = gyro.rawZ();
         colorCcache = colorCreader.read(0x04, 1);
 
-        if(step == 0 && shoot(2, SHOOT_POWER, CONVEYOR_POWER))
+        if(step == 0 && move("STRAIGHT", .8, DRIVE_POWER, "", ""))
             step++;
-        else if(step == 1 && move("STRAFE", 6.5, STRAFE_POWER, "45", "FORWARD_RIGHT"))
+        else if(step == 1 && shoot(2, SHOOT_POWER, CONVEYOR_POWER))
             step++;
-        else if(step == 2 && turnToAngle(180))
+        else if(step == 2 && move("STRAIGHT", 2, DRIVE_POWER, "", ""))
             step++;
         else if(step == 3 && move("STRAIGHT", 1, DRIVE_POWER, "", ""))
             step++;
-        else if(step == 4 && pushed <= 1) {
-            if(white()) {
-                resetDrive();
-                timeStep.clear();
-                step++;
-            } else {
-                straight(-DRIVE_POWER);
-            }
-        } else if(pushed > 1)   {
-            step = 7;
-        } else if(step == 5 && move("STRAIGHT", .5, -DRIVE_POWER, "", ""))    {
-            step++;
-        } else if(step == 6) {
-            frameGrabber.grabSingleFrame();
-            while (!frameGrabber.isResultReady()) {
-                sleepCool(5);
-            }
-            ImageProcessorResult imageProcessorResult = frameGrabber.getResult();
-            result = (BeaconColorResult) imageProcessorResult.getResult();
-            BeaconColorResult.BeaconColor leftColor = result.getLeftColor();
-            BeaconColorResult.BeaconColor rightColor = result.getRightColor();
-            if (rightColor.toString().equals("BLUE") || leftColor.toString().equals("RED") && !leftColor.toString().equals("BLUE")) {
-                if (displacement < .5) {
-                    strafe(STRAFE_POWER, "90", "LEFT");
-                } else if (displacement > .5 && displacement < 1) {
-                    strafe(STRAFE_POWER, "90", "RIGHT");
-                } else  {
-                    resetDrive();
-                    timeStep.clear();
-                    pushed++;
-                    step = 4;
-                }
-            } else if (leftColor.toString().equals("BLUE") || rightColor.toString().equals("RED") && !rightColor.toString().equals("BLUE")) {
-                if (displacement < .5) {
-                    straight(DRIVE_POWER);
-                } else if (displacement > .5 && displacement < 1) {
-                    strafe(STRAFE_POWER, "90", "LEFT");
-                } else if (displacement > 1 && displacement < 1.5) {
-                    strafe(STRAFE_POWER, "90", "RIGHT");
-                } else  {
-                    resetDrive();
-                    timeStep.clear();
-                    pushed++;
-                    step = 4;
-                }
-            }
-        } else if(step == 7)    {
+        else if(step == 4)    {
             resetRobot();
         }
 
@@ -311,6 +257,8 @@ public class BlueBeacon extends OpMode{
         }
     }
 
+    void curve()    {}
+
     void resetDrive() {
         driveLB.setPower(0);
         driveRB.setPower(0);
@@ -337,4 +285,3 @@ public class BlueBeacon extends OpMode{
     @Override
     public void stop() {}
 }
-
