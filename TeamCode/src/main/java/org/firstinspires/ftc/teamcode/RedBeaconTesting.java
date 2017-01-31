@@ -1,4 +1,3 @@
-//Merge Failed
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
@@ -39,7 +38,7 @@ public class RedBeaconTesting extends OpMode{
     ArrayList<Double> timeStep = new ArrayList<>();
     double displacement;
     //counters
-    int pushed = 0, step = 0;
+    int pushed = 0, step = 1;
     //standard powers
     final double STRAFE_POWER = .7, DRIVE_POWER = .2, SHOOT_POWER = .6, CONVEYOR_POWER = .6;
     //standard servo positions
@@ -67,18 +66,9 @@ public class RedBeaconTesting extends OpMode{
         gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         //initialize position(s)
         hold.setPosition(DOWN_POSITION);
-        switch (resetState) {
-            case 0:
-                telemetry.addData(">", "Gyro Calibrating. Do Not move! " + resetState);
-                gyro.calibrate();
-                if (!gyro.isCalibrating()) {
-                    resetState++;
-                }
-                break;
-            case 1:
-                telemetry.addData(">", "Gyro Calibrated.  Press Start.");
-                break;
-        }
+        telemetry.addData(">", "Gyro Calibrating. Do Not move! " + resetState);
+        gyro.calibrate();
+        //telemetry.addData(">", "Gyro Calibrated.  Press Start.");
     }
 
     @Override
@@ -100,6 +90,7 @@ public class RedBeaconTesting extends OpMode{
         zVal = gyro.rawZ();
         colorCcache = colorCreader.read(0x04, 1);
 
+        //starts robot movements
         if (step == 0 && shoot(2, SHOOT_POWER, CONVEYOR_POWER)) {
             step++;
             timeStep.clear();
@@ -109,23 +100,16 @@ public class RedBeaconTesting extends OpMode{
         } else if (step == 2 && turnToAngle(0)) {
             step++;
             timeStep.clear();
-        } else if (step == 3 && move("STRAIGHT", 1.75, -DRIVE_POWER, "", "")) {
+        } else if (step == 3 && move("STRAIGHT", 1, -DRIVE_POWER, "", "")) {
             step++;
             timeStep.clear();
         } else if (step == 4) {
             if (pushed == 0) {
                 findLine();
             } else if (pushed == 1) {
-//                if (displacement < 2) {
-//                    straight(DRIVE_POWER);
-//                } else if(displacement > 2 && !turnToAngle(0)) {
-//                } else  {
-//                    findLine();
-//                }
-                move("STRAIGHT", DRIVE_POWER, 2, "", "");
-                if(displacement > 2 && !turnToAngle(0)){}
-                else
-                    findLine();
+                move("STRAIGHT", .5, 2, "", "");
+                //if(displacement > 2 && !turnToAngle(0)){}
+                findLine();
             } else if (pushed > 1) {
                 resetDrive();
                 step = 7;
@@ -148,8 +132,6 @@ public class RedBeaconTesting extends OpMode{
         telemetry.addData("White", white());
         telemetry.addData("Pushed", pushed);
         telemetry.update();
-        //wait before quitting (quitting clears telemetry)
-        //sleepCool(1);
     }
 
     /*
@@ -166,6 +148,10 @@ public class RedBeaconTesting extends OpMode{
         }
     }
 
+    /*
+    grabs a single frame via the phone camera
+    stores left and right color results
+     */
     void captureFrame() {
         frameGrabber.grabSingleFrame();
         while (!frameGrabber.isResultReady()) {
@@ -175,61 +161,64 @@ public class RedBeaconTesting extends OpMode{
         result = (BeaconColorResult) imageProcessorResult.getResult();
         leftColor = result.getLeftColor();
         rightColor = result.getRightColor();
+        if(getLeftColor().equals("UNKNOWN"))   {
+            if(getRightColor().equals("BLUE"))
+                leftColor = BeaconColorResult.BeaconColor.RED;
+            else
+                leftColor = BeaconColorResult.BeaconColor.BLUE;
+        }
+        if(getRightColor().equals("UNKNOWN"))   {
+            if(getLeftColor().equals("BLUE"))
+                rightColor = BeaconColorResult.BeaconColor.RED;
+            else
+                rightColor = BeaconColorResult.BeaconColor.BLUE;
+        }
     }
 
+    /*
+    return left color string value
+     */
     String getLeftColor()    {
         return leftColor.toString();
     }
 
+    /*
+    return right color string value
+    */
     String getRightColor()    {
         return rightColor.toString();
     }
 
+    /*
+    drives forward until white is detected by the color sensor
+     */
     void findLine() {
         if (white()) {
-            resetDrive();
-            timeStep.clear();
-            step++;
+            if(turnToAngle(0)) {
+                resetDrive();
+                timeStep.clear();
+                step++;
+            }
         } else {
             straight(DRIVE_POWER);
         }
     }
 
+    /*
+    returns true if color sensor detects value greater than 6
+     */
     boolean white() {
         if(colorCcache[0] > 6)
             return true;
         return false;
     }
 
+    /*
+
+     */
     void beacon()   {
-//        if (leftColor.toString().equals("RED")) {
-//            if (displacement > 0 && displacement < 1.5) {
-//                strafe(STRAFE_POWER, "90", "LEFT");
-//            } else if (displacement > 1.5 && displacement < 2.5) {
-//                strafe(STRAFE_POWER, "90", "RIGHT");
-//            } else if(displacement > 2.5 && !turnToAngle(0)) {
-//            } else {
-//                resetDrive();
-//                timeStep.clear();
-//                pushed++;
-//                step = 4;
-//            }
-//        } else if (leftColor.toString().equals("BLUE")) {
-//            if (displacement < .5) {
-//                straight(DRIVE_POWER);
-//            } else if (displacement > .5 && displacement < 2) {
-//                strafe(STRAFE_POWER, "90", "LEFT");
-//            } else if (displacement > 2 && displacement < 3) {
-//                strafe(STRAFE_POWER, "90", "RIGHT");
-//            } else if(displacement > 3 && !turnToAngle(0)) {
-//            } else  {
-//                resetDrive();
-//                timeStep.clear();
-//                pushed++;
-//                step = 4;
-//            }
-//        }
-        if (leftColor.toString().equals("RED")) {
+        //beacon color logic
+        if (getLeftColor().equals("RED")) {
             if (displacement > 0 && displacement < 1.5) {
                 strafe(STRAFE_POWER, "90", "LEFT");
             } else if (displacement > 1.5 && displacement < 2.5) {
@@ -241,7 +230,7 @@ public class RedBeaconTesting extends OpMode{
                 pushed++;
                 step = 4;
             }
-        } else if (leftColor.toString().equals("BLUE")) {
+        } else if (getLeftColor().equals("BLUE")) {
             if (displacement < .5) {
                 straight(DRIVE_POWER);
             } else if (displacement > .5 && displacement < 2) {

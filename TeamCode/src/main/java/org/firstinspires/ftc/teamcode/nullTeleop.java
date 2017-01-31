@@ -20,8 +20,8 @@ public class nullTeleop extends OpMode {
     public nullTeleop() {}
 
     public void init() {
-        driveRF = hardwareMap.dcMotor.get("driveRF");
-        driveRB = hardwareMap.dcMotor.get("driveRB");
+        driveRF = hardwareMap.dcMotor.get("driveRB");
+        driveRB = hardwareMap.dcMotor.get("driveRF");
         driveLB = hardwareMap.dcMotor.get("driveLB");
         driveLF = hardwareMap.dcMotor.get("driveLF");
         spin = hardwareMap.dcMotor.get("spin");
