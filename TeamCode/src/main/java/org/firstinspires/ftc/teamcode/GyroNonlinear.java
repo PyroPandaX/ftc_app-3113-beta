@@ -28,12 +28,6 @@ public class GyroNonlinear extends OpMode {
     public double timeStart = 0;
     public double time0, time1,time2,time3,time4, pos0, pos1,pos2,pos3,pos4 = 0;
     public int count = 0;
-    public double arrayTime;
-    public int arrayPos;
-    public double targetPower;
-    public double targetAngle;
-    public double targetTime;
-
 
 
 
@@ -169,24 +163,12 @@ public class GyroNonlinear extends OpMode {
                             time2 = timeAuto;
                             pos2 = heading;
                             count++;
-
                         }
                     }
                 }
-        }
-
-
-        public void turntTarget(double targetPower, double targetAngle, double targetTime)
-        {
-            if((angleZ - targetAngle) >5) {
-                motorRB.setPower(targetPower);
-                motorLF.setPower(targetPower);
-                motorRF.setPower(targetPower);
-                motorLB.setPower(targetPower);
-            }
-            if((angleZ-targetAngle) )
 
         }
+
         telemetry.addData("Text", "*** Robot Data***");
         telemetry.addData("time", "elapsed time: " + Double.toString(timeAuto));
         telemetry.addData("0", "Heading %03d", heading);
