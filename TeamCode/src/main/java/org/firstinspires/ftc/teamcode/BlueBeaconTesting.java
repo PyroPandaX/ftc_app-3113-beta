@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
@@ -15,9 +14,12 @@ import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity
 import java.util.ArrayList;
 import ftc.vision.*;
 
-@Autonomous(name="Ball Testing", group="NullBot Shoot")
-@Disabled
-public class BallTesting extends OpMode {
+/*
+code description
+ */
+@Autonomous(name="Blue Beacon", group="NullBot Beacon")
+//@Disabled
+public class BlueBeaconTesting extends OpMode{
     //hardware variables
     DcMotor driveRB, driveRF, driveLB, driveLF, spin, shoot; //add lift motors here
     Servo hold;
@@ -29,6 +31,9 @@ public class BallTesting extends OpMode {
     BeaconColorResult result;
     ModernRoboticsI2cGyro gyro;
     int xVal, yVal, zVal, heading, angleZ, resetState;
+    ImageProcessorResult imageProcessorResult;
+    BeaconColorResult.BeaconColor leftColor;
+    BeaconColorResult.BeaconColor rightColor;
     //time variables
     ElapsedTime elapsed = new ElapsedTime();
     ArrayList<Double> timeStep = new ArrayList<>();
@@ -36,11 +41,11 @@ public class BallTesting extends OpMode {
     //counters
     int pushed = 0, step = 0;
     //standard powers
-    final double STRAFE_POWER = .7, DRIVE_POWER = .5, SHOOT_POWER = .5, CONVEYOR_POWER = .6;
+    final double STRAFE_POWER = .7, DRIVE_POWER = -.2, SHOOT_POWER = .43, CONVEYOR_POWER = .6;
     //standard servo positions
     final double UP_POSITION = .5, DOWN_POSITION = 1;
 
-    public BallTesting()  {}
+    public BlueBeaconTesting()  {}
 
     public void init() {
         //hardware config
@@ -62,22 +67,14 @@ public class BallTesting extends OpMode {
         gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         //initialize position(s)
         hold.setPosition(DOWN_POSITION);
+        telemetry.addData(">", "Gyro Calibrating. Do Not move! " + resetState);
+        gyro.calibrate();
+        if(elapsed.time() > 5)
+            telemetry.addData(">", "Gyro Calibrated.  Press Start.");
     }
 
     @Override
     public void start() {
-        switch (resetState) {
-            case 0:
-                telemetry.addData(">", "Gyro Calibrating. Do Not move!" + resetState);
-                gyro.calibrate();
-                if (!gyro.isCalibrating()) {
-                    resetState++;
-                }
-                break;
-            case 1:
-                telemetry.addData(">", "Gyro Calibrated.  Press Start.");
-                break;
-        }
         elapsed.reset(); //time starts on game start instead of init
     }
 
@@ -95,25 +92,72 @@ public class BallTesting extends OpMode {
         zVal = gyro.rawZ();
         colorCcache = colorCreader.read(0x04, 1);
 
-        if(step == 0 && move("STRAIGHT", .8, DRIVE_POWER, "", ""))
+        //starts robot movements
+        if (step == 0 && shoot(2, SHOOT_POWER, CONVEYOR_POWER)) {
             step++;
-        else if(step == 1 && shoot(2, SHOOT_POWER, CONVEYOR_POWER))
+            timeStep.clear();
+        } else if (step == 1 && move("STRAIGHT", .1, -DRIVE_POWER, "", "")) {
             step++;
-        else if(step == 2 && move("STRAIGHT", 2, DRIVE_POWER, "", ""))
+            timeStep.clear();
+        } else if (step == 2 && move("STRAFE", 5.2, STRAFE_POWER, "45", "FORWARD_RIGHT")) {
             step++;
-        else if(step == 3 && move("STRAIGHT", 1, DRIVE_POWER, "", ""))
+            timeStep.clear();
+        } else if (step == 3 && turnToAngle(180)) {
             step++;
-        else if(step == 4)    {
+            timeStep.clear();
+        } else if (step == 4 && move("STRAIGHT", 2, -DRIVE_POWER, "", "")) {
+            step++;
+            timeStep.clear();
+        } else if (step == 5) {
+            if (pushed == 0) {
+                if(findLine()) {
+                    step++;
+                    timeStep.clear();
+                }
+            } else if (pushed == 1) {
+                if(displacement < .35)
+                    straight(DRIVE_POWER);
+                else if(displacement > .35 && displacement < .4)
+                    resetDrive();
+                else if(findLine()) {
+                    step++;
+                    timeStep.clear();
+                }
+            } else if (pushed > 1) {
+                resetDrive();
+                step = 10;
+                timeStep.clear();
+            }
+        } else if(step == 6) {
+            if(turnToAngle(180)) {
+                step++;
+                resetDrive();
+                timeStep.clear();
+            }
+        } else if(step == 7)    {
+            if(move("STRAIGHT", .5, -DRIVE_POWER, "", "")) {
+                step++;
+                resetDrive();
+                timeStep.clear();
+            }
+        }else if(step == 8) {
+            captureFrame();
+            if (!getLeftColor().equals("UNKNOWN")) {
+                step++;
+                timeStep.clear();
+            }
+        }  else if(step == 9) {
+            beacon();
+        } else if(step == 10)    {
             resetRobot();
         }
 
         telemetry.addData("Result", result);
-        telemetry.addData("", "Int. Ang. %03d", angleZ);
+        telemetry.addData("Angle", angleZ);
         telemetry.addData("White", white());
         telemetry.addData("Pushed", pushed);
+        telemetry.addData("Step", step);
         telemetry.update();
-        //wait before quitting (quitting clears telemetry)
-        //sleepCool(1);
     }
 
     /*
@@ -130,10 +174,108 @@ public class BallTesting extends OpMode {
         }
     }
 
+    /*
+    grabs a single frame via the phone camera
+    stores left and right color results
+     */
+    void captureFrame() {
+        frameGrabber.grabSingleFrame();
+        while (!frameGrabber.isResultReady()) {
+            sleepCool(5);
+        }
+        imageProcessorResult = frameGrabber.getResult();
+        result = (BeaconColorResult) imageProcessorResult.getResult();
+        leftColor = result.getLeftColor();
+        rightColor = result.getRightColor();
+        if(getLeftColor().equals("UNKNOWN") && !getRightColor().equals("UNKNOWN"))   {
+            if(getRightColor().equals("BLUE"))
+                leftColor = BeaconColorResult.BeaconColor.RED;
+            else
+                leftColor = BeaconColorResult.BeaconColor.BLUE;
+        }
+        if(getRightColor().equals("UNKNOWN") && !getLeftColor().equals("UNKNOWN"))   {
+            if(getLeftColor().equals("BLUE"))
+                rightColor = BeaconColorResult.BeaconColor.RED;
+            else
+                rightColor = BeaconColorResult.BeaconColor.BLUE;
+        }
+    }
+
+    /*
+    return left color string value
+     */
+    String getLeftColor()    {
+        return leftColor.toString();
+    }
+
+    /*
+    return right color string value
+    */
+    String getRightColor()    {
+        return rightColor.toString();
+    }
+
+    /*
+    drives forward until white is detected by the color sensor
+     */
+    boolean findLine() {
+        if (white()) {
+            return true;
+        } else {
+            straight(DRIVE_POWER);
+            return false;
+        }
+    }
+
+    /*
+    returns true if color sensor detects value greater than 6
+     */
     boolean white() {
         if(colorCcache[0] > 6)
             return true;
         return false;
+    }
+
+    /*
+
+     */
+    void beacon()   {
+        //beacon color logic
+        if(getLeftColor().equals(getRightColor()))    {
+            if(getLeftColor().equals("RED"))
+                rightColor = BeaconColorResult.BeaconColor.BLUE;
+        } else {
+            if (getLeftColor().equals("BLUE") && !getRightColor().equals("BLUE")) {
+                if(displacement < .4)   {
+
+                }
+                else if (displacement > .4 && displacement < 2.15) {
+                    strafe(STRAFE_POWER, "90", "LEFT");
+                } else if (displacement > 2.15 && displacement < 3.45) {
+                    strafe(STRAFE_POWER, "90", "RIGHT");
+                } else if (displacement > 3.45) {
+                    if(turnToAngle(180)) {
+                        resetDrive();
+                        timeStep.clear();
+                        pushed++;
+                        step = 5;
+                    }
+                }
+            } else if (getLeftColor().equals("RED") && !getRightColor().equals("RED")) {
+                if (displacement < 1.75) {
+                    strafe(STRAFE_POWER, "90", "LEFT");
+                } else if (displacement > 3 && displacement < 4) {
+                    strafe(STRAFE_POWER, "90", "RIGHT");
+                } else if (displacement > 4) {
+                    if(turnToAngle(180))  {
+                        resetDrive();
+                        timeStep.clear();
+                        pushed++;
+                        step = 5;
+                    }
+                }
+            }
+        }
     }
 
     boolean shoot(int balls, double powerShoot, double powerConveyor)  {
@@ -147,7 +289,6 @@ public class BallTesting extends OpMode {
                 }
             } else  {
                 resetShoot();
-                timeStep.clear();
                 return true;
             }
         } else if(balls == 2)   {
@@ -160,7 +301,6 @@ public class BallTesting extends OpMode {
                 }
             } else  {
                 resetShoot();
-                timeStep.clear();
                 return true;
             }
         }
@@ -178,7 +318,6 @@ public class BallTesting extends OpMode {
             }
         } else  {
             resetDrive();
-            timeStep.clear();
             return true;
         }
         return false;
@@ -206,14 +345,27 @@ public class BallTesting extends OpMode {
     }
 
     boolean turnToAngle(double angle) {
+//        if(angleZ > angle + 2) {
+//            turn(.2, "RIGHT");
+//        } else if(angleZ < angle - 2)  {
+//            turn(.2, "LEFT");
+//        }
         if(angleZ > angle + 2) {
-            turn(.2, "LEFT");
-        } else if(angleZ < angle - 2)  {
             turn(.2, "RIGHT");
+        } else if(angleZ < angle - 2)  {
+            turn(.2, "LEFT");
+        } else if(angleZ > angle + 5) {
+            turn(.3, "RIGHT");
+        } else if(angleZ < angle - 5)  {
+            turn(.3, "LEFT");
+        } else if(angleZ > angle + 10) {
+            turn(.4, "RIGHT");
+        } else if(angleZ < angle - 10)  {
+            turn(.4, "LEFT");
         }
-        if(angleZ < 5 + angle && angleZ > angle - 5)   {
+
+        if(angleZ < angle + 2 && angleZ > angle - 2)   {
             resetDrive();
-            timeStep.clear();
             return true;
         } else  {
             return false;
@@ -258,8 +410,6 @@ public class BallTesting extends OpMode {
         }
     }
 
-    void curve()    {}
-
     void resetDrive() {
         driveLB.setPower(0);
         driveRB.setPower(0);
@@ -286,3 +436,4 @@ public class BallTesting extends OpMode {
     @Override
     public void stop() {}
 }
+

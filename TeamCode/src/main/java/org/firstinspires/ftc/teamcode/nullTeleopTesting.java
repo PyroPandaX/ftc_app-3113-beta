@@ -7,9 +7,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="NULL TeleOp", group="Teleop")
+@TeleOp(name="NULL TeleOp Testing", group="Teleop")
 //@Disabled
-public class nullTeleop extends OpMode {
+public class nullTeleopTesting extends OpMode {
     DcMotor driveRB, driveRF, driveLB, driveLF, spin, shoot;
     double joyRadius, right, left, rightX, leftX, LF_Power, RF_Power, RB_Power,
             LB_Power, LF_Per, LB_Per, RB_Per, RF_Per, rawTotal, timeWait, timeSeq;
@@ -17,7 +17,7 @@ public class nullTeleop extends OpMode {
     Servo hold;
     ElapsedTime elapsed = new ElapsedTime();
 
-    public nullTeleop() {}
+    public nullTeleopTesting() {}
 
     public void init() {
         driveRF = hardwareMap.dcMotor.get("driveRB");

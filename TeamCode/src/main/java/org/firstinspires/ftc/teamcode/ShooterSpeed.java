@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
@@ -11,13 +10,17 @@ import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
-import java.util.ArrayList;
-import ftc.vision.*;
 
-@Autonomous(name="Ball Testing", group="NullBot Shoot")
-@Disabled
-public class BallTesting extends OpMode {
+import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
+
+import java.util.ArrayList;
+
+import ftc.vision.BeaconColorResult;
+import ftc.vision.FrameGrabber;
+
+@Autonomous(name="Shooter Speed", group="NullBot Shoot")
+//@Disabled
+public class ShooterSpeed extends OpMode {
     //hardware variables
     DcMotor driveRB, driveRF, driveLB, driveLF, spin, shoot; //add lift motors here
     Servo hold;
@@ -34,13 +37,13 @@ public class BallTesting extends OpMode {
     ArrayList<Double> timeStep = new ArrayList<>();
     double displacement;
     //counters
-    int pushed = 0, step = 0;
+    int pushed = 0, step = 1;
     //standard powers
     final double STRAFE_POWER = .7, DRIVE_POWER = .5, SHOOT_POWER = .5, CONVEYOR_POWER = .6;
     //standard servo positions
     final double UP_POSITION = .5, DOWN_POSITION = 1;
 
-    public BallTesting()  {}
+    public ShooterSpeed()  {}
 
     public void init() {
         //hardware config
@@ -66,18 +69,6 @@ public class BallTesting extends OpMode {
 
     @Override
     public void start() {
-        switch (resetState) {
-            case 0:
-                telemetry.addData(">", "Gyro Calibrating. Do Not move!" + resetState);
-                gyro.calibrate();
-                if (!gyro.isCalibrating()) {
-                    resetState++;
-                }
-                break;
-            case 1:
-                telemetry.addData(">", "Gyro Calibrated.  Press Start.");
-                break;
-        }
         elapsed.reset(); //time starts on game start instead of init
     }
 
@@ -95,17 +86,12 @@ public class BallTesting extends OpMode {
         zVal = gyro.rawZ();
         colorCcache = colorCreader.read(0x04, 1);
 
-        if(step == 0 && move("STRAIGHT", .8, DRIVE_POWER, "", ""))
+        if(step == 1 && shoot(2, .45, CONVEYOR_POWER))
             step++;
-        else if(step == 1 && shoot(2, SHOOT_POWER, CONVEYOR_POWER))
+        if(step == 2 && shoot(2, .45, CONVEYOR_POWER))
             step++;
-        else if(step == 2 && move("STRAIGHT", 2, DRIVE_POWER, "", ""))
+        if(step == 3 && shoot(2, .45, CONVEYOR_POWER))
             step++;
-        else if(step == 3 && move("STRAIGHT", 1, DRIVE_POWER, "", ""))
-            step++;
-        else if(step == 4)    {
-            resetRobot();
-        }
 
         telemetry.addData("Result", result);
         telemetry.addData("", "Int. Ang. %03d", angleZ);

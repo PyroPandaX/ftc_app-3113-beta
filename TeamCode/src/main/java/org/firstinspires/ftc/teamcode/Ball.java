@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous(name="Ball", group="NullBot Shoot")
 //@Disabled
 public class Ball extends OpMode {
-    int xVal, yVal, zVal, heading, angleZ, resetState = 0, count = 0;
+    int xVal, yVal, zVal, heading, angleZ, resetState = 0;
     DcMotor driveRB, driveRF, driveLB, driveLF, spin, shoot;
     double timeAuto = 0;
     Servo hold;
@@ -74,9 +74,9 @@ public class Ball extends OpMode {
             driveLF.setPower(0);
             driveRF.setPower(0);
             hold.setPosition(.5);
-            shoot.setPower(.5);
+            shoot.setPower(.41);
         } else if (timeAuto > 3.5 && timeAuto < 9) {
-            spin.setPower(.6);
+            spin.setPower(.5);
         } else if (timeAuto < 11 && timeAuto > 9) {
             driveLB.setPower(.5);
             driveRB.setPower(.5);

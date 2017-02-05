@@ -2,13 +2,14 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="Ball with Delay", group="NullBot Shoot")
-//@Disabled
+@Disabled
 public class BallDelay extends OpMode {
     int xVal, yVal, zVal, heading, angleZ, resetState = 0, count = 0;
     DcMotor driveRB, driveRF, driveLB, driveLF, spin, shoot;
