@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
@@ -24,7 +23,7 @@ import ftc.vision.ImageProcessorResult;
 code description
  */
 @Autonomous(name="Blue Beacon", group="NullBot Beacon")
-@Disabled
+//@Disabled
 public class BlueBeacon extends OpMode{
     //hardware variables
     DcMotor driveRB, driveRF, driveLB, driveLF, spin, shoot; //add lift motors here
@@ -105,7 +104,7 @@ public class BlueBeacon extends OpMode{
 
         if(step == 0 && shoot(2, SHOOT_POWER, CONVEYOR_POWER))
             step++;
-        else if(step == 1 && move("STRAFE", 6.2, STRAFE_POWER, "45", "FORWARD_RIGHT"))
+        else if(step == 1 && move("STRAFE", 6.5, STRAFE_POWER, "45", "FORWARD_RIGHT"))
             step++;
         else if(step == 2 && turnToAngle(180))
             step++;

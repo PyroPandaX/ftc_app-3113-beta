@@ -149,20 +149,6 @@ public class nullTeleop extends OpMode {
         telemetry.update();
     }
 
-    /*
-delay method below
-measured in milliseconds
- */
-    void sleepCool(long sleepTime)    {
-        long wakeupTime = System.currentTimeMillis() + sleepTime;
-        while (sleepTime > 0) {
-            try {
-                Thread.sleep(sleepTime);
-            } catch (InterruptedException e) {}
-            sleepTime = wakeupTime - System.currentTimeMillis();
-        }
-    }
-
     public void shootingSeq() {
         if (count == 0) {
             timeWait = 0;
@@ -172,7 +158,7 @@ measured in milliseconds
         if (count == 1) {
             spin.setPower(0);
             hold.setPosition(1);
-            shoot.setPower(.45);
+            shoot.setPower(.5);
             if (timeWait > 1.5) {
                 count++;
             }

@@ -1,25 +1,30 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.Servo;
-
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="Ball", group="NullBot Shoot")
+@Autonomous(name="Conveyor", group="NullBot Shoot")
 //@Disabled
-public class Ball extends OpMode {
-    int xVal, yVal, zVal, heading, angleZ, resetState = 0, count = 0;
-    DcMotor driveRB, driveRF, driveLB, driveLF, spin, shoot;
-    double timeAuto = 0;
-    Servo hold;
-    ModernRoboticsI2cGyro gyro;
-    ElapsedTime elapsed = new ElapsedTime();
+public class Conveyor extends OpMode {
+    private int xVal, yVal, zVal;     // Gyro rate Values
+    private int heading;              // Gyro integrated heading
+    private int angleZ;
+    boolean lastResetState = false;
+    boolean curResetState = false;
+    public int resetState = 0, v_state = 0;
 
-    public Ball() {}
+    public Conveyor() {}
+
+    ModernRoboticsI2cGyro gyro;
+    DcMotor driveRB, driveRF, driveLB, driveLF, spin, shoot;
+    public double timeAuto = 0;
+    public double timeStart = 0;
+    public double time0, time1, time2, time3, time4, pos0, pos1, pos2, pos3, pos4 = 0;
+    public int count = 0;
+    Servo hold, push;
 
     public void init() {
         driveRF = hardwareMap.dcMotor.get("driveRF");
@@ -32,6 +37,8 @@ public class Ball extends OpMode {
         spin = hardwareMap.dcMotor.get("spin");
         shoot = hardwareMap.dcMotor.get("shoot");
         shoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //push = hardwareMap.servo.get("push");
+
         gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         switch (resetState) {
             case 0:
@@ -49,12 +56,15 @@ public class Ball extends OpMode {
 
     @Override
     public void start() {
-        elapsed.reset();
+        // defines timeStart as the timer at the start of autonomous to preserve an initial value
+        timeAuto = 0;
+        timeStart = this.time;
     }
 
     @Override
     public void loop() {
-        timeAuto = elapsed.time();
+        // time since autonomous began
+        timeAuto = this.time - timeStart;
         heading = gyro.getHeading();
         angleZ = gyro.getIntegratedZValue();
         // get the x, y, and z values (rate of change of angle).
@@ -76,15 +86,15 @@ public class Ball extends OpMode {
             hold.setPosition(.5);
             shoot.setPower(.5);
         } else if (timeAuto > 3.5 && timeAuto < 9) {
-            spin.setPower(.6);
-        } else if (timeAuto < 11 && timeAuto > 9) {
+            spin.setPower(.5);
+        } else if (timeAuto < 11.2 && timeAuto > 9) {
             driveLB.setPower(.5);
             driveRB.setPower(.5);
             driveLF.setPower(.5);
             driveRF.setPower(.5);
             shoot.setPower(0);
             spin.setPower(0);
-        } else if (timeAuto > 11) {
+        } else {
             driveLB.setPower(0);
             driveRB.setPower(0);
             driveLF.setPower(0);
@@ -92,7 +102,7 @@ public class Ball extends OpMode {
         }
 
         telemetry.addData("Text", "*** Robot Data***");
-        telemetry.addData("Time", "elapsed time: " + Double.toString(elapsed.time()));
+        telemetry.addData("time", "elapsed time: " + Double.toString(timeAuto));
         telemetry.addData("0", "Heading %03d", heading);
         telemetry.addData("1", "Int. Ang. %03d", angleZ);
         telemetry.addData("2", "X av. %03d", xVal);
