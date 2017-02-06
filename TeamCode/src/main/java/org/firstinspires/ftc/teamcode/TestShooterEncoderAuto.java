@@ -9,14 +9,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="Test Shooter with Encoder", group="Test")
 //@Disabled
-public class TestShooterEncoder extends OpMode {
+public class TestShooterEncoderAuto extends OpMode {
     DcMotor driveRB, driveRF, driveLB, driveLF, spin, shoot;
     Servo hold;
     ModernRoboticsI2cGyro gyro;
     int xVal, yVal, zVal, heading, angleZ, resetState;
-    ElapsedTime elapsed = new ElapsedTime(); public double right;
+    ElapsedTime elapsed = new ElapsedTime();
 
-    public TestShooterEncoder() {}
+    public TestShooterEncoderAuto() {}
 
     public void init() {
         driveRF = hardwareMap.dcMotor.get("driveRF");
@@ -30,7 +30,6 @@ public class TestShooterEncoder extends OpMode {
         shoot = hardwareMap.dcMotor.get("shoot");
         shoot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
-
         gyro.calibrate();
         switch (resetState) {
             case 0:
@@ -54,11 +53,9 @@ public class TestShooterEncoder extends OpMode {
     @Override
     public void loop() {
         hold.setPosition(.5);
-        //neverest 3.7 ticks per rev: 103
-        shoot.setMaxSpeed((int)(100*right));
+        shoot.setMaxSpeed(500);
         shoot.setPower(1);
         spin.setPower(.6);
-        right = gamepad1.right_stick_y;
 
 
         telemetry.addData("Text", "*** Robot Data***");
