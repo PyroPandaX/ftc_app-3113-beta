@@ -20,7 +20,7 @@ import ftc.vision.FrameGrabber;
 /**
  * Created by Mac on 12/19/2016.
  */
-@Autonomous(name="Test 360", group="Test")
+@Autonomous(name="Test 180", group="Test")
 //@Disabled
 public class Test360 extends OpMode{
     FrameGrabber frameGrabber = FtcRobotControllerActivity.frameGrabber; //Get the frameGrabber
@@ -90,15 +90,17 @@ public class Test360 extends OpMode{
 
         timeAuto = this.time - timeStart;
 
-        if (timeAuto < 5) {
-            driveLB.setPower(0);
-            driveRB.setPower(0);
-            driveLF.setPower(0);
-            driveRF.setPower(0);
-        }
-        if (timeAuto > 5){
-            zero();
-        }
+//        if (timeAuto < 5) {
+//            driveLB.setPower(0);
+//            driveRB.setPower(0);
+//            driveLF.setPower(0);
+//            driveRF.setPower(0);
+//        }
+//        if (timeAuto > 5){
+//            zero();
+//        }
+        turnToAngle(180);
+
         telemetry.addData("1", "Heading %03d", heading);
         telemetry.addData("1", "Int. Ang. %03d", angleZ);
         telemetry.update();
@@ -118,25 +120,55 @@ public class Test360 extends OpMode{
         }
     } //sleep
 
-    public boolean zero() {
-        if(angleZ > 2) {
-            driveLB.setPower(.2);
-            driveRB.setPower(-.2);
-            driveLF.setPower(.2);
-            driveRF.setPower(-.2);
-        } else if(angleZ < -2)  {
-            driveLB.setPower(-.2);
-            driveRB.setPower(.2);
-            driveLF.setPower(-.2);
-            driveRF.setPower(.2);
+    boolean turnToAngle(double angle) {
+//        if(angleZ > angle + 2) {
+//            turn(.3, "RIGHT");
+//        } else if(angleZ < angle - 2)  {
+//            turn(.3, "LEFT");
+//        }
+        if(angleZ > angle + 10) {
+            turn(.4, "RIGHT");
+        } else if(angleZ < angle - 10)  {
+            turn(.4, "LEFT");
+        } else if(angleZ > angle + 5) {
+            turn(.3, "RIGHT");
+        } else if(angleZ < angle - 5)  {
+            turn(.3, "LEFT");
+        } else if(angleZ > angle + 2) {
+            turn(.2, "RIGHT");
+        } else if(angleZ < angle - 2)  {
+            turn(.2, "LEFT");
         }
 
-        if(angleZ < 2 && angleZ > -2)   {
+        if(angleZ < angle + 4 && angleZ > angle - 4)   {
+            resetDrive();
             return true;
         } else  {
             return false;
         }
     }
+
+    void resetDrive() {
+        driveLB.setPower(0);
+        driveRB.setPower(0);
+        driveLF.setPower(0);
+        driveRF.setPower(0);
+    }
+
+    void turn(double power, String direction) {
+        if(direction.equals("LEFT")) {
+            driveLB.setPower(-power);
+            driveRB.setPower(power);
+            driveLF.setPower(-power);
+            driveRF.setPower(power);
+        } else if(direction.equals("RIGHT"))    {
+            driveLB.setPower(power);
+            driveRB.setPower(-power);
+            driveLF.setPower(power);
+            driveRF.setPower(-power);
+        }
+    }
+
 
     @Override
     public void stop() {}

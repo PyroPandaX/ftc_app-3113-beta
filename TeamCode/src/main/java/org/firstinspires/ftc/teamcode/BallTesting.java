@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
@@ -35,7 +36,7 @@ public class BallTesting extends OpMode {
     //counters
     int pushed = 0, step = 0;
     //standard powers
-    final double STRAFE_POWER = .7, DRIVE_POWER = .5, SHOOT_POWER = .5, CONVEYOR_POWER = .6;
+    final double STRAFE_POWER = .7, DRIVE_POWER = .5, SHOOT_POWER = .5, CONVEYOR_POWER = .5;
     //standard servo positions
     final double UP_POSITION = .5, DOWN_POSITION = 1;
 
@@ -146,7 +147,6 @@ public class BallTesting extends OpMode {
                 }
             } else  {
                 resetShoot();
-                timeStep.clear();
                 return true;
             }
         } else if(balls == 2)   {
@@ -154,12 +154,13 @@ public class BallTesting extends OpMode {
                 if(displacement < 1.5)   {
                     hold.setPosition(.5);
                     shoot.setPower(powerShoot);
-                } else {
+                } else if (displacement > 1.5) {
                     spin.setPower(powerConveyor);
+                } else if (displacement > 2.5)    {
+                    shoot.setPower(powerShoot + .05);
                 }
             } else  {
                 resetShoot();
-                timeStep.clear();
                 return true;
             }
         }
